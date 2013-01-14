@@ -1,0 +1,60 @@
+﻿using System;
+using System.Globalization;
+
+namespace CSharpAnalytics.Internal
+{
+    /// <summary>
+    /// Represents a date and time expressed as the number of seconds since 00:00 on 01-Jan-1970.
+    /// </summary>
+    internal class EpochTime
+    {
+        private static readonly DateTimeOffset epochMoment = new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero);
+
+        private readonly long secondsSince1970;
+
+        /// <summary>
+        /// Create a new EpochTime with a given number of seconds since the start of 1970.
+        /// </summary>
+        /// <param name="secondsSince1970">Number of seconds since the start of 1970.</param>
+        public EpochTime(long secondsSince1970)
+        {
+            this.secondsSince1970 = secondsSince1970;
+        }
+
+        /// <summary>
+        /// Create a new EpochTime from an existing DateTimeOffset.
+        /// </summary>
+        /// <param name="offset"></param>
+        public EpochTime(DateTimeOffset offset)
+        {
+            secondsSince1970 = Convert.ToInt64((offset - epochMoment).TotalSeconds);            
+        }
+       
+        /// <summary>
+        /// Return an EpochTime as a DateTimeOffset.
+        /// </summary>
+        /// <returns>A DateTimeOffset that represents the EpochTime.</returns>
+        public DateTimeOffset ToDateTimeOffset()
+        {
+            return epochMoment.AddSeconds(secondsSince1970);
+        }
+
+        /// <summary>
+        /// Return a string containing the number of seconds since 1970.
+        /// </summary>
+        /// <returns>A string containing the number of seconds since 1970.</returns>
+        public override string ToString()
+        {
+            return secondsSince1970.ToString(CultureInfo.InvariantCulture);
+        }
+
+        /// <summary>
+        /// Return a string with the EpochTime represented as a UTC date format.
+        /// </summary>
+        /// <returns>UTC date format of the current EpochTime.</returns>
+        public string ToUtcString()
+        {
+            return ToDateTimeOffset().ToString("r");
+        }
+    }
+}

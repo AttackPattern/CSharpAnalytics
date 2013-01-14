@@ -1,0 +1,45 @@
+﻿using System;
+
+namespace CSharpAnalytics.Internal
+{
+    /// <summary>
+    /// Defines the parameter name, human-readable label and decoder used to implement
+    /// debugging and decoding of Google Analytics requests.
+    /// </summary>
+    class ParameterDefinition
+    {
+        private static readonly Func<string, string> defaultFormatter = s => s;
+
+        private readonly Func<string, string> formatter;
+        private readonly string label;
+        private readonly string name;
+
+        /// <summary>
+        /// Creates a new parameter with a given name, label and optional formatter.
+        /// </summary>
+        /// <param name="name">Name of this parameter as set in the url.</param>
+        /// <param name="label">Human-readable label for this parameter.</param>
+        /// <param name="formatter">Optional formatter to decode and format the value from the url to a human-readable format.</param>
+        public ParameterDefinition(string name, string label, Func<string, string> formatter = null)
+        {
+            this.name = name;
+            this.label = label;
+            this.formatter = formatter ?? defaultFormatter;
+        }
+
+        /// <summary>
+        /// Function used to decode and format the URI request value back to human-readable format.
+        /// </summary>
+        public Func<string, string> Formatter { get { return formatter; } }
+
+        /// <summary>
+        /// Label to display for this parameter on debug output.
+        /// </summary>
+        public string Label { get { return label; } }
+
+        /// <summary>
+        /// Name of this parameter when found in an analytics URI request.
+        /// </summary>
+        public string Name { get { return name; } }
+    }
+}

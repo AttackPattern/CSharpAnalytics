@@ -1,0 +1,96 @@
+﻿using System.Collections.Generic;
+using System.Linq;
+
+namespace CSharpAnalytics.Activities
+{
+    /// <summary>
+    /// Captures the details of an order and the items within it.
+    /// </summary>
+    public class TransactionActivity : IActivity
+    {
+        private readonly Dictionary<string, TransactionItemActivity> items = new Dictionary<string, TransactionItemActivity>();
+        private decimal? orderTotal;
+
+        /// <summary>
+        /// Unique order ID for this order.
+        /// </summary>
+        public string OrderId { get; set; }
+
+        /// <summary>
+        /// Name of the store or the affiliation.
+        /// </summary>
+        public string StoreName { get; set; }
+
+        /// <summary>
+        /// Total of the items in the order prior to tax and shipping.
+        /// </summary>
+        public decimal OrderTotal
+        {
+            get { return orderTotal ?? Items.Sum(i => i.Price * i.Quantity); }
+            set { orderTotal = value; }
+        }
+
+        /// <summary>
+        /// Tax charge for this order.
+        /// </summary>
+        public decimal TaxCost { get; set; }
+
+        /// <summary>
+        /// Shipping charge for this order.
+        /// </summary>
+        public decimal ShippingCost { get; set; }
+
+        /// <summary>
+        /// Final total for this order including items, shipping and tax.
+        /// </summary>
+        public decimal FinalTotal
+        {
+            get { return OrderTotal + TaxCost + ShippingCost; }
+        }
+
+        /// <summary>
+        /// Billing address city.
+        /// </summary>
+        /// <example>San Jose</example>
+        public string BillingCity { get; set; }
+
+        /// <summary>
+        /// Billing address region, province or state.
+        /// </summary>
+        /// <example>CA</example>
+        public string BillingRegion { get; set; }
+
+        /// <summary>
+        /// Billing address country.
+        /// </summary>
+        /// <example>USA</example>
+        public string BillingCountry { get; set; }
+
+        /// <summary>
+        /// Add an itemActivity to the transaction.
+        /// </summary>
+        /// <param name="itemActivity"></param>
+        public void AddItem(TransactionItemActivity itemActivity)
+        {
+            // We use a dictionary to simulate the correct behavior - each SKU can only have one entry and last wins.
+            items[itemActivity.Code] = itemActivity;
+        }
+
+        /// <summary>
+        /// Clear all the items from a transaction.
+        /// </summary>
+        public void ClearItems()
+        {
+            items.Clear();
+            orderTotal = null;
+        }
+
+        /// <summary>
+        /// Enumeration of the Items that form the transaction.
+        /// </summary>
+        public IEnumerable<TransactionItemActivity> Items
+        {
+            get { return items.Values.AsEnumerable(); }
+        }
+    }
+}

@@ -1,0 +1,89 @@
+﻿using System;
+using System.Diagnostics;
+using CSharpAnalytics.Activities;
+
+namespace CSharpAnalytics.Activities
+{
+    /// <summary>
+    /// Captures the details of a timed event to be recorded in analytics.
+    /// See https://developers.google.com/analytics/devguides/collection/gajs/methods/gaJSApiUserTiming User Timing
+    /// </summary>
+    [DebuggerDisplay("TimedEvent {Category}, {Variable}, {Time}, {Label}")]
+    public class TimedEventActivity : IActivity
+    {
+        private readonly string category;
+        private readonly string label;
+        private readonly TimeSpan time;
+        private readonly string variable;
+
+        /// <summary>
+        /// Logical group name for categorized reporting.
+        /// </summary>
+        /// <example>jQuery</example>
+        public string Category
+        {
+            get { return category; }
+        }
+
+        /// <summary>
+        /// Optional further break-down within the variable.
+        /// </summary>
+        /// <example>Google CDN</example>
+        public string Label
+        {
+            get { return label; }
+        }
+
+        /// <summary>
+        /// How long the event took.
+        /// </summary>
+        public virtual TimeSpan Time
+        {
+            get { return time; }
+        }
+
+        /// <summary>
+        /// Name of the event within the category.
+        /// </summary>
+        /// <example>Load Library</example>
+        public string Variable
+        {
+            get { return variable; }
+        }
+
+        /// <summary>
+        /// Create a new EventActivity with various parameters to be captured.
+        /// </summary>
+        /// <param name="category">Category name to be assigned to Category property.</param>
+        /// <param name="variable">Variable name to be assigned to Variable property.</param>
+        /// <param name="time">Optional time to be assigned to the Time property, will default to time between being started and ended.</param>
+        /// <param name="label">Optional label to be assigned to the Label property.</param>
+        public TimedEventActivity(string category, string variable, TimeSpan time, string label = null)
+        {
+            this.category = category;
+            this.variable = variable;
+            this.label = label;
+            this.time = time;
+        }
+    }
+}
+
+namespace CSharpAnalytics
+{
+    public static class TimedEventExtensions
+    {
+        /// <summary>
+        /// Capture the details of a timed event that will be sent to analytics.
+        /// </summary>
+        /// <param name="analyticsClient">Analytics object with queue and configuration set-up.</param>
+        /// <param name="category">Category of the event to send.</param>
+        /// <param name="variable">Variable name of the event to send.</param>
+        /// <param name="time">Time of the event to send.</param>
+        /// <param name="label">Optional label name of the event to send.</param>
+        public static void TrackTimedEvent(this AnalyticsClient analyticsClient, string category, string variable, TimeSpan time, string label = null)
+        {
+            if (analyticsClient == null) throw new ArgumentNullException("analyticsClient");
+            analyticsClient.Track(new TimedEventActivity(category, variable, time, label));
+        }
+    }
+}
