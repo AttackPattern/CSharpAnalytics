@@ -14,6 +14,15 @@ Our goal is to support all major C# platforms however right now we have project 
 
 Only Windows 8 "WindowsStore" applications are propertly supported right now.
 
+Features
+--------
+* Offline and online support
+* Configurable upload interval, over HTTPS/SSL if required
+* Support for page views, events, timed events, social events, custom variables
+* Manages visitor and session state
+* Application name+version as a user agent
+* Can auto-hook into a number of interesting events
+
 Getting started
 ---------------
 You will need:
