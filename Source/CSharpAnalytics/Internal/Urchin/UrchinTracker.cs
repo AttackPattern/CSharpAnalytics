@@ -53,7 +53,7 @@ namespace CSharpAnalytics.Internal.Urchin
 
             // Undocumented parameter to set the date/time event occured - useful for offline or batch modes
             if (configuration.SendClientTime)
-                parameters.Add(KeyValuePair.Create("utmht", DateTimeOffset.Now.ToString()));
+                parameters.Add(KeyValuePair.Create("utmht", new EpochTime(DateTimeOffset.Now).ToString()));
 
             CarryForwardLastPageParameter(activity, parameters);
 

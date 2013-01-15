@@ -11,7 +11,7 @@ namespace CSharpAnalytics.Sample.WindowsStore
     /// <summary>
     /// Provides application-specific behavior to supplement the default Application class.
     /// </summary>
-    sealed partial class App 
+    sealed partial class App
     {
         /// <summary>
         /// Initializes the singleton Application object.  This is the first line of authored code
@@ -35,7 +35,7 @@ namespace CSharpAnalytics.Sample.WindowsStore
 
             // Do not repeat app initialization when the Window already has content,
             // just ensure that the window is active
-            
+
             if (rootFrame == null)
             {
                 // Create a Frame to act as the navigation context and navigate to the first page
@@ -71,7 +71,7 @@ namespace CSharpAnalytics.Sample.WindowsStore
                 }
             }
             // Ensure the current window is active
-            await AutoAnalytics.StartAsync(new Configuration("UA-123123123-1", "test"), "CSharpAnalyticsSampleApp");
+            await AutoAnalytics.StartAsync(new Configuration("UA-123-4", "test") { SendClientTime = true }, "CSharpAnalyticsSampleApp");
             Window.Current.Activate();
         }
 
