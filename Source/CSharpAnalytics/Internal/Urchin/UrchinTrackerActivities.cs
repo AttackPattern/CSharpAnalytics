@@ -10,7 +10,7 @@ using System.Diagnostics;
 
 namespace CSharpAnalytics.Internal.Urchin
 {
-    internal static class UrichinTrackerActivities
+    internal static class UrchinTrackerActivities
     {
         internal static IEnumerable<KeyValuePair<string, string>> GetActivityParameters(IActivity activity)
         {
@@ -109,7 +109,7 @@ namespace CSharpAnalytics.Internal.Urchin
 
         internal static IEnumerable<KeyValuePair<string, string>> GetParameters(TransactionItemActivity itemActivity)
         {
-            yield return KeyValuePair.Create("utmt", "itemActivity");
+            yield return KeyValuePair.Create("utmt", "item");
             yield return KeyValuePair.Create("utmipc", itemActivity.Code);
             yield return KeyValuePair.Create("utmipn", itemActivity.Name);
             yield return KeyValuePair.Create("utmipr", itemActivity.Price.ToString("0.00", CultureInfo.InvariantCulture));

@@ -135,7 +135,7 @@
     <Compile Include="AnalyticsClient.cs" />
     <Compile Include="Internal\EpochTime.cs" />
     <Compile Include="Internal\Urchin\UrchinTracker.cs" />
-    <Compile Include="Internal\Urchin\UrichinTrackerActivities.cs" />
+    <Compile Include="Internal\Urchin\UrchinTrackerActivities.cs" />
     <Compile Include="Internal\KeyValuePair.cs" />
     <Compile Include="Internal\Urchin\UtmeEncoder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

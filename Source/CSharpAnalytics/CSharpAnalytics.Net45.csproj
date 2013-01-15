@@ -69,7 +69,7 @@
     <Compile Include="Internal\Urchin\UrchinDebugger.cs" />
     <Compile Include="Internal\Urchin\UrchinParameterDefinitions.cs" />
     <Compile Include="Internal\Urchin\UrchinTracker.cs" />
-    <Compile Include="Internal\Urchin\UrichinTrackerActivities.cs" />
+    <Compile Include="Internal\Urchin\UrchinTrackerActivities.cs" />
     <Compile Include="Internal\Urchin\UtmeDecoder.cs" />
     <Compile Include="Internal\Urchin\UtmeEncoder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -90,7 +90,7 @@ namespace CSharpAnalytics.Internal.Urchin
                 .Concat(GetParameters(configuration))
                 .Concat(GetParameters(sessionManager, configuration.GetHostNameHash()))
                 .Concat(GetParameters(finalCustomVariables))
-                .Concat(UrichinTrackerActivities.GetActivityParameters(activity))
+                .Concat(UrchinTrackerActivities.GetActivityParameters(activity))
                 .ToList();
         }
 
