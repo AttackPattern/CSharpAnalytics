@@ -3,16 +3,32 @@ CSharpAnalytics
 
 CSharpAnalytics is a fully-managed C# library for adding Google Analytics metrics to your applications.
 
-By using this library you can see application usage activity and statistics in real-time to help you decide where to spend your development effort and best of all it's free.
+The pitch
+---------
+
+**Why add metrics to your app?**
+
+Metrics let you see what's actually happening with your app in the real word. Crash rates, performance data, feature usage content popularity let you find out what is important to your users and where to spend your effort.
+
+**Why use Google Analytics?**
+
+Google Analytics is capable, well-supported, easy to use and free. While originally designed for web analytics it is gaining more and more app-specific metrics. The forthcoming Measurement Protocol adds even more with screen views, device breakout and crash data.
+
+**Why the CSharpAnalytics project?**
+
+This is the best solution for C# apps wanting to talk to Google Analytics. Why?
+
+1. Ease of use - add *two lines* to your Windows 8 Store app
+1. Pure C# - easy to debug, extend or port (no JavaScript or web views)
 
 Platforms
 ---------
-Our goal is to support all major C# platforms however right now we have project files for:
+Our goal is to support all major C# platforms. Right now we have project files for:
 
 * Windows 8 Store applications (Visual Studio 2012)
 * .NET 4.5 applications (Visual Studio 2012)
 
-Only Windows 8 "WindowsStore" applications are propertly supported right now.
+Windows 8 Store support also includes a sample app and AutoAnalytics support to add analytics to your app with just two lines of code.
 
 Features
 --------
@@ -22,6 +38,7 @@ Features
 * Manages visitor and session state
 * Application name+version as a user agent
 * Can auto-hook into a number of interesting events
+* Built-in debug output window support (ga_debug.js style)
 
 Getting started
 ---------------
