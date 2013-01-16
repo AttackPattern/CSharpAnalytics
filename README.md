@@ -1,7 +1,7 @@
 CSharpAnalytics
 ===============
 
-CSharpAnalytics is a fully-managed C# library for adding Google Analytics metrics to your applications.
+CSharpAnalytics is a C# library for adding Google Analytics metrics to your applications.
 
 The pitch
 ---------
