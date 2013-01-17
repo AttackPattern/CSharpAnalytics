@@ -28,7 +28,7 @@ Our goal is to support all major C# platforms. Right now we have project files f
 * Windows 8 Store applications (Visual Studio 2012)
 * .NET 4.5 applications (Visual Studio 2012)
 
-Windows 8 Store support also includes a sample app and AutoAnalytics support to add analytics to your app with just two lines of code.
+Windows 8 Store support also includes a sample app and AutoAnalytics to add basic analytics to your app with just two lines of code.
 
 Features
 --------
@@ -96,22 +96,25 @@ Privacy is very important to Google and Microsoft and it should be to you too. H
 1. AnonymizeIp is set to true by default. We recommend you leave this on as it scrubs the last IP octet at Google's end.
 1. Do not share the names of user-generated content. e.g. Page titles for mail apps or photo album apps.
  
-**In summary do not share personally identifyable information.**
+In summary: **Do not share personally identifyable information**
 
 Limitations
 -----------
-* No throttling of requests to adhere to the limits of Google Analytics
+* No throttling of requests to adhere to the limits of Google Analytics (go easy on events for now)
 * No tracking of operating system type or version
-* Campaign tracking is of limited use as the Windows Store doesn't pass through parameters (iOS has same limitation).
+* Campaign tracking has limited use as Windows Store doesn't pass through parameters (iOS has same limitation)
 
 Still to do
 -----------
-1. Support for other platforms (Windows Phone 7.x & 8, Silverlight, Mono variants)
-1. Support new Google Measurement SDK
-1. E-commerce tracking (Transactions and Items are partially implemented)
-1. Timed events needs testing
-1. Facilitate total opt-out with session state switch and null receiver
+1. Other platforms (Windows Phone 7.x & 8, Silverlight, Mono variants)
+1. Google Measurement Protocol support (currently in beta)
+1. E-commerce tracking (Transactions/items coded but untested)
+1. Timed events (coded but untested)
+1. Opt-out support via session state switch and null receiver
 1. More unit tests & documentation
+1. Device manufacturer + model tracking
+
+If you want to contribute please consider the CSharpAnalytics.sln which will load all platforms and unit tests.
 
 Licence
 -------
@@ -119,6 +122,6 @@ Copyright 2012-2013 Attack Pattern LLC
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
-`http://www.apache.org/licenses/LICENSE-2.0`
+http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
