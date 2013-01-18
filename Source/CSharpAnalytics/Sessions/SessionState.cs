@@ -13,7 +13,7 @@ namespace CSharpAnalytics.Sessions
     public class SessionState
     {
         // Visitor
-        [DataMember] public int VisitorId { get; set; }
+        [DataMember] public Guid VisitorId { get; set; }
         [DataMember] public DateTimeOffset FirstVisitAt { get; set; }
 
         // Session

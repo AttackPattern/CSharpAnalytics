@@ -21,7 +21,7 @@ namespace CSharpAnalytics.Test
             client.Track(new PageViewActivity("FindTitle", "FindPage"));
 
             Assert.IsTrue(capturedUri.OriginalString.Contains("UA-1234-5"), "Configuration AccountId missing");
-            Assert.IsTrue(capturedUri.OriginalString.Contains("FindHostName"), "Configuration HostName missing");
+            Assert.IsTrue(capturedUri.OriginalString.Contains("FindHostName"), "Configuration ApplicationName missing");
             Assert.IsTrue(capturedUri.OriginalString.Contains("en-gb"), "Environment LanguageCode missing");
             Assert.IsTrue(capturedUri.OriginalString.Contains("FindTitle"), "PageViewActivity Title missing");
             Assert.IsTrue(capturedUri.OriginalString.Contains("FindPage"), "PageViewActivity Page missing");

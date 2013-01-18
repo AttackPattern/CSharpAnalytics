@@ -36,7 +36,7 @@ namespace CSharpAnalytics.Test.Sessions
         [TestMethod]
         public void New_Visitor_With_Parameters_Sets_Properties()
         {
-            var id = random.Next();
+            var id = Guid.NewGuid();
             var startedAt = DateTimeOffset.Now.Subtract(new TimeSpan(1, 2, 3, 4, 5));
             
             var visitor = new Visitor(id, startedAt);

@@ -18,7 +18,7 @@ namespace CSharpAnalytics.Test.Sessions
         public void SessionState_Properties_Can_Be_Set()
         {
             const int hitId = 123789221;
-            const int visitorId = 7892347;
+            var visitorId = Guid.NewGuid();
             const int sessionHitCount = 201;
             const int sessionNumber = 3;
 
@@ -82,7 +82,7 @@ namespace CSharpAnalytics.Test.Sessions
             var original = new SessionState
             {
                 HitId = 12345,
-                VisitorId = 67890,
+                VisitorId = Guid.NewGuid(),
                 SessionHitCount = 90123,
                 SessionNumber = 408,
                 FirstVisitAt = DateTime.Now.Subtract(new TimeSpan(1, 12, 30, 20)),

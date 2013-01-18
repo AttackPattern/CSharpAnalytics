@@ -126,7 +126,7 @@ namespace CSharpAnalytics.Test.Sessions
             return new SessionState
             {
                 HitId = random.Next(),
-                VisitorId = random.Next(),
+                VisitorId = Guid.NewGuid(),
                 SessionHitCount = random.Next(),
                 SessionNumber = random.Next(),
                 FirstVisitAt = DateTime.Now.Subtract(new TimeSpan(1, 12, 30, 20)),

@@ -70,7 +70,7 @@ namespace CSharpAnalytics.Internal.Urchin
         {
             if (activity is EventActivity && lastUtmpParameterValue != null)
                 parameters.Add(KeyValuePair.Create("utmp", lastUtmpParameterValue));
-            
+
             if (parameters.Any(k => k.Key == "utmp"))
                 lastUtmpParameterValue = parameters.First(p => p.Key == "utmp").Value;
         }
@@ -138,7 +138,7 @@ namespace CSharpAnalytics.Internal.Urchin
         internal static IEnumerable<KeyValuePair<string, string>> GetParameters(IEnvironment environment)
         {
             yield return KeyValuePair.Create("utmul", environment.LanguageCode.ToLowerInvariant());
-            yield return KeyValuePair.Create("utmcs", environment.CharacterSet == null ?  "-" : environment.CharacterSet.ToUpperInvariant());
+            yield return KeyValuePair.Create("utmcs", environment.CharacterSet == null ? "-" : environment.CharacterSet.ToUpperInvariant());
             yield return KeyValuePair.Create("utmfl", String.IsNullOrEmpty(environment.FlashVersion) ? "-" : environment.FlashVersion);
             yield return KeyValuePair.Create("utmje", !environment.JavaEnabled.HasValue ? "-" : environment.JavaEnabled.Value ? "1" : "0");
 
@@ -193,11 +193,23 @@ namespace CSharpAnalytics.Internal.Urchin
         {
             return String.Format(CultureInfo.InvariantCulture, "__utma={0}.{1}.{2}.{3}.{4}.{5};",
                     hostNameHash,
-                    sessionManager.Visitor.Id,
+                    ReduceGuidToUint(sessionManager.Visitor.Id),
                     new EpochTime(sessionManager.Visitor.FirstVisitAt),
                     new EpochTime(sessionManager.PreviousSessionStartedAt),
                     new EpochTime(sessionManager.Session.StartedAt),
                     sessionManager.Session.Number);
+        }
+
+        private static uint ReduceGuidToUint(Guid guid)
+        {
+            var bytes = guid.ToByteArray();
+            unchecked
+            {
+                uint r = 0; // Shift-Add-XOR hash
+                for (var i = 0; i < bytes.Length; i++)
+                    r ^= (r << 5) + (r >> 2) + bytes[i];
+                return r;
+            }
         }
 
         /// <summary>

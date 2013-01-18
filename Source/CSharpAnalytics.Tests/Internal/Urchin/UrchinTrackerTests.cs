@@ -92,7 +92,7 @@ namespace CSharpAnalytics.Test.Internal.Urchin
             var sessionState = new SessionState
                 {
                     SessionNumber = 5,
-                    VisitorId = 1234567,
+                    VisitorId = new Guid("FFFCCBCB-9A87-4987-BD20-CE7C81F96CD2"),
                     FirstVisitAt = new DateTimeOffset(2012, 10, 10, 13, 14, 15, TimeSpan.Zero),
                     PreviousSessionStartedAt = new DateTimeOffset(2012, 12, 10, 13, 14, 15, TimeSpan.Zero),
                     SessionStartedAt = new DateTimeOffset(2012, 12, 14, 13, 14, 15, TimeSpan.Zero),
@@ -101,7 +101,7 @@ namespace CSharpAnalytics.Test.Internal.Urchin
 
             var cookieSubstitute = UrchinTracker.CreateCookieSubstituteParameter(sessionManager, 1);
 
-            Assert.AreEqual("__utma=1.1234567.1349874855.1355145255.1355490855.5;", cookieSubstitute);
+            Assert.AreEqual("__utma=1.1159017511.1349874855.1355145255.1355490855.5;", cookieSubstitute);
         }
     }
 }
