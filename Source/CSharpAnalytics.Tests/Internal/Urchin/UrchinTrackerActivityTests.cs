@@ -145,7 +145,7 @@ namespace CSharpAnalytics.Test.Internal.Urchin
             var results = UrchinTrackerActivities.GetParameters(activity).ToDictionary(k => k.Key, v => v);
 
             CollectionAssert.Contains(results.Keys, "utmt");
-            Assert.AreEqual("itemActivity", results["utmt"].Value);
+            Assert.AreEqual("item", results["utmt"].Value);
         }
 
         [TestMethod]
