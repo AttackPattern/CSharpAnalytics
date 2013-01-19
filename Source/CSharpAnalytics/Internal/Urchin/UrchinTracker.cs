@@ -83,7 +83,7 @@ namespace CSharpAnalytics.Internal.Urchin
         /// <returns>List of key/value pairs containing the parameters necessary for this request.</returns>
         private List<KeyValuePair<string, string>> BuildParameterList(IActivity activity, ScopedCustomVariableSlots[] customVariables)
         {
-            var finalCustomVariables = new FinalCustomVariables(customVariables);
+            var finalCustomVariables = GetFinalCustomVariables(customVariables);
 
             return GetParameters()
                 .Concat(GetParameters(environment))
@@ -92,6 +92,24 @@ namespace CSharpAnalytics.Internal.Urchin
                 .Concat(GetParameters(finalCustomVariables))
                 .Concat(UrchinTrackerActivities.GetActivityParameters(activity))
                 .ToList();
+        }
+
+        /// <summary>
+        /// Expands a set of scoped custom variable slots into a final array containing the custom variables and their scope.
+        /// </summary>
+        /// <param name="scopedCustomVariableSlots">Set of scoped custom variable slots to expand.</param>
+        /// <returns>An array of custom variables with their scope indexed by slot.</returns>
+        internal static ScopedCustomVariable[] GetFinalCustomVariables(params ScopedCustomVariableSlots[] scopedCustomVariableSlots)
+        {
+            var allSlots = scopedCustomVariableSlots.SelectMany(s => s.AllSlots).ToList();
+            var highestSlotIndex = allSlots.Any() ? allSlots.Max(s => s.Key) : 0;
+            var finalCustomVariables = new ScopedCustomVariable[highestSlotIndex + 1];
+
+            foreach (var scopedSlots in scopedCustomVariableSlots.OrderByDescending(s => s.Scope))
+                foreach (var slot in scopedSlots.AllSlots)
+                    finalCustomVariables[slot.Key] = new ScopedCustomVariable(scopedSlots.Scope, slot.Value);
+
+            return finalCustomVariables;
         }
 
         /// <summary>
@@ -125,7 +143,7 @@ namespace CSharpAnalytics.Internal.Urchin
         /// </summary>
         /// <param name="customVariables">Custom variables to obtain parameters from.</param>
         /// <returns>Enumerable of key/value pairs containing parameters for these custom variables.</returns>
-        private static IEnumerable<KeyValuePair<string, string>> GetParameters(FinalCustomVariables customVariables)
+        private static IEnumerable<KeyValuePair<string, string>> GetParameters(ScopedCustomVariable[] customVariables)
         {
             yield return KeyValuePair.Create("utme", EncodeCustomVariables(customVariables));
         }
@@ -217,11 +235,11 @@ namespace CSharpAnalytics.Internal.Urchin
         /// </summary>
         /// <param name="customVariables">Custom variables to encode.</param>
         /// <returns>Encoded custom variables.</returns>
-        internal static string EncodeCustomVariables(FinalCustomVariables customVariables)
+        internal static string EncodeCustomVariables(ScopedCustomVariable[] customVariables)
         {
-            return UtmeEncoder.Encode("8", customVariables.AllSlots.Select(c => c == null ? null : c.Item2.Name).ToArray())
-                 + UtmeEncoder.Encode("9", customVariables.AllSlots.Select(c => c == null ? null : c.Item2.Value).ToArray())
-                + UtmeEncoder.Encode("11", customVariables.AllSlots.Select(c => c == null ? null : GetScopeIdentity(c.Item1)).ToArray());
+            return UtmeEncoder.Encode("8", customVariables.Select(c => c == null ? null : c.Variable.Name).ToArray())
+                 + UtmeEncoder.Encode("9", customVariables.Select(c => c == null ? null : c.Variable.Value).ToArray())
+                + UtmeEncoder.Encode("11", customVariables.Select(c => c == null ? null : GetScopeIdentity(c.Scope)).ToArray());
         }
 
         /// <summary>

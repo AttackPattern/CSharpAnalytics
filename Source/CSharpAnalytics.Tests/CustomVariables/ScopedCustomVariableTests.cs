@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using CSharpAnalytics.CustomVariables;
 #if WINDOWS_STORE
 using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
@@ -18,11 +19,7 @@ namespace CSharpAnalytics.Test.CustomVariables
             var scopedCustomVariableSlots = new ScopedCustomVariableSlots(scope);
 
             Assert.AreEqual(scope, scopedCustomVariableSlots.Scope);
-            Assert.IsNull(scopedCustomVariableSlots.Slot1);
-            Assert.IsNull(scopedCustomVariableSlots.Slot2);
-            Assert.IsNull(scopedCustomVariableSlots.Slot3);
-            Assert.IsNull(scopedCustomVariableSlots.Slot4);
-            Assert.IsNull(scopedCustomVariableSlots.Slot5);
+            Assert.AreEqual(0, scopedCustomVariableSlots.AllSlots.Count());
         }
 
         [TestMethod]
@@ -35,17 +32,17 @@ namespace CSharpAnalytics.Test.CustomVariables
             var slot4 = new CustomVariable("name4", "value4");
             var slot5 = new CustomVariable("name5", "value5");
 
-            scopedCustomVariableSlots.Slot1 = slot1;
-            scopedCustomVariableSlots.Slot2 = slot2;
-            scopedCustomVariableSlots.Slot3 = slot3;
-            scopedCustomVariableSlots.Slot4 = slot4;
-            scopedCustomVariableSlots.Slot5 = slot5;
+            scopedCustomVariableSlots[0] = slot1;
+            scopedCustomVariableSlots[1] = slot2;
+            scopedCustomVariableSlots[2] = slot3;
+            scopedCustomVariableSlots[3] = slot4;
+            scopedCustomVariableSlots[4] = slot5;
 
-            Assert.AreSame(slot1, scopedCustomVariableSlots.Slot1);
-            Assert.AreSame(slot2, scopedCustomVariableSlots.Slot2);
-            Assert.AreSame(slot3, scopedCustomVariableSlots.Slot3);
-            Assert.AreSame(slot4, scopedCustomVariableSlots.Slot4);
-            Assert.AreSame(slot5, scopedCustomVariableSlots.Slot5);
+            Assert.AreSame(slot1, scopedCustomVariableSlots[0]);
+            Assert.AreSame(slot2, scopedCustomVariableSlots[1]);
+            Assert.AreSame(slot3, scopedCustomVariableSlots[2]);
+            Assert.AreSame(slot4, scopedCustomVariableSlots[3]);
+            Assert.AreSame(slot5, scopedCustomVariableSlots[4]);
         }
 
 #if WINDOWS_STORE

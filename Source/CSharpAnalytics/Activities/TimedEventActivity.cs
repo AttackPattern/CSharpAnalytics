@@ -12,7 +12,7 @@ namespace CSharpAnalytics.Activities
     /// See https://developers.google.com/analytics/devguides/collection/gajs/methods/gaJSApiUserTiming User Timing
     /// </summary>
     [DebuggerDisplay("TimedEvent {Category}, {Variable}, {Time}, {Label}")]
-    public class TimedEventActivity : IActivity
+    public class TimedEventActivity : ActivityBase
     {
         private readonly string category;
         private readonly string label;

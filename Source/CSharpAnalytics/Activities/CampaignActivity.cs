@@ -9,7 +9,7 @@ namespace CSharpAnalytics.Activities
     /// <summary>
     /// Captures the details of a campaign to be recorded in analytics.
     /// </summary>
-    public class CampaignActivity : IActivity
+    public class CampaignActivity : ActivityBase
     {
         private readonly string source;
 

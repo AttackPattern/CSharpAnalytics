@@ -26,11 +26,11 @@ namespace CSharpAnalytics.Test
         {
             var slots = new ScopedCustomVariableSlots(CustomVariableScope.Session);
 
-            Assert.IsNull(slots.Slot1);
-            Assert.IsNull(slots.Slot2);
-            Assert.IsNull(slots.Slot3);
-            Assert.IsNull(slots.Slot4);
-            Assert.IsNull(slots.Slot5);
+            Assert.IsNull(slots[0]);
+            Assert.IsNull(slots[1]);
+            Assert.IsNull(slots[2]);
+            Assert.IsNull(slots[3]);
+            Assert.IsNull(slots[4]);
         }
 
         [TestMethod]
@@ -42,20 +42,18 @@ namespace CSharpAnalytics.Test
             var slotFour = new CustomVariable("four", "4");
             var slotFive = new CustomVariable("five", "5");
 
-            var slots = new ScopedCustomVariableSlots(CustomVariableScope.Session)
-            {
-                Slot1 = slotOne,
-                Slot2 = slotTwo,
-                Slot3 = slotThree,
-                Slot4 = slotFour,
-                Slot5 = slotFive
-            };
+            var slots = new ScopedCustomVariableSlots(CustomVariableScope.Session);
+            slots[0] = slotOne;
+            slots[1] = slotTwo;
+            slots[2] = slotThree;
+            slots[3] = slotFour;
+            slots[4] = slotFive;           
 
-            Assert.AreSame(slotOne, slots.Slot1);
-            Assert.AreSame(slotTwo, slots.Slot2);
-            Assert.AreSame(slotThree, slots.Slot3);
-            Assert.AreSame(slotFour, slots.Slot4);
-            Assert.AreSame(slotFive, slots.Slot5);
+            Assert.AreSame(slotOne, slots[0]);
+            Assert.AreSame(slotTwo, slots[1]);
+            Assert.AreSame(slotThree, slots[2]);
+            Assert.AreSame(slotFour, slots[3]);
+            Assert.AreSame(slotFive, slots[4]);
         }
 
         [TestMethod]
@@ -79,50 +77,13 @@ namespace CSharpAnalytics.Test
         [TestMethod]
         public void EvaluatedCustomVariable_Evaluates_Every_Time_Valued_Accessed()
         {
-            int evaluationCount = 0;
+            var evaluationCount = 0;
             var evaluated = new EvaluatedCustomVariable("name", () => (++evaluationCount).ToString(CultureInfo.InvariantCulture));
 
             Assert.AreEqual("name", evaluated.Name);
             Assert.AreEqual("1", evaluated.Value);
             Assert.AreEqual("2", evaluated.Value);
             Assert.AreEqual("3", evaluated.Value);
-        }
-
-        [TestMethod]
-        public void FinalCustomVariables_Selects_Correct_Final_Variables()
-        {
-            var sessionScopedVariables = new ScopedCustomVariableSlots(CustomVariableScope.Session)
-            {
-                Slot1 = new CustomVariable("session-one-name", "session-one-value"),
-                Slot3 = new CustomVariable("session-three-name", "session-three-value"),
-            };
-
-            var visitorScopedVariables = new ScopedCustomVariableSlots(CustomVariableScope.Visitor)
-            {
-                Slot1 = new CustomVariable("Visitor-one-name", "Visitor-one-value"),
-                Slot2 = new CustomVariable("Visitor-two-name", "Visitor-two-value")
-            };
-
-            var activityScopedVariables = new ScopedCustomVariableSlots(CustomVariableScope.Activity)
-            {
-                Slot1 = new CustomVariable("activity-one-name", "activity-one-value"),
-                Slot2 = new CustomVariable("activity-two-name", "activity-two-value"),
-                Slot4 = new CustomVariable("activity-four-name", "activity-four-value"),
-            };
-
-            var final = new FinalCustomVariables(sessionScopedVariables, visitorScopedVariables, activityScopedVariables);
-
-            Assert.AreEqual(CustomVariableScope.Visitor, final.Slot1.Item1);
-            Assert.AreEqual(CustomVariableScope.Visitor, final.Slot2.Item1);
-            Assert.AreEqual(CustomVariableScope.Session, final.Slot3.Item1);
-            Assert.AreEqual(CustomVariableScope.Activity, final.Slot4.Item1);
-
-            Assert.AreEqual("Visitor-one-name", final.Slot1.Item2.Name);
-            Assert.AreEqual("Visitor-two-name", final.Slot2.Item2.Name);
-            Assert.AreEqual("session-three-name", final.Slot3.Item2.Name);
-            Assert.AreEqual("activity-four-name", final.Slot4.Item2.Name);  
- 
-            Assert.IsNull(final.Slot5);
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using CSharpAnalytics.CustomVariables;
+﻿using CSharpAnalytics.CustomVariables;
 #if WINDOWS_STORE
 using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
 #else

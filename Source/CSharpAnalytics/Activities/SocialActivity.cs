@@ -11,7 +11,7 @@ namespace CSharpAnalytics.Activities
     /// Captures the details of an social action that has been performed.
     /// </summary>
     [DebuggerDisplay("Social {Action} on {Network}")]
-    public class SocialActivity : IActivity
+    public class SocialActivity : ActivityBase
     {
         private readonly string action;
         private readonly string network;

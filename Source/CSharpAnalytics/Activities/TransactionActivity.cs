@@ -9,7 +9,7 @@ namespace CSharpAnalytics.Activities
     /// <summary>
     /// Captures the details of an order and the items within it.
     /// </summary>
-    public class TransactionActivity : IActivity
+    public class TransactionActivity : ActivityBase
     {
         private readonly Dictionary<string, TransactionItemActivity> items = new Dictionary<string, TransactionItemActivity>();
         private decimal? orderTotal;

@@ -5,11 +5,13 @@ using CSharpAnalytics.CustomVariables;
 
 namespace CSharpAnalytics.Activities
 {
-    /// <summary>
-    /// Base class for all activities.
-    /// </summary>
-    public interface IActivity
+    public abstract class ActivityBase : IActivity
     {
-        ScopedCustomVariableSlots CustomVariables { get; }
+        private readonly ScopedCustomVariableSlots customVariables = new ScopedCustomVariableSlots(CustomVariableScope.Activity);
+
+        public ScopedCustomVariableSlots CustomVariables
+        {
+            get { return customVariables; }
+        }
     }
 }

@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Activities\ActivityBase.cs" />
     <Compile Include="Activities\AutoTimedEventActivity.cs" />
     <Compile Include="Activities\IActivity.cs" />
     <Compile Include="Activities\CampaignActivity.cs" />
@@ -58,8 +59,8 @@
     <Compile Include="CustomVariables\CustomVariable.cs" />
     <Compile Include="CustomVariables\CustomVariableScope.cs" />
     <Compile Include="CustomVariables\EvaluatedCustomVariable.cs" />
-    <Compile Include="CustomVariables\FinalCustomVariables.cs" />
     <Compile Include="CustomVariables\ICustomVariable.cs" />
+    <Compile Include="CustomVariables\ScopedCustomVariable.cs" />
     <Compile Include="CustomVariables\ScopedCustomVariableSlots.cs" />
     <Compile Include="Environment.cs" />
     <Compile Include="IEnvironment.cs" />

@@ -8,7 +8,7 @@ The pitch
 
 **Why add metrics to your app?**
 
-Metrics let you see what's actually happening with your app in the real word. Crash rates, performance data, feature usage content popularity let you find out what is important to your users and where to spend your effort.
+Metrics let you see what's actually happening with your app in the real world. Crash rates, performance data, feature usage content popularity let you find out what is important to your users and where to spend your effort.
 
 **Why use Google Analytics?**
 
@@ -102,7 +102,7 @@ Limitations
 * No throttling of requests to adhere to the limits of Google Analytics (go easy on events for now)
 * No tracking of operating system type or version
 * Campaign tracking has limited use as Windows Store doesn't pass through parameters (iOS has same limitation)
-* Only 5 custom variables session and visitor do not persist, activity is not cleared yet
+* Session and visitor custom variables do not persist
 
 Still to do
 -----------

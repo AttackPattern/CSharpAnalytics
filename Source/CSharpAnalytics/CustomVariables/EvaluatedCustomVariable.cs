@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 using System;
+using System.Diagnostics;
 
 namespace CSharpAnalytics.CustomVariables
 {
@@ -9,6 +10,7 @@ namespace CSharpAnalytics.CustomVariables
     /// Captures the name and a function that when called will provide the value.
     /// Useful for dynamically changing values like counters, timings or external factors.
     /// </summary>
+    [DebuggerDisplay("Name={Name}")]
     public class EvaluatedCustomVariable : ICustomVariable
     {
         private readonly string name;

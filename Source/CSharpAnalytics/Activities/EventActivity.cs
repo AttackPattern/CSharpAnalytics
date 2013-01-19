@@ -12,7 +12,7 @@ namespace CSharpAnalytics.Activities
     /// See https://developers.google.com/analytics/devguides/collection/gajs/eventTrackerGuide Event Tracking Guide
     /// </summary>
     [DebuggerDisplay("Event {Category}, {Action}, {Label}")]
-    public class EventActivity : IActivity
+    public class EventActivity : ActivityBase
     {
         private readonly string action;
         private readonly string category;

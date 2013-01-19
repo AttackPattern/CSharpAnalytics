@@ -11,7 +11,7 @@ namespace CSharpAnalytics.Activities
     /// Captures the details of a page view to be recorded in analytics.
     /// </summary>
     [DebuggerDisplay("PageView {Title} [{Page}]")]
-    public class PageViewActivity : IActivity
+    public class PageViewActivity : ActivityBase
     {
         private readonly string page;
         private readonly string title;

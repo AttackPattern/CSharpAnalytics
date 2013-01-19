@@ -8,7 +8,7 @@ namespace CSharpAnalytics.Activities
     /// <summary>
     /// Captures the details of an item on an order.
     /// </summary>
-    public class TransactionItemActivity : IActivity
+    public class TransactionItemActivity : ActivityBase
     {
         private readonly string code;
         private readonly string name;

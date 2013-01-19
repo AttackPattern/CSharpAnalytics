@@ -2,15 +2,19 @@
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace CSharpAnalytics.CustomVariables
 {
     /// <summary>
     /// Captures a set of custom variables in slots numbered 1-5 with an associated scope.
     /// </summary>
+    [DebuggerDisplay("Scope={Scope}")]
     public class ScopedCustomVariableSlots
     {
         private readonly CustomVariableScope scope;
+        private readonly Dictionary<int, ICustomVariable> slots = new Dictionary<int, ICustomVariable>();
 
         /// <summary>
         /// Create a ScopedCustomVariableSlots to contain a number of slots for a given scope.
@@ -30,28 +34,38 @@ namespace CSharpAnalytics.CustomVariables
         public CustomVariableScope Scope { get { return scope; } }
 
         /// <summary>
-        /// Custom variable in slot 1.
+        /// Custom variables indexed by their slot number.
         /// </summary>
-        public ICustomVariable Slot1 { get; set; }
+        /// <param name="slot">Slot number.</param>
+        /// <returns>CustomVariable associated with this slot.</returns>
+        public ICustomVariable this[int slot]
+        {
+            get
+            {
+                ICustomVariable customVariable;
+                slots.TryGetValue(slot, out customVariable);
+                return customVariable;
+            }
+            set
+            {
+                if (value == null)
+                {
+                    if (slots.ContainsKey(slot))
+                        slots.Remove(slot);
+                }
+                else
+                {
+                    slots[slot] = value;
+                }
+            }
+        }
 
         /// <summary>
-        /// Custom variable in slot 2.
+        /// Enumeration of all custom variables and their associated indexes.
         /// </summary>
-        public ICustomVariable Slot2 { get; set; }
-
-        /// <summary>
-        /// Custom variable in slot 3.
-        /// </summary>
-        public ICustomVariable Slot3 { get; set; }
-
-        /// <summary>
-        /// Custom variable in slot 4.
-        /// </summary>
-        public ICustomVariable Slot4 { get; set; }
-
-        /// <summary>
-        /// Custom variable in slot 5.
-        /// </summary>
-        public ICustomVariable Slot5 { get; set; }
+        public IEnumerable<KeyValuePair<int, ICustomVariable>> AllSlots
+        {
+            get { return slots; }
+        }
     }
 }
