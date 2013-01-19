@@ -86,7 +86,6 @@ Say you want to track when the video "Today's News" is played back:
 
 `AutoAnalytics.Client.TrackEvent("Play", "Video", "Today's News");`
 
-
 Important notes
 ---------------
 Privacy is very important to Google and Microsoft and it should be to you too. Here's a few things you should know:
@@ -103,9 +102,11 @@ Limitations
 * No throttling of requests to adhere to the limits of Google Analytics (go easy on events for now)
 * No tracking of operating system type or version
 * Campaign tracking has limited use as Windows Store doesn't pass through parameters (iOS has same limitation)
+* Only 5 custom variables session and visitor do not persist, activity is not cleared yet
 
 Still to do
 -----------
+1. Address custom variable limitations
 1. Other platforms (Windows Phone 7.x & 8, Silverlight, Mono variants)
 1. Google Measurement Protocol support (currently in beta)
 1. E-commerce tracking (Transactions/items coded but untested)
