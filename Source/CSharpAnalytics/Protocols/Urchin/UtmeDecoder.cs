@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace CSharpAnalytics.Internal.Urchin
+namespace CSharpAnalytics.Protocols.Urchin
 {
     /// <summary>
     /// Decodes Utme parameter encoded values back into their original unencoded values.

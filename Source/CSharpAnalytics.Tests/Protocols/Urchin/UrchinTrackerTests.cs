@@ -2,7 +2,7 @@
 using System.Linq;
 using CSharpAnalytics.Activities;
 using CSharpAnalytics.CustomVariables;
-using CSharpAnalytics.Internal.Urchin;
+using CSharpAnalytics.Protocols.Urchin;
 using CSharpAnalytics.Sessions;
 #if WINDOWS_STORE
 using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
@@ -10,7 +10,7 @@ using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 #endif
 
-namespace CSharpAnalytics.Test.Internal.Urchin
+namespace CSharpAnalytics.Test.Protocols.Urchin
 {
     [TestClass]
     public class UrchinTrackerTests

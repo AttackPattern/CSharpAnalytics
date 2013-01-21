@@ -7,9 +7,10 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using CSharpAnalytics.CustomVariables;
+using CSharpAnalytics.Protocols;
 using CSharpAnalytics.Sessions;
 
-namespace CSharpAnalytics.Internal.Urchin
+namespace CSharpAnalytics.Protocols.Urchin
 {
     /// <summary>
     /// Creates Urchin style URIs for tracking by Google Analytics Urchin tracking endpoint.

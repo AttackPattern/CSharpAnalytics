@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
  
-namespace CSharpAnalytics.Internal.Urchin
+namespace CSharpAnalytics.Protocols.Urchin
 {
     /// <summary>
     /// Provide debugging of Urchin style tracking requests by decomposing such request back into their parts.

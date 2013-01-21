@@ -3,7 +3,7 @@
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 using System;
 
-namespace CSharpAnalytics.Internal
+namespace CSharpAnalytics.Protocols
 {
     /// <summary>
     /// Defines the parameter name, human-readable label and decoder used to implement

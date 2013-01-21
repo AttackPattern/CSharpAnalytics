@@ -128,7 +128,6 @@ namespace CSharpAnalytics.WindowsStore
         private static readonly EventHandler<object> applicationResume = (sender, e) => Client.TrackEvent("ApplicationLifecycle", "Resume");
         private static readonly SuspendingEventHandler applicationSuspend = (sender, e) => Client.TrackEvent("ApplicationLifecycle", "Suspend");
         private static readonly UnhandledExceptionEventHandler applicationException = (sender, e) => Client.TrackEvent("UnhandledException", e.Exception.GetType().Name, e.Exception.Source);
-
         private static readonly TypedEventHandler<DataTransferManager, TargetApplicationChosenEventArgs> socialShare = (sender, e) => Client.TrackSocial("ShareCharm", e.ApplicationName);
 
         /// <summary>
@@ -159,7 +158,7 @@ namespace CSharpAnalytics.WindowsStore
             urchinDebugger.Examine(requestMessage.RequestUri);
         }
 
-        private static readonly Internal.Urchin.UrchinDebugger urchinDebugger = new Internal.Urchin.UrchinDebugger(s => System.Diagnostics.Debug.WriteLine(s));
+        private static readonly Protocols.Urchin.UrchinDebugger urchinDebugger = new Protocols.Urchin.UrchinDebugger(s => System.Diagnostics.Debug.WriteLine(s));
 #else
         }
 #endif

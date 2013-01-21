@@ -7,8 +7,9 @@ using System.Globalization;
 using System.Linq;
 using CSharpAnalytics.Activities;
 using System.Diagnostics;
+using CSharpAnalytics.Protocols;
 
-namespace CSharpAnalytics.Internal.Urchin
+namespace CSharpAnalytics.Protocols.Urchin
 {
     internal static class UrchinTrackerActivities
     {

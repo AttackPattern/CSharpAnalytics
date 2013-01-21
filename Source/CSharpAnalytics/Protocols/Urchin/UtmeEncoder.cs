@@ -7,7 +7,7 @@ using System.Globalization;
 using System.Linq;
 using CSharpAnalytics.Activities;
 
-namespace CSharpAnalytics.Internal.Urchin
+namespace CSharpAnalytics.Protocols.Urchin
 {
     /// <summary>
     /// Encodes parameter values into the Utme parameter format used by Google Analytics for events and custom variables.

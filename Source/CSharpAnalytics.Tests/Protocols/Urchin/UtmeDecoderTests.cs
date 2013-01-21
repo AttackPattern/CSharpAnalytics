@@ -1,11 +1,11 @@
-﻿using CSharpAnalytics.Internal.Urchin;
+﻿using CSharpAnalytics.Protocols.Urchin;
 #if WINDOWS_STORE
 using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
 #else
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 #endif
 
-namespace CSharpAnalytics.Test.Internal.Urchin
+namespace CSharpAnalytics.Test.Protocols.Urchin
 {
     [TestClass]
     public class UtmeDecoderTests

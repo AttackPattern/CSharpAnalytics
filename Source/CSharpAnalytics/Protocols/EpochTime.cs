@@ -4,7 +4,7 @@
 using System;
 using System.Globalization;
 
-namespace CSharpAnalytics.Internal
+namespace CSharpAnalytics.Protocols
 {
     /// <summary>
     /// Represents a date and time expressed as the number of seconds since 00:00 on 01-Jan-1970.

@@ -5,7 +5,7 @@ using System;
 using CSharpAnalytics.Activities;
 using CSharpAnalytics.CustomVariables;
 using CSharpAnalytics.Sessions;
-using CSharpAnalytics.Internal.Urchin;
+using CSharpAnalytics.Protocols.Urchin;
 
 namespace CSharpAnalytics
 {

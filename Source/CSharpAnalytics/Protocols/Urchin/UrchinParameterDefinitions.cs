@@ -4,7 +4,7 @@
 using System;
 using System.Linq;
 
-namespace CSharpAnalytics.Internal.Urchin
+namespace CSharpAnalytics.Protocols.Urchin
 {
     /// <summary>
     /// List of all known parameters that may be found in a Google Analytics Urchin style URI.
