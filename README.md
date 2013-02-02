@@ -45,7 +45,7 @@ Getting started
 You will need:
 
 * Google Analytics account - Head to http://analytics.google.com and sign-up if you don't have one
-* Analytics property set-up - See http://support.google.com/analytics/bin/answer.py?hl=en&answer=2614741 for details
+* Analytics property set-up as a **web site** - See http://support.google.com/analytics/bin/answer.py?hl=en&answer=2614741 for details
 
 Download or clone the source and add a reference to CSharpAnalytics.WindowsStore from your application.
 
