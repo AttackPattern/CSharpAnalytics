@@ -71,7 +71,7 @@ namespace CSharpAnalytics.Sample.WindowsStore
                 }
             }
             // Ensure the current window is active
-            await AutoAnalytics.StartAsync(new Configuration("UA-123-4", "test") { SendClientTime = true }, "CSharpAnalyticsSampleApp");
+            await AutoAnalytics.StartAsync(new Configuration("UA-123-4", "test"), "CSharpAnalyticsSampleApp");
             Window.Current.Activate();
         }
 

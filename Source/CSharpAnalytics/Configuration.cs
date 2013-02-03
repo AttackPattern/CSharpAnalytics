@@ -46,14 +46,6 @@ namespace CSharpAnalytics
         public bool UseSsl { get; set; }
 
         /// <summary>
-        /// Send the time the event really occurred on the client. Useful for offline tracking.
-        /// </summary>
-        /// <remarks>
-        /// Not officially documented and is untested.
-        /// </remarks>
-        public bool SendClientTime { get; set; }
-
-        /// <summary>
         /// How much inactivity before the existing session expires and a new one is started.
         /// </summary>
         public TimeSpan SessionTimeout { get { return sessionTimeout; } }

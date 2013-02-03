@@ -52,10 +52,6 @@ namespace CSharpAnalytics.Protocols.Urchin
         {
             var parameters = BuildParameterList(activity, customVariables);
 
-            // Undocumented parameter to set the date/time event occured - useful for offline or batch modes
-            if (configuration.SendClientTime)
-                parameters.Add(KeyValuePair.Create("utmht", new EpochTime(DateTimeOffset.Now).ToString()));
-
             CarryForwardLastPageParameter(activity, parameters);
 
             var uriBuilder = new UriBuilder(configuration.UseSsl ? secureTrackingEndpoint : trackingEndpoint) { Query = CreateQueryString(parameters) };

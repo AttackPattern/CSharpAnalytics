@@ -29,7 +29,6 @@ namespace CSharpAnalytics.Test
 
             Assert.IsFalse(configuration.CalculateHostNameHash);
             Assert.IsTrue(configuration.AnonymizeIp);
-            Assert.IsFalse(configuration.SendClientTime);
             Assert.AreEqual(20, configuration.SessionTimeout.TotalMinutes);
             Assert.IsFalse(configuration.UseSsl);
         }
