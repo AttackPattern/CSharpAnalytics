@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Navigation;
 
 namespace CSharpAnalytics.Sample.WindowsStore
 {
@@ -46,6 +47,12 @@ namespace CSharpAnalytics.Sample.WindowsStore
             AutoAnalytics.Client.TrackPageView(item.Title, "/items/" + item.UniqueId);
 
             DataTransferManager.GetForCurrentView().DataRequested += OnDataRequested;
+        }
+
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            base.OnNavigatedFrom(e);
+            DataTransferManager.GetForCurrentView().DataRequested -= OnDataRequested;
         }
 
         private void OnDataRequested(DataTransferManager sender, DataRequestedEventArgs args)

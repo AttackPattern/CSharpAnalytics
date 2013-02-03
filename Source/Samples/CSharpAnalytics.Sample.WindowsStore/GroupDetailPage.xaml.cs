@@ -1,7 +1,9 @@
 ﻿using CSharpAnalytics.Sample.WindowsStore.Data;
 using System;
 using System.Collections.Generic;
+using Windows.ApplicationModel.DataTransfer;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Navigation;
 
 namespace CSharpAnalytics.Sample.WindowsStore
 {
@@ -11,6 +13,8 @@ namespace CSharpAnalytics.Sample.WindowsStore
     /// </summary>
     public sealed partial class GroupDetailPage
     {
+        private SampleDataGroup group;
+
         public GroupDetailPage()
         {
             InitializeComponent();
@@ -28,9 +32,26 @@ namespace CSharpAnalytics.Sample.WindowsStore
         protected override void LoadState(Object navigationParameter, Dictionary<String, Object> pageState)
         {
             // TODO: Create an appropriate data model for your problem domain to replace the sample data
-            var group = SampleDataSource.GetGroup((String)navigationParameter);
+            group = SampleDataSource.GetGroup((String)navigationParameter);
             DefaultViewModel["Group"] = group;
             DefaultViewModel["Items"] = group.Items;
+            DataTransferManager.GetForCurrentView().DataRequested += OnDataRequested;
+        }
+
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            base.OnNavigatedFrom(e);
+            DataTransferManager.GetForCurrentView().DataRequested -= OnDataRequested;
+        }
+
+        private void OnDataRequested(DataTransferManager sender, DataRequestedEventArgs args)
+        {
+            var deferral = args.Request.GetDeferral();
+            var data = args.Request.Data;
+            data.SetText(group.Description);
+            data.Properties.Title = group.Title;
+            data.Properties.Description = group.Subtitle;
+            deferral.Complete();
         }
 
         /// <summary>
