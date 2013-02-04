@@ -36,7 +36,6 @@ Features
 * Configurable upload interval, over HTTPS/SSL if required
 * Support for page views, events, timed events, social events, custom variables
 * Manages visitor and session state
-* Application name+version as a user agent
 * Can auto-hook into a number of interesting events
 * Built-in debug output window support (ga_debug.js style)
 
@@ -108,7 +107,7 @@ Still to do
 -----------
 1. Address custom variable limitations
 1. Other platforms (Windows Phone 7.x & 8, Silverlight, Mono variants)
-1. Google Measurement Protocol support (currently in beta)
+1. Complete Google Measurement Protocol support
 1. E-commerce tracking (Transactions/items coded but untested)
 1. Timed events (coded but untested)
 1. Opt-out support via session state switch and null receiver

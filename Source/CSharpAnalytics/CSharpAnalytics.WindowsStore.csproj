@@ -109,6 +109,7 @@
     <Compile Include="Activities\ActivityBase.cs" />
     <Compile Include="Activities\AutoTimedEventActivity.cs" />
     <Compile Include="Activities\CampaignActivity.cs" />
+    <Compile Include="Activities\ExceptionActivity.cs" />
     <Compile Include="Activities\IActivity.cs" />
     <Compile Include="Activities\TimedEventActivity.cs">
       <SubType>Code</SubType>
@@ -119,6 +120,10 @@
     <Compile Include="Activities\SocialActivity.cs" />
     <Compile Include="Activities\TransactionItemActivity.cs" />
     <Compile Include="CustomVariables\ScopedCustomVariable.cs" />
+    <Compile Include="Protocols\Measurement\MeasurementConfiguration.cs" />
+    <Compile Include="Protocols\Measurement\MeasurementParameterDefinitions.cs" />
+    <Compile Include="Protocols\Measurement\MeasurementTracker.cs" />
+    <Compile Include="Protocols\Measurement\MeasurementTrackerActivities.cs" />
     <Compile Include="WindowsStore\AutoAnalytics.cs" />
     <Compile Include="BackgroundHttpRequester.cs" />
     <Compile Include="Configuration.cs" />
