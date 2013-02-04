@@ -61,7 +61,7 @@ To use it simply add the following two lines to your app.xaml.cs:
 
 **Start analytics** with this line in App.OnLaunched directly before  Window.Current.Activate()
 
-`await AutoAnalytics.StartAsync(new Configuration("UA-XXX-YYY", "analytics app name"), "user agent name");`
+`await AutoAnalytics.StartAsync(new UrchinConfiguration("UA-XXX-YYY", "analytics app name"), "user agent name");`
 
 **Stop analytics** with this line in App.OnSuspending directly before deferral.Complete()
 
