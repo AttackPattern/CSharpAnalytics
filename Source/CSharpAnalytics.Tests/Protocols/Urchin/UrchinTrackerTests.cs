@@ -18,7 +18,7 @@ namespace CSharpAnalytics.Test.Protocols.Urchin
         [TestMethod]
         public void UrchinTracker_GetParameters_For_Configuration_Returns_Correct_Keys()
         {
-            var configuration = new Configuration("UA-1234-5", "hostName");
+            var configuration = new UrchinConfiguration("UA-1234-5", "hostName");
 
             var keys = UrchinTracker.GetParameters(configuration).Select(k => k.Key).ToArray();
 
@@ -28,7 +28,7 @@ namespace CSharpAnalytics.Test.Protocols.Urchin
         [TestMethod]
         public void UrchinTracker_GetParameters_For_Configuration_Returns_No_Aip_Value_When_False()
         {
-            var configuration = new Configuration("UA-1234-5", "hostName") { AnonymizeIp = false };
+            var configuration = new UrchinConfiguration("UA-1234-5", "hostName") { AnonymizeIp = false };
 
             var keys = UrchinTracker.GetParameters(configuration).Select(k => k.Key).ToArray();
 

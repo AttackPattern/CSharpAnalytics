@@ -120,7 +120,6 @@
     <Compile Include="Activities\SocialActivityTests.cs" />
     <Compile Include="Activities\TransactionItemActivityTests.cs" />
     <Compile Include="AnalyticsClientTests.cs" />
-    <Compile Include="ConfigurationTests.cs" />
     <Compile Include="CustomVariables\FinalCustomVariablesTests.cs" />
     <Compile Include="CustomVariables\EvaluatedCustomVariableTests.cs" />
     <Compile Include="CustomVariables\CustomVariableTests.cs" />
@@ -129,6 +128,7 @@
     <Compile Include="EnvironmentTests.cs" />
     <Compile Include="Protocols\EpochTimeTests.cs" />
     <Compile Include="Protocols\ParameterDefinition.cs" />
+    <Compile Include="Protocols\Urchin\UrchinConfigurationTests.cs" />
     <Compile Include="Protocols\Urchin\UrchinTrackerActivityTests.cs" />
     <Compile Include="Protocols\Urchin\UrchinTrackerTests.cs" />
     <Compile Include="Protocols\Urchin\UtmeDecoderTests.cs" />

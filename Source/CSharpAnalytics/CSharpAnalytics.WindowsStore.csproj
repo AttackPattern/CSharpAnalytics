@@ -124,9 +124,9 @@
     <Compile Include="Protocols\Measurement\MeasurementParameterDefinitions.cs" />
     <Compile Include="Protocols\Measurement\MeasurementTracker.cs" />
     <Compile Include="Protocols\Measurement\MeasurementTrackerActivities.cs" />
+    <Compile Include="Protocols\Urchin\UrchinConfiguration.cs" />
     <Compile Include="WindowsStore\AutoAnalytics.cs" />
     <Compile Include="BackgroundHttpRequester.cs" />
-    <Compile Include="Configuration.cs" />
     <Compile Include="IEnvironment.cs" />
     <Compile Include="CustomVariables\CustomVariable.cs" />
     <Compile Include="CustomVariables\CustomVariableScope.cs" />

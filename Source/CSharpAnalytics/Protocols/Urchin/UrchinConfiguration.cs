@@ -4,12 +4,12 @@
 using System;
 using System.Text.RegularExpressions;
 
-namespace CSharpAnalytics
+namespace CSharpAnalytics.Protocols.Urchin
 {
     /// <summary>
-    /// Configuration settings for analytics.
+    /// Configuration settings for Urchin style analytics.
     /// </summary>
-    public class Configuration
+    public class UrchinConfiguration
     {
         private static readonly Regex accountIdMatch = new Regex(@"^UA-\d+-\d+$"); 
 
@@ -56,7 +56,7 @@ namespace CSharpAnalytics
         /// <param name="accountId">Google Analytics provided property id in the format UA-XXXX-Y.</param>
         /// <param name="hostName">Host name of the site or name of the application.</param>
         /// <param name="sessionTimeout">Optional inactivity before existing session expires. Defaults to 20 minutes.</param>
-        public Configuration(string accountId, string hostName, TimeSpan? sessionTimeout = null)
+        public UrchinConfiguration(string accountId, string hostName, TimeSpan? sessionTimeout = null)
         {
             if (!accountIdMatch.IsMatch(accountId))
                 throw new ArgumentException("accountID must be in the format UA-XXXX-Y.");

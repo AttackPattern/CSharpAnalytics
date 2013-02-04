@@ -62,7 +62,7 @@
     <Compile Include="Activities\TimedEventActivityTests.cs" />
     <Compile Include="Activities\TransactionActivityTests.cs" />
     <Compile Include="AnalyticsClientTests.cs" />
-    <Compile Include="ConfigurationTests.cs" />
+    <Compile Include="Protocols\Urchin\UrchinConfigurationTests.cs" />
     <Compile Include="CustomVariables\CustomVariableTests.cs" />
     <Compile Include="CustomVariables\EvaluatedCustomVariableTests.cs" />
     <Compile Include="CustomVariables\FinalCustomVariablesTests.cs" />

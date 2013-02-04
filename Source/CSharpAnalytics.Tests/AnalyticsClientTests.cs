@@ -1,5 +1,6 @@
 ﻿using System;
 using CSharpAnalytics.Activities;
+using CSharpAnalytics.Protocols.Urchin;
 using CSharpAnalytics.Sessions;
 #if WINDOWS_STORE
 using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
@@ -54,7 +55,7 @@ namespace CSharpAnalytics.Test
 
         private static AnalyticsClient CreateSampleClient(Action<Uri> sender)
         {
-            var configuration = new Configuration("UA-1234-5", "FindHostName");
+            var configuration = new UrchinConfiguration("UA-1234-5", "FindHostName");
             var sessionManager = new SessionManager(TimeSpan.FromDays(1), null);
             var environment = new Environment("en-gb");
             return new AnalyticsClient(configuration, sessionManager, environment, sender);

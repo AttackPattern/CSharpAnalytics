@@ -26,7 +26,7 @@ namespace CSharpAnalytics
         /// <param name="sessionManager">Session manager with Visitor and session information.</param>
         /// <param name="environment">Provider of environmental information such as screen resolution.</param>
         /// <param name="sender">Action to take prepared URIs for Google Analytics and send them on.</param>
-        public AnalyticsClient(Configuration configuration, SessionManager sessionManager, IEnvironment environment, Action<Uri> sender)
+        public AnalyticsClient(UrchinConfiguration configuration, SessionManager sessionManager, IEnvironment environment, Action<Uri> sender)
         {
             this.sessionManager = sessionManager;
             this.sender = sender;

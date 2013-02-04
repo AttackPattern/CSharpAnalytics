@@ -24,7 +24,7 @@ namespace CSharpAnalytics.Protocols.Urchin
         private static readonly Uri secureTrackingEndpoint = new Uri("https://secure.google-analytics.com/__utm.gif");
 
         private readonly SessionManager sessionManager;
-        private readonly Configuration configuration;
+        private readonly UrchinConfiguration configuration;
         private readonly IEnvironment environment;
         private string lastUtmpParameterValue;
 
@@ -34,7 +34,7 @@ namespace CSharpAnalytics.Protocols.Urchin
         /// <param name="configuration">Configuration of analytics.</param>
         /// <param name="sessionManager">Session manager.</param>
         /// <param name="environment">Environment details.</param>
-        public UrchinTracker(Configuration configuration, SessionManager sessionManager, IEnvironment environment)
+        public UrchinTracker(UrchinConfiguration configuration, SessionManager sessionManager, IEnvironment environment)
         {
             this.sessionManager = sessionManager;
             this.configuration = configuration;
@@ -174,7 +174,7 @@ namespace CSharpAnalytics.Protocols.Urchin
         /// </summary>
         /// <param name="configuration">Configuration to obtain parameters from.</param>
         /// <returns>Enumerable of key/value pairs containing parameters for this configuration.</returns>
-        internal static IEnumerable<KeyValuePair<string, string>> GetParameters(Configuration configuration)
+        internal static IEnumerable<KeyValuePair<string, string>> GetParameters(UrchinConfiguration configuration)
         {
             yield return KeyValuePair.Create("utmac", configuration.AccountId);
             yield return KeyValuePair.Create("utmhn", configuration.HostName);

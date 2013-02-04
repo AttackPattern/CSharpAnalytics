@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using CSharpAnalytics.Protocols.Urchin;
 using CSharpAnalytics.Sessions;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.DataTransfer;
@@ -50,7 +51,7 @@ namespace CSharpAnalytics.WindowsStore
         /// <param name="uploadInterval">How often to upload to the server. Lower times = more traffic but realtime. Defaults to 5 seconds.</param>
         /// <returns>A Task that will complete once CSharpAnalytics is available.</returns>
         /// <example>await AutoAnalytics.StartAsync(new Configuration("UA-123123123-1", "myapp.someco.com"));</example>
-        public static async Task StartAsync(Configuration configuration, string appName, TimeSpan? uploadInterval = null)
+        public static async Task StartAsync(UrchinConfiguration configuration, string appName, TimeSpan? uploadInterval = null)
         {
             currentAppName = appName;
 
