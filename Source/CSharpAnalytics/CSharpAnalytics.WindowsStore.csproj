@@ -133,7 +133,7 @@
     <Compile Include="CustomVariables\ScopedCustomVariableSlots.cs" />
     <Compile Include="CustomVariables\EvaluatedCustomVariable.cs" />
     <Compile Include="CustomVariables\ICustomVariable.cs" />
-    <Compile Include="Protocols\Urchin\UrchinDebugger.cs" />
+    <Compile Include="Protocols\ProtocolDebugger.cs" />
     <Compile Include="Protocols\ParameterDefinition.cs" />
     <Compile Include="Protocols\Urchin\UrchinParameterDefinitions.cs" />
     <Compile Include="Protocols\Urchin\UtmeDecoder.cs" />

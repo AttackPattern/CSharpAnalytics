@@ -5,25 +5,28 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
  
-namespace CSharpAnalytics.Protocols.Urchin
+namespace CSharpAnalytics.Protocols
 {
     /// <summary>
-    /// Provide debugging of Urchin style tracking requests by decomposing such request back into their parts.
+    /// Provide debugging of tracking requests by decomposing such request back into their parts.
     /// </summary>
     /// <remarks>
-    /// Output of this is as close to the ga_debug.js output as possible.
+    /// Output is similar to ga_debug.js.
     /// </remarks>
-    internal class UrchinDebugger
+    internal class ProtocolDebugger
     {
+        private readonly ParameterDefinition[] parameterDefinitions;
         private readonly Action<string> writer;
 
         /// <summary>
-        /// Create a new UrchinDebugger with a given action to receive debugger output.
+        /// Create a new ProtocolDebugger with a given action to receive debugger output.
         /// </summary>
         /// <param name="writer">Action that takes a string to receive debugger output.</param>
-        public UrchinDebugger(Action<string> writer)
+        /// <param name="parameterDefinitions">Array of ParameterDefinitions valid for this debugger.</param>
+        public ProtocolDebugger(Action<string> writer, ParameterDefinition[] parameterDefinitions)
         {
             this.writer = writer;
+            this.parameterDefinitions = parameterDefinitions;
         }
 
         /// <summary>
@@ -40,7 +43,7 @@ namespace CSharpAnalytics.Protocols.Urchin
             writer("Track " + (parameters.ContainsKey("utmt") ? parameters["utmt"] : "page"));
             writer(uri.Query);
 
-            foreach (var parameterDefinition in UrchinParameterDefinitions.All)
+            foreach (var parameterDefinition in parameterDefinitions)
             {
                 string rawValue;
                 if (parameters.TryGetValue(parameterDefinition.Name, out rawValue))

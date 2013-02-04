@@ -3,6 +3,7 @@
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -23,6 +24,10 @@ namespace CSharpAnalytics.WindowsStore
     /// </summary>
     public static class AutoAnalytics
     {
+#if DEBUG
+        private static readonly Protocols.ProtocolDebugger urchinDebugger = new Protocols.ProtocolDebugger(s => System.Diagnostics.Debug.WriteLine(s), Protocols.Urchin.UrchinParameterDefinitions.All);
+#endif
+
         private const string RequestQueueFileName = "CSharpAnalytics-RequestQueue";
         private const string SessionStateFileName = "CSharpAnalytics-SessionState";
 
@@ -154,14 +159,14 @@ namespace CSharpAnalytics.WindowsStore
         private static void PreprocessHttpRequest(HttpRequestMessage requestMessage)
         {
             requestMessage.Headers.UserAgent.Add(new ProductInfoHeaderValue(currentAppName, GetVersion(Package.Current.Id.Version)));
-#if DEBUG
-            urchinDebugger.Examine(requestMessage.RequestUri);
+            DebugRequest(requestMessage);
         }
 
-        private static readonly Protocols.Urchin.UrchinDebugger urchinDebugger = new Protocols.Urchin.UrchinDebugger(s => System.Diagnostics.Debug.WriteLine(s));
-#else
+        [Conditional("DEBUG")]
+        private static void DebugRequest(HttpRequestMessage requestMessage)
+        {
+            urchinDebugger.Examine(requestMessage.RequestUri);
         }
-#endif
 
         private static string GetVersion(PackageVersion version)
         {
