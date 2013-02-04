@@ -108,18 +108,18 @@ namespace CSharpAnalytics.Protocols.Urchin
             yield return KeyValuePair.Create("utmtrg", transaction.BillingRegion ?? "");
         }
 
-        internal static IEnumerable<KeyValuePair<string, string>> GetParameters(TransactionItemActivity itemActivity)
+        internal static IEnumerable<KeyValuePair<string, string>> GetParameters(TransactionItemActivity item)
         {
             yield return KeyValuePair.Create("utmt", "item");
-            yield return KeyValuePair.Create("utmipc", itemActivity.Code);
-            yield return KeyValuePair.Create("utmipn", itemActivity.Name);
-            yield return KeyValuePair.Create("utmipr", itemActivity.Price.ToString("0.00", CultureInfo.InvariantCulture));
+            yield return KeyValuePair.Create("utmipc", item.Code);
+            yield return KeyValuePair.Create("utmipn", item.Name);
+            yield return KeyValuePair.Create("utmipr", item.Price.ToString("0.00", CultureInfo.InvariantCulture));
 
-            if (itemActivity.Quantity != 0)
-                yield return KeyValuePair.Create("utmiqt", itemActivity.Quantity.ToString(CultureInfo.InvariantCulture));
+            if (item.Quantity != 0)
+                yield return KeyValuePair.Create("utmiqt", item.Quantity.ToString(CultureInfo.InvariantCulture));
 
-            if (!String.IsNullOrEmpty(itemActivity.Variation))
-                yield return KeyValuePair.Create("utmiva", itemActivity.Variation);
+            if (!String.IsNullOrEmpty(item.Variation))
+                yield return KeyValuePair.Create("utmiva", item.Variation);
         }
     }
 }

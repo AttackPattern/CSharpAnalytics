@@ -59,7 +59,7 @@ namespace CSharpAnalytics
         public Configuration(string accountId, string hostName, TimeSpan? sessionTimeout = null)
         {
             if (!accountIdMatch.IsMatch(accountId))
-                throw new ArgumentException("AccountID must be in the format UA-XXXX-Y.");
+                throw new ArgumentException("accountID must be in the format UA-XXXX-Y.");
 
             this.accountId = accountId;
             this.hostName = hostName;

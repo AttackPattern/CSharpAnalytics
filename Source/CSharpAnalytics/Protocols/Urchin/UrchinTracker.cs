@@ -1,14 +1,13 @@
 ﻿﻿// Copyright (c) Attack Pattern LLC.  All rights reserved.
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
-using System.Linq;
 using CSharpAnalytics.Activities;
+using CSharpAnalytics.CustomVariables;
+using CSharpAnalytics.Sessions;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using CSharpAnalytics.CustomVariables;
-using CSharpAnalytics.Protocols;
-using CSharpAnalytics.Sessions;
+using System.Linq;
 
 namespace CSharpAnalytics.Protocols.Urchin
 {
