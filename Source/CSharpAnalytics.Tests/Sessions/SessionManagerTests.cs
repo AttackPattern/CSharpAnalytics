@@ -94,6 +94,22 @@ namespace CSharpAnalytics.Test.Sessions
         }
 
         [TestMethod]
+        public void SessionManager_Creates_New_Session_When_Requested()
+        {
+            var timeout = TimeSpan.FromSeconds(200);
+            var sessionManager = new SessionManager(timeout, null);
+
+            Assert.AreEqual(1, sessionManager.Session.Number);
+
+            var starting = DateTimeOffset.Now;
+
+            sessionManager.StartNewSession();
+            Assert.AreEqual(2, sessionManager.Session.Number);
+            Assert.IsTrue(sessionManager.Session.StartedAt >= starting, "Session StartedAt too early");
+            Assert.IsTrue(sessionManager.Session.StartedAt <= DateTimeOffset.Now, "Session StartedAt too late");
+        }
+
+        [TestMethod]
         public void SessionManager_Creates_New_Session_In_A_Thread_Safe_Way()
         {
             var timeout = TimeSpan.FromSeconds(2);

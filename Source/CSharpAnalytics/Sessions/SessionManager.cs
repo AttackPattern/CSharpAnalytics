@@ -42,6 +42,15 @@ namespace CSharpAnalytics.Sessions
         }
 
         /// <summary>
+        /// Manually start a new session. Useful for scoping out session custom variables, e.g. if an anonymous user
+        /// becomes known.
+        /// </summary>
+        public void StartNewSession()
+        {
+            StartNewSession(DateTimeOffset.Now);   
+        }
+
+        /// <summary>
         /// Current session.
         /// </summary>
         public Session Session { get; private set; }
