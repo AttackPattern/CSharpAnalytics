@@ -58,7 +58,7 @@ namespace CSharpAnalytics.WindowsStore
             await StartRequesterAsync(uploadInterval ?? TimeSpan.FromSeconds(5));
             await RestoreSessionAsync(configuration.SessionTimeout);
 
-            Client = new AnalyticsClient(configuration, sessionManager, new WindowsStoreEnvironment(), requester.Add);
+            Client = new UrchinAnalyticsClient(configuration, sessionManager, new WindowsStoreEnvironment(), requester.Add);
             Client.TrackEvent("ApplicationLifecycle", "Start");
             Client.TrackPageView("Home", "/");
 

@@ -58,7 +58,7 @@ namespace CSharpAnalytics.Test
             var configuration = new UrchinConfiguration("UA-1234-5", "FindHostName");
             var sessionManager = new SessionManager(TimeSpan.FromDays(1), null);
             var environment = new Environment("en-gb");
-            return new AnalyticsClient(configuration, sessionManager, environment, sender);
+            return new UrchinAnalyticsClient(configuration, sessionManager, environment, sender);
         }
     }
 }
