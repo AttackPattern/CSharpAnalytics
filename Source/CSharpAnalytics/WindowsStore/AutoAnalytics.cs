@@ -25,9 +25,7 @@ namespace CSharpAnalytics.WindowsStore
     /// </summary>
     public static class AutoAnalytics
     {
-#if DEBUG
-        private static readonly Protocols.ProtocolDebugger urchinDebugger = new Protocols.ProtocolDebugger(s => System.Diagnostics.Debug.WriteLine(s), Protocols.Urchin.UrchinParameterDefinitions.All);
-#endif
+        private static readonly Protocols.ProtocolDebugger urchinDebugger = new Protocols.ProtocolDebugger(s => Debug.WriteLine(s), UrchinParameterDefinitions.All);
 
         private const string RequestQueueFileName = "CSharpAnalytics-RequestQueue";
         private const string SessionStateFileName = "CSharpAnalytics-SessionState";
