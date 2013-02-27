@@ -79,7 +79,7 @@ namespace CSharpAnalytics
         /// <param name="network">Name of the social network being acted upon.</param>
         /// <param name="pagePath">Optional path of the page the action occured on.</param>
         /// <param name="target">Optional target resource being acted upon.</param>
-        public static void TrackSocial(this AnalyticsClient analyticsClient, string action, string network, string target = null, string pagePath = null)
+        public static void TrackSocial(this IAnalyticsClient analyticsClient, string action, string network, string target = null, string pagePath = null)
         {
             if (analyticsClient == null) throw new ArgumentNullException("analyticsClient");
             analyticsClient.Track(new SocialActivity(action, network, pagePath, target));

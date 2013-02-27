@@ -37,7 +37,7 @@ namespace CSharpAnalytics.WindowsStore
         private static Frame attachedFrame;
         private static DataTransferManager attachedDataTransferManager;
 
-        public static AnalyticsClient Client { get; private set; }
+        public static IAnalyticsClient Client { get; private set; }
 
         /// <summary>
         /// Start CSharpAnalytics by restoring the session state, starting the background sender,

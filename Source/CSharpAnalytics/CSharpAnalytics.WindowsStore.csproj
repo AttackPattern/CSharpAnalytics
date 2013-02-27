@@ -120,6 +120,7 @@
     <Compile Include="Activities\SocialActivity.cs" />
     <Compile Include="Activities\TransactionItemActivity.cs" />
     <Compile Include="CustomVariables\ScopedCustomVariable.cs" />
+    <Compile Include="IAnalyticsClient.cs" />
     <Compile Include="Protocols\Measurement\MeasurementConfiguration.cs" />
     <Compile Include="Protocols\Measurement\MeasurementParameterDefinitions.cs" />
     <Compile Include="Protocols\Measurement\MeasurementTracker.cs" />
@@ -139,7 +140,6 @@
     <Compile Include="Protocols\Urchin\UrchinParameterDefinitions.cs" />
     <Compile Include="Protocols\Urchin\UtmeDecoder.cs" />
     <Compile Include="Environment.cs" />
-    <Compile Include="AnalyticsClient.cs" />
     <Compile Include="Protocols\EpochTime.cs" />
     <Compile Include="Protocols\Urchin\UrchinTracker.cs" />
     <Compile Include="Protocols\Urchin\UrchinTrackerActivities.cs" />

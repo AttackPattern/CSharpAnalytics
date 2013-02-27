@@ -55,7 +55,7 @@ namespace CSharpAnalytics
         /// <param name="analyticsClient">Analytics object with queue and configuration set-up.</param>
         /// <param name="description">Description of the exception.</param>
         /// <param name="isFatal">Whether the exception was fatal (caused the app to crash).</param>
-        public static void TrackException(this AnalyticsClient analyticsClient, string description, bool isFatal = false)
+        public static void TrackException(this IAnalyticsClient analyticsClient, string description, bool isFatal = false)
         {
             if (analyticsClient == null) throw new ArgumentNullException("analyticsClient");
             analyticsClient.Track(new ExceptionActivity(description, isFatal));

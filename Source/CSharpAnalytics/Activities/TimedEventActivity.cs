@@ -83,7 +83,7 @@ namespace CSharpAnalytics
         /// <param name="variable">Variable name of the event to send.</param>
         /// <param name="time">Time of the event to send.</param>
         /// <param name="label">Optional label name of the event to send.</param>
-        public static void TrackTimedEvent(this AnalyticsClient analyticsClient, string category, string variable, TimeSpan time, string label = null)
+        public static void TrackTimedEvent(this IAnalyticsClient analyticsClient, string category, string variable, TimeSpan time, string label = null)
         {
             if (analyticsClient == null) throw new ArgumentNullException("analyticsClient");
             analyticsClient.Track(new TimedEventActivity(category, variable, time, label));

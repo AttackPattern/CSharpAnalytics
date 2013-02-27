@@ -11,9 +11,12 @@ namespace CSharpAnalytics.Protocols.Urchin
     /// <summary>
     /// Analytics client that should exist for the scope of your application and is the primary entry point for tracking.
     /// </summary>
-    public class UrchinAnalyticsClient : AnalyticsClient
+    public class UrchinAnalyticsClient : IAnalyticsClient
     {
+        private readonly SessionManager sessionManager;
+        private readonly Action<Uri> sender;
         private readonly string hostName;
+        private readonly UrchinTracker tracker;
 
         /// <summary>
         /// Create a new AnalyticsClient with a given configuration, session, environment and URI sender.
@@ -23,10 +26,11 @@ namespace CSharpAnalytics.Protocols.Urchin
         /// <param name="environment">Provider of environmental information such as screen resolution.</param>
         /// <param name="sender">Action to take prepared URIs for Google Analytics and send them on.</param>
         public UrchinAnalyticsClient(UrchinConfiguration configuration, SessionManager sessionManager, IEnvironment environment, Action<Uri> sender)
-            : base(sessionManager, sender)
         {
-            var tracker = new UrchinTracker(configuration, sessionManager, environment);
-            Tracker = a => tracker.CreateUri(a, new[] { VisitorCustomVariables, SessionCustomVariables });
+            this.sessionManager = sessionManager;
+            this.sender = sender;
+
+            tracker = new UrchinTracker(configuration, sessionManager, environment);
             hostName = configuration.HostName;
         }
 
@@ -40,11 +44,17 @@ namespace CSharpAnalytics.Protocols.Urchin
         /// </summary>
         public ScopedCustomVariableSlots SessionCustomVariables = new ScopedCustomVariableSlots(CustomVariableScope.Session);
 
-        public override void Track(IActivity activity)
+        public void Track(IActivity activity)
         {
-            base.Track(activity);
+            if (activity is AutoTimedEventActivity)
+                ((AutoTimedEventActivity)activity).End();
+
+            sessionManager.Hit();
+            var trackingUri = tracker.CreateUri(activity, new[] { VisitorCustomVariables, SessionCustomVariables });
+            sender(trackingUri);
+            
             if (activity is PageViewActivity)
-                SessionManager.Referrer = new Uri("http://" + hostName + ((PageViewActivity)activity).Page);
+                sessionManager.Referrer = new Uri("http://" + hostName + ((PageViewActivity)activity).Page);
         }
     }
 }

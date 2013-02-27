@@ -55,7 +55,7 @@ namespace CSharpAnalytics
         /// <param name="analyticsClient">AnalyticsClient currently configured.</param>
         /// <param name="title">Title of the page.</param>
         /// <param name="page">Relative path of the page.</param>
-        public static void TrackPageView(this AnalyticsClient analyticsClient, string title, string page)
+        public static void TrackPageView(this IAnalyticsClient analyticsClient, string title, string page)
         {
             if (analyticsClient == null) throw new ArgumentNullException("analyticsClient");
             analyticsClient.Track(new PageViewActivity(title, page));
