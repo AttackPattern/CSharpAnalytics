@@ -4,6 +4,7 @@
 using System;
 using System.Diagnostics;
 using CSharpAnalytics.Activities;
+using CSharpAnalytics.Protocols.Measurement;
 
 namespace CSharpAnalytics.Activities
 {
@@ -11,7 +12,7 @@ namespace CSharpAnalytics.Activities
     /// Captures the details of an application exception to be recorded in analytics.
     /// </summary>
     [DebuggerDisplay("Exception {Description}")]
-    public class ExceptionActivity : ActivityBase
+    public class ExceptionActivity : IMeasurementActivity
     {
         private readonly string description;
         private readonly bool isFatal;
@@ -55,7 +56,7 @@ namespace CSharpAnalytics
         /// <param name="analyticsClient">Analytics object with queue and configuration set-up.</param>
         /// <param name="description">Description of the exception.</param>
         /// <param name="isFatal">Whether the exception was fatal (caused the app to crash).</param>
-        public static void TrackException(this IAnalyticsClient analyticsClient, string description, bool isFatal = false)
+        public static void TrackException(this MeasurementAnalyticsClient analyticsClient, string description, bool isFatal = false)
         {
             if (analyticsClient == null) throw new ArgumentNullException("analyticsClient");
             analyticsClient.Track(new ExceptionActivity(description, isFatal));

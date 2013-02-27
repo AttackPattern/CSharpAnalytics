@@ -3,13 +3,15 @@
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 using System;
 using CSharpAnalytics.Activities;
+using CSharpAnalytics.Protocols.Measurement;
+using CSharpAnalytics.Protocols.Urchin;
 
 namespace CSharpAnalytics.Activities
 {
     /// <summary>
     /// Captures the details of a campaign to be recorded in analytics.
     /// </summary>
-    public class CampaignActivity : ActivityBase
+    public class CampaignActivity : IUrchinActivity, IMeasurementActivity
     {
         private readonly string source;
 
@@ -79,7 +81,7 @@ namespace CSharpAnalytics
 {
     public static class CampaignExtensions
     {
-        public static void TrackCampaign(this IAnalyticsClient analyticsClient, string source, string name = null, string medium = null, string term = null, string content = null)
+        public static void TrackCampaign(this UrchinAnalyticsClient analyticsClient, string source, string name = null, string medium = null, string term = null, string content = null)
         {
             if (analyticsClient == null) throw new ArgumentNullException("analyticsClient");
             analyticsClient.Track(new CampaignActivity(source) { Name = name, Medium = medium, Term = term, Content = content });

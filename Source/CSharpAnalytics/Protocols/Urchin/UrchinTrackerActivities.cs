@@ -13,7 +13,7 @@ namespace CSharpAnalytics.Protocols.Urchin
 {
     internal static class UrchinTrackerActivities
     {
-        internal static IEnumerable<KeyValuePair<string, string>> GetActivityParameters(IActivity activity)
+        internal static IEnumerable<KeyValuePair<string, string>> GetActivityParameters(IUrchinActivity activity)
         {
             if (activity is CampaignActivity)
                 return GetParameters((CampaignActivity)activity);

@@ -4,6 +4,7 @@
 using System;
 using CSharpAnalytics.Activities;
 using System.Diagnostics;
+using CSharpAnalytics.Protocols.Urchin;
 
 namespace CSharpAnalytics.Activities
 {
@@ -11,7 +12,7 @@ namespace CSharpAnalytics.Activities
     /// Captures the details of a page view to be recorded in analytics.
     /// </summary>
     [DebuggerDisplay("PageView {Title} [{Page}]")]
-    public class PageViewActivity : ActivityBase
+    public class PageViewActivity : IUrchinActivity
     {
         private readonly string page;
         private readonly string title;
@@ -55,7 +56,7 @@ namespace CSharpAnalytics
         /// <param name="analyticsClient">AnalyticsClient currently configured.</param>
         /// <param name="title">Title of the page.</param>
         /// <param name="page">Relative path of the page.</param>
-        public static void TrackPageView(this IAnalyticsClient analyticsClient, string title, string page)
+        public static void TrackPageView(this UrchinAnalyticsClient analyticsClient, string title, string page)
         {
             if (analyticsClient == null) throw new ArgumentNullException("analyticsClient");
             analyticsClient.Track(new PageViewActivity(title, page));

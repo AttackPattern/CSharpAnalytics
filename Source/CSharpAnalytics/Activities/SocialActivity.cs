@@ -4,6 +4,8 @@
 using System;
 using CSharpAnalytics.Activities;
 using System.Diagnostics;
+using CSharpAnalytics.Protocols.Measurement;
+using CSharpAnalytics.Protocols.Urchin;
 
 namespace CSharpAnalytics.Activities
 {
@@ -11,7 +13,7 @@ namespace CSharpAnalytics.Activities
     /// Captures the details of an social action that has been performed.
     /// </summary>
     [DebuggerDisplay("Social {Action} on {Network}")]
-    public class SocialActivity : ActivityBase
+    public class SocialActivity : IUrchinActivity, IMeasurementActivity
     {
         private readonly string action;
         private readonly string network;
@@ -79,7 +81,7 @@ namespace CSharpAnalytics
         /// <param name="network">Name of the social network being acted upon.</param>
         /// <param name="pagePath">Optional path of the page the action occured on.</param>
         /// <param name="target">Optional target resource being acted upon.</param>
-        public static void TrackSocial(this IAnalyticsClient analyticsClient, string action, string network, string target = null, string pagePath = null)
+        public static void TrackSocial(this UrchinAnalyticsClient analyticsClient, string action, string network, string target = null, string pagePath = null)
         {
             if (analyticsClient == null) throw new ArgumentNullException("analyticsClient");
             analyticsClient.Track(new SocialActivity(action, network, pagePath, target));

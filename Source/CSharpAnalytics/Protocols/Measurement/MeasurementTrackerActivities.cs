@@ -14,7 +14,7 @@ namespace CSharpAnalytics.Protocols.Measurement
     {
         private string lastTransactionId;
 
-        internal IEnumerable<KeyValuePair<string, string>> GetActivityParameters(IActivity activity)
+        internal IEnumerable<KeyValuePair<string, string>> GetActivityParameters(IMeasurementActivity activity)
         {
             if (activity is CampaignActivity)
                 return GetParameters((CampaignActivity)activity);

@@ -106,11 +106,9 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Activities\ActivityBase.cs" />
     <Compile Include="Activities\AutoTimedEventActivity.cs" />
     <Compile Include="Activities\CampaignActivity.cs" />
     <Compile Include="Activities\ExceptionActivity.cs" />
-    <Compile Include="Activities\IActivity.cs" />
     <Compile Include="Activities\TimedEventActivity.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -120,11 +118,13 @@
     <Compile Include="Activities\SocialActivity.cs" />
     <Compile Include="Activities\TransactionItemActivity.cs" />
     <Compile Include="CustomVariables\ScopedCustomVariable.cs" />
-    <Compile Include="IAnalyticsClient.cs" />
+    <Compile Include="Protocols\Measurement\IMeasurementActivity.cs" />
+    <Compile Include="Protocols\Measurement\MeasurementAnalyticsClient.cs" />
     <Compile Include="Protocols\Measurement\MeasurementConfiguration.cs" />
     <Compile Include="Protocols\Measurement\MeasurementParameterDefinitions.cs" />
     <Compile Include="Protocols\Measurement\MeasurementTracker.cs" />
     <Compile Include="Protocols\Measurement\MeasurementTrackerActivities.cs" />
+    <Compile Include="Protocols\Urchin\IUrchinActivity.cs" />
     <Compile Include="Protocols\Urchin\UrchinAnalyticsClient.cs" />
     <Compile Include="Protocols\Urchin\UrchinConfiguration.cs" />
     <Compile Include="WindowsStore\AutoAnalytics.cs" />

@@ -4,6 +4,8 @@
 using System;
 using System.Diagnostics;
 using CSharpAnalytics.Activities;
+using CSharpAnalytics.Protocols.Measurement;
+using CSharpAnalytics.Protocols.Urchin;
 
 namespace CSharpAnalytics.Activities
 {
@@ -12,7 +14,7 @@ namespace CSharpAnalytics.Activities
     /// See https://developers.google.com/analytics/devguides/collection/gajs/eventTrackerGuide Event Tracking Guide
     /// </summary>
     [DebuggerDisplay("Event {Category}, {Action}, {Label}")]
-    public class EventActivity : ActivityBase
+    public class EventActivity : IUrchinActivity, IMeasurementActivity
     {
         private readonly string action;
         private readonly string category;
@@ -96,7 +98,7 @@ namespace CSharpAnalytics
         /// <param name="label">Optional label name of the event to send.</param>
         /// <param name="value">Optional numeric value of the event to send.</param>
         /// <param name="nonInteraction">Optional boolean value to be assigned to the NonInteraction property.</param>
-        public static void TrackEvent(this IAnalyticsClient analyticsClient, string action, string category, string label = null, int? value = null, bool nonInteraction = false)
+        public static void TrackEvent(this UrchinAnalyticsClient analyticsClient, string action, string category, string label = null, int? value = null, bool nonInteraction = false)
         {
             if (analyticsClient == null) throw new ArgumentNullException("analyticsClient");
             analyticsClient.Track(new EventActivity(action, category, label, value, nonInteraction));

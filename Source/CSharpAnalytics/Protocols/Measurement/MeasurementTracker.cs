@@ -41,7 +41,7 @@ namespace CSharpAnalytics.Protocols.Measurement
         /// </summary>
         /// <param name="activity">Activity to create a URI for.</param>
         /// <returns>URI that when requested will track this activity.</returns>
-        public Uri CreateUri(IActivity activity)
+        public Uri CreateUri(IMeasurementActivity activity)
         {
             var parameters = BuildParameterList(activity);
             var uriBuilder = new UriBuilder(configuration.UseSsl ? secureTrackingEndpoint : trackingEndpoint) { Query = CreateQueryString(parameters) };
@@ -53,7 +53,7 @@ namespace CSharpAnalytics.Protocols.Measurement
         /// </summary>
         /// <param name="activity">Activity to include in the parameter list.</param>
         /// <returns>Enumeration of key/value pairs containing the parameters necessary for this request.</returns>
-        private IEnumerable<KeyValuePair<string, string>> BuildParameterList(IActivity activity)
+        private IEnumerable<KeyValuePair<string, string>> BuildParameterList(IMeasurementActivity activity)
         {
             return GetParameters()
                 .Concat(GetParameters(environment))

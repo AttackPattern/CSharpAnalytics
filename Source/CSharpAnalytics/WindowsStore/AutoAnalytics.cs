@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using CSharpAnalytics.Protocols;
 using CSharpAnalytics.Protocols.Urchin;
 using CSharpAnalytics.Sessions;
 using Windows.ApplicationModel;
@@ -25,7 +26,7 @@ namespace CSharpAnalytics.WindowsStore
     /// </summary>
     public static class AutoAnalytics
     {
-        private static readonly Protocols.ProtocolDebugger urchinDebugger = new Protocols.ProtocolDebugger(s => Debug.WriteLine(s), UrchinParameterDefinitions.All);
+        private static readonly ProtocolDebugger urchinDebugger = new ProtocolDebugger(s => Debug.WriteLine(s), UrchinParameterDefinitions.All);
 
         private const string RequestQueueFileName = "CSharpAnalytics-RequestQueue";
         private const string SessionStateFileName = "CSharpAnalytics-SessionState";
@@ -37,7 +38,7 @@ namespace CSharpAnalytics.WindowsStore
         private static Frame attachedFrame;
         private static DataTransferManager attachedDataTransferManager;
 
-        public static IAnalyticsClient Client { get; private set; }
+        public static UrchinAnalyticsClient Client { get; private set; }
 
         /// <summary>
         /// Start CSharpAnalytics by restoring the session state, starting the background sender,

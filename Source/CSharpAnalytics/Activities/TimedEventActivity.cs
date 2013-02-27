@@ -4,6 +4,8 @@
 using System;
 using System.Diagnostics;
 using CSharpAnalytics.Activities;
+using CSharpAnalytics.Protocols.Measurement;
+using CSharpAnalytics.Protocols.Urchin;
 
 namespace CSharpAnalytics.Activities
 {
@@ -12,7 +14,7 @@ namespace CSharpAnalytics.Activities
     /// See https://developers.google.com/analytics/devguides/collection/gajs/methods/gaJSApiUserTiming User Timing
     /// </summary>
     [DebuggerDisplay("TimedEvent {Category}, {Variable}, {Time}, {Label}")]
-    public class TimedEventActivity : ActivityBase
+    public class TimedEventActivity : IUrchinActivity, IMeasurementActivity
     {
         private readonly string category;
         private readonly string label;
@@ -83,7 +85,7 @@ namespace CSharpAnalytics
         /// <param name="variable">Variable name of the event to send.</param>
         /// <param name="time">Time of the event to send.</param>
         /// <param name="label">Optional label name of the event to send.</param>
-        public static void TrackTimedEvent(this IAnalyticsClient analyticsClient, string category, string variable, TimeSpan time, string label = null)
+        public static void TrackTimedEvent(this UrchinAnalyticsClient analyticsClient, string category, string variable, TimeSpan time, string label = null)
         {
             if (analyticsClient == null) throw new ArgumentNullException("analyticsClient");
             analyticsClient.Track(new TimedEventActivity(category, variable, time, label));

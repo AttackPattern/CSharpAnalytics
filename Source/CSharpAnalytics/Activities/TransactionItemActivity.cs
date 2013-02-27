@@ -2,13 +2,15 @@
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 using System;
+using CSharpAnalytics.Protocols.Measurement;
+using CSharpAnalytics.Protocols.Urchin;
 
 namespace CSharpAnalytics.Activities
 {
     /// <summary>
     /// Captures the details of an item on an order.
     /// </summary>
-    public class TransactionItemActivity : ActivityBase
+    public class TransactionItemActivity : IUrchinActivity, IMeasurementActivity
     {
         private readonly string code;
         private readonly string name;

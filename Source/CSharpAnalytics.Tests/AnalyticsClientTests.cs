@@ -53,7 +53,7 @@ namespace CSharpAnalytics.Test
             Assert.IsTrue(timedEvent.EndedAt <= DateTimeOffset.Now);
         }
 
-        private static IAnalyticsClient CreateSampleClient(Action<Uri> sender)
+        private static UrchinAnalyticsClient CreateSampleClient(Action<Uri> sender)
         {
             var configuration = new UrchinConfiguration("UA-1234-5", "FindHostName");
             var sessionManager = new SessionManager(TimeSpan.FromDays(1), null);
