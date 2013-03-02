@@ -3,7 +3,6 @@
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 using CSharpAnalytics.Protocols;
 using CSharpAnalytics.Protocols.Measurement;
-using CSharpAnalytics.Protocols.Urchin;
 using CSharpAnalytics.Sessions;
 using System;
 using System.Collections.Generic;
@@ -24,12 +23,12 @@ namespace CSharpAnalytics.WindowsStore
     /// Either use as-is by calling StartAsync and StopAsync from your App.xaml.cs or use as a
     /// starting point to wire up your own way.
     /// </summary>
-    public static class AutoAnalytics
+    public static class AutoMeasurement
     {
         private const string RequestQueueFileName = "CSharpAnalytics-RequestQueue";
         private const string SessionStateFileName = "CSharpAnalytics-SessionState";
 
-        private static readonly ProtocolDebugger protocolDebugger = new ProtocolDebugger(s => Debug.WriteLine(s), UrchinParameterDefinitions.All);
+        private static readonly ProtocolDebugger protocolDebugger = new ProtocolDebugger(s => Debug.WriteLine(s), MeasurementParameterDefinitions.All);
 
         private static BackgroundHttpRequester requester;
         private static SessionManager sessionManager;
@@ -37,7 +36,7 @@ namespace CSharpAnalytics.WindowsStore
         private static Frame attachedFrame;
         private static DataTransferManager attachedDataTransferManager;
 
-        public static UrchinAnalyticsClient Client { get; private set; }
+        public static MeasurementAnalyticsClient Client { get; private set; }
 
         /// <summary>
         /// Start CSharpAnalytics by restoring the session state, starting the background sender,
@@ -48,14 +47,17 @@ namespace CSharpAnalytics.WindowsStore
         /// <param name="uploadInterval">How often to upload to the server. Lower times = more traffic but realtime. Defaults to 5 seconds.</param>
         /// <returns>A Task that will complete once CSharpAnalytics is available.</returns>
         /// <example>await AutoAnalytics.StartAsync(new Configuration("UA-123123123-1", "myapp.someco.com"));</example>
-        public static async Task StartAsync(UrchinConfiguration configuration, TimeSpan? uploadInterval = null)
+        public static async Task StartAsync(MeasurementConfiguration configuration, TimeSpan? uploadInterval = null)
         {
+            Debug.Assert(Client == null);
+            if (Client != null) return;
+
             await StartRequesterAsync(uploadInterval ?? TimeSpan.FromSeconds(5));
             await RestoreSessionAsync(TimeSpan.FromMinutes(20));
 
-            Client = new UrchinAnalyticsClient(configuration, sessionManager, new WindowsStoreEnvironment(), requester.Add);
+            Client = new MeasurementAnalyticsClient(configuration, sessionManager, new WindowsStoreEnvironment(), requester.Add);
             Client.TrackEvent("ApplicationLifecycle", "Start");
-            Client.TrackPageView("Home", "/");
+            Client.TrackAppView("Home");
 
             HookEvents();
         }
@@ -69,11 +71,16 @@ namespace CSharpAnalytics.WindowsStore
         /// <remarks>await AutoAnalytics.StopAsync();</remarks>
         public static async Task StopAsync()
         {
+            Debug.Assert(Client != null);
+            if (Client == null) return;
+
             Client.TrackEvent("ApplicationLifecycle", "Stop");
             UnhookEvents();
 
             await SuspendRequesterAsync();
             await SaveSessionAsync();
+
+            Client = null;
         }
 
         /// <summary>
@@ -123,7 +130,7 @@ namespace CSharpAnalytics.WindowsStore
         private static void FrameNavigated(object sender, NavigationEventArgs e)
         {
             if (e.Content is ITrackPageView) return;
-            Client.TrackPageView(e.SourcePageType.Name, "/" + e.SourcePageType.Name);
+            Client.TrackAppView(e.SourcePageType.Name);
         }
 
         private static readonly EventHandler<object> applicationResume = (sender, e) => Client.TrackEvent("ApplicationLifecycle", "Resume");
@@ -158,6 +165,7 @@ namespace CSharpAnalytics.WindowsStore
             DebugRequest(requestMessage);
         }
 
+        [Conditional("DEBUG")]
         private static void DebugRequest(HttpRequestMessage requestMessage)
         {
             protocolDebugger.Examine(requestMessage.RequestUri);
@@ -192,18 +200,5 @@ namespace CSharpAnalytics.WindowsStore
         {
             await LocalFolderContractSerializer<SessionState>.SaveAsync(sessionManager.GetState(), SessionStateFileName);            
         }
-    }
-
-    /// <summary>
-    /// Implement this interface on any Pages in your application where you want
-    /// to override the page titles or paths generated for that page by emitting them yourself at
-    /// the end of the page's LoadState method.
-    /// </summary>
-    /// <remarks>
-    /// This is especially useful for a page that obtains its content from a data source to
-    /// track it as seperate virtual pages.
-    /// </remarks>
-    public interface ITrackPageView
-    {
     }
 }

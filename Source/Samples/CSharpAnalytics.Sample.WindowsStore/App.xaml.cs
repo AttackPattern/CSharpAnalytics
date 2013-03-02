@@ -1,5 +1,4 @@
-﻿using CSharpAnalytics.Protocols.Measurement;
-using CSharpAnalytics.Protocols.Urchin;
+﻿using CSharpAnalytics.Protocols.Urchin;
 using CSharpAnalytics.Sample.WindowsStore.Common;
 using System;
 using CSharpAnalytics.WindowsStore;
@@ -73,7 +72,9 @@ namespace CSharpAnalytics.Sample.WindowsStore
                 }
             }
             // Ensure the current window is active
-            await AutoAnalytics.StartAsync(new MeasurementConfiguration("UA-319000-8", "CSharpAnalyticsSample", "1.0"));
+            await AutoAnalytics.StartAsync(new UrchinConfiguration("UA-319000-8", "sample.csharpanalytics.com"));
+
+            
             Window.Current.Activate();
         }
 
