@@ -16,6 +16,8 @@ namespace CSharpAnalytics.Protocols.Measurement
 
         internal IEnumerable<KeyValuePair<string, string>> GetActivityParameters(IMeasurementActivity activity)
         {
+            if (activity is ContentViewActivity)
+                return GetParameters((ContentViewActivity)activity);
             if (activity is CampaignActivity)
                 return GetParameters((CampaignActivity)activity);
             if (activity is ExceptionActivity)
@@ -33,7 +35,27 @@ namespace CSharpAnalytics.Protocols.Measurement
             return Enumerable.Empty<KeyValuePair<string, string>>();
         }
 
-        private static IEnumerable<KeyValuePair<string, string>> GetParameters(ExceptionActivity exception)
+        internal static IEnumerable<KeyValuePair<string, string>> GetParameters(ContentViewActivity content)
+        {
+            yield return KeyValuePair.Create("t", "appview");
+
+            if (content.DocumentLocation != null)
+                yield return KeyValuePair.Create("dl", content.DocumentLocation.OriginalString);
+
+            if (!String.IsNullOrEmpty(content.DocumentHostName))
+                yield return KeyValuePair.Create("dh", content.DocumentHostName);
+
+            if (!String.IsNullOrEmpty(content.DocumentPath))
+                yield return KeyValuePair.Create("dp", content.DocumentPath);
+
+            if (!String.IsNullOrEmpty(content.DocumentTitle))
+                yield return KeyValuePair.Create("dt", content.DocumentTitle);
+
+            if (!String.IsNullOrEmpty(content.ContentDescription))
+                yield return KeyValuePair.Create("cd", content.ContentDescription);
+        }
+
+        internal static IEnumerable<KeyValuePair<string, string>> GetParameters(ExceptionActivity exception)
         {
             yield return KeyValuePair.Create("exd", exception.Description);
             if (!exception.IsFatal)

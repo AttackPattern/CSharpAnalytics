@@ -8,9 +8,9 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using CSharpAnalytics.Protocols;
+using CSharpAnalytics.Protocols.Measurement;
 using CSharpAnalytics.Protocols.Urchin;
 using CSharpAnalytics.Sessions;
-using Windows.ApplicationModel;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
 using Windows.UI.Xaml;
@@ -31,14 +31,13 @@ namespace CSharpAnalytics.WindowsStore
         private const string RequestQueueFileName = "CSharpAnalytics-RequestQueue";
         private const string SessionStateFileName = "CSharpAnalytics-SessionState";
 
-        private static string currentAppName;
         private static BackgroundHttpRequester requester;
         private static SessionManager sessionManager;
 
         private static Frame attachedFrame;
         private static DataTransferManager attachedDataTransferManager;
 
-        public static UrchinAnalyticsClient Client { get; private set; }
+        public static MeasurementAnalyticsClient Client { get; private set; }
 
         /// <summary>
         /// Start CSharpAnalytics by restoring the session state, starting the background sender,
@@ -46,20 +45,17 @@ namespace CSharpAnalytics.WindowsStore
         /// Call this just before Window.Current.Activate() in your App.OnLaunched method.
         /// </summary>
         /// <param name="configuration">Configuration to use, must at a minimum specify your Google Analytics ID and app name.</param>
-        /// <param name="appName">Application name to use for the user agent tracking.</param>
         /// <param name="uploadInterval">How often to upload to the server. Lower times = more traffic but realtime. Defaults to 5 seconds.</param>
         /// <returns>A Task that will complete once CSharpAnalytics is available.</returns>
         /// <example>await AutoAnalytics.StartAsync(new Configuration("UA-123123123-1", "myapp.someco.com"));</example>
-        public static async Task StartAsync(UrchinConfiguration configuration, string appName, TimeSpan? uploadInterval = null)
+        public static async Task StartAsync(MeasurementConfiguration configuration, TimeSpan? uploadInterval = null)
         {
-            currentAppName = appName;
-
             await StartRequesterAsync(uploadInterval ?? TimeSpan.FromSeconds(5));
-            await RestoreSessionAsync(configuration.SessionTimeout);
+            await RestoreSessionAsync(TimeSpan.FromMinutes(20));
 
-            Client = new UrchinAnalyticsClient(configuration, sessionManager, new WindowsStoreEnvironment(), requester.Add);
+            Client = new MeasurementAnalyticsClient(configuration, sessionManager, new WindowsStoreEnvironment(), requester.Add);
             Client.TrackEvent("ApplicationLifecycle", "Start");
-            Client.TrackPageView("Home", "/");
+            Client.TrackAppView("Home");
 
             HookEvents(Application.Current);
         }
@@ -127,7 +123,7 @@ namespace CSharpAnalytics.WindowsStore
         private static void FrameNavigated(object sender, NavigationEventArgs e)
         {
             if (e.Content is ITrackPageView) return;
-            Client.TrackPageView(e.SourcePageType.Name, "/" + e.SourcePageType.Name);
+            Client.TrackAppView(e.SourcePageType.Name);
         }
 
         private static readonly EventHandler<object> applicationResume = (sender, e) => Client.TrackEvent("ApplicationLifecycle", "Resume");
@@ -158,7 +154,7 @@ namespace CSharpAnalytics.WindowsStore
         /// </remarks>
         private static void PreprocessHttpRequest(HttpRequestMessage requestMessage)
         {
-            requestMessage.Headers.UserAgent.Add(new ProductInfoHeaderValue(currentAppName, GetVersion(Package.Current.Id.Version)));
+            requestMessage.Headers.UserAgent.Add(new ProductInfoHeaderValue("Windows", "8.0"));
             DebugRequest(requestMessage);
         }
 
@@ -166,11 +162,6 @@ namespace CSharpAnalytics.WindowsStore
         private static void DebugRequest(HttpRequestMessage requestMessage)
         {
             urchinDebugger.Examine(requestMessage.RequestUri);
-        }
-
-        private static string GetVersion(PackageVersion version)
-        {
-            return String.Join(".", version.Major, version.Minor, version.Revision, version.Build);
         }
 
         /// <summary>

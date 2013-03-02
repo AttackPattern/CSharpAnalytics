@@ -2,10 +2,10 @@
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 using System.Linq;
-using CSharpAnalytics.Activities;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using CSharpAnalytics.Sessions;
 
 namespace CSharpAnalytics.Protocols.Measurement
 {
@@ -22,17 +22,20 @@ namespace CSharpAnalytics.Protocols.Measurement
         private static readonly Uri secureTrackingEndpoint = new Uri("https://ssl.google-analytics.com/collect");
 
         private readonly MeasurementTrackerActivities trackerActivities = new MeasurementTrackerActivities();
+        private readonly SessionManager sessionManager;
         private readonly MeasurementConfiguration configuration;
-        private readonly IEnvironment environment;     
+        private readonly IEnvironment environment;
 
         /// <summary>
         /// Create new MeasurementTracker to prepare URIs for Google's Measurement Protocol endpoint.
         /// </summary>
         /// <param name="configuration">Configuration of analytics.</param>
+        /// <param name="sessionManager">Session manager.</param>
         /// <param name="environment">Environment details.</param>
-        public MeasurementTracker(MeasurementConfiguration configuration, IEnvironment environment)
+        public MeasurementTracker(MeasurementConfiguration configuration, SessionManager sessionManager, IEnvironment environment)
         {
             this.configuration = configuration;
+            this.sessionManager = sessionManager;
             this.environment = environment;
         }
 
@@ -58,6 +61,7 @@ namespace CSharpAnalytics.Protocols.Measurement
             return GetParameters()
                 .Concat(GetParameters(environment))
                 .Concat(GetParameters(configuration))
+                .Concat(GetParameters(sessionManager))
                 .Concat(trackerActivities.GetActivityParameters(activity))
                 .ToList();
         }
@@ -123,6 +127,18 @@ namespace CSharpAnalytics.Protocols.Measurement
 
             if (configuration.AnonymizeIp)
                 yield return KeyValuePair.Create("aip", "1");
-        }       
+        }
+
+        /// <summary>
+        /// Get parameters for a given session manager and domain hash.
+        /// </summary>
+        /// <param name="sessionManager">Session manager to obtain parameters from.</param>
+        /// <returns>Enumerable of key/value pairs of session information.</returns>
+        internal static IEnumerable<KeyValuePair<string, string>> GetParameters(SessionManager sessionManager)
+        {
+            yield return KeyValuePair.Create("cid", sessionManager.Visitor.Id.ToString());
+            if (sessionManager.Session.HitCount == 1)
+                yield return KeyValuePair.Create("sc", "start");
+        }
     }
 }

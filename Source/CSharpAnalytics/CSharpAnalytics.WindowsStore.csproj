@@ -106,8 +106,10 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Activities\AppViewActivity.cs" />
     <Compile Include="Activities\AutoTimedEventActivity.cs" />
     <Compile Include="Activities\CampaignActivity.cs" />
+    <Compile Include="Activities\ContentViewActivity.cs" />
     <Compile Include="Activities\ExceptionActivity.cs" />
     <Compile Include="Activities\TimedEventActivity.cs">
       <SubType>Code</SubType>

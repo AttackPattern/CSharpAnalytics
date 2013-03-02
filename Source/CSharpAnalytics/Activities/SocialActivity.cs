@@ -86,5 +86,11 @@ namespace CSharpAnalytics
             if (analyticsClient == null) throw new ArgumentNullException("analyticsClient");
             analyticsClient.Track(new SocialActivity(action, network, pagePath, target));
         }
+
+        public static void TrackSocial(this MeasurementAnalyticsClient analyticsClient, string action, string network, string target = null, string pagePath = null)
+        {
+            if (analyticsClient == null) throw new ArgumentNullException("analyticsClient");
+            analyticsClient.Track(new SocialActivity(action, network, pagePath, target));
+        }
     }
 }

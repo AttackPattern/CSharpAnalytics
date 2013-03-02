@@ -103,5 +103,11 @@ namespace CSharpAnalytics
             if (analyticsClient == null) throw new ArgumentNullException("analyticsClient");
             analyticsClient.Track(new EventActivity(action, category, label, value, nonInteraction));
         }
+
+        public static void TrackEvent(this MeasurementAnalyticsClient analyticsClient, string action, string category, string label = null, int? value = null, bool nonInteraction = false)
+        {
+            if (analyticsClient == null) throw new ArgumentNullException("analyticsClient");
+            analyticsClient.Track(new EventActivity(action, category, label, value, nonInteraction));
+        }
     }
 }
