@@ -32,7 +32,6 @@ namespace CSharpAnalytics.WindowsStore
 
         private static BackgroundHttpRequester requester;
         private static SessionManager sessionManager;
-
         private static Frame attachedFrame;
         private static DataTransferManager attachedDataTransferManager;
 

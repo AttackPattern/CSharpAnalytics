@@ -71,10 +71,11 @@ namespace CSharpAnalytics.Sample.WindowsStore
                     throw new Exception("Failed to create initial page");
                 }
             }
-            // Ensure the current window is active
-            await AutoAnalytics.StartAsync(new UrchinConfiguration("UA-319000-8", "sample.csharpanalytics.com"));
 
+            // AutoAnalytics currently uses Urchin Web API, see AutoMeasurement for Measurement Protocol API
+            await AutoAnalytics.StartAsync(new UrchinConfiguration("UA-319000-8", "sample.csharpanalytics.com"));
             
+            // Ensure the current window is active
             Window.Current.Activate();
         }
 

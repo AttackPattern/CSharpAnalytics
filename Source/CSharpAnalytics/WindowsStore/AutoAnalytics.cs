@@ -2,7 +2,6 @@
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 using CSharpAnalytics.Protocols;
-using CSharpAnalytics.Protocols.Measurement;
 using CSharpAnalytics.Protocols.Urchin;
 using CSharpAnalytics.Sessions;
 using System;
@@ -11,6 +10,7 @@ using System.Diagnostics;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using Windows.ApplicationModel;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
 using Windows.UI.Xaml;
@@ -33,7 +33,6 @@ namespace CSharpAnalytics.WindowsStore
 
         private static BackgroundHttpRequester requester;
         private static SessionManager sessionManager;
-
         private static Frame attachedFrame;
         private static DataTransferManager attachedDataTransferManager;
 
@@ -50,6 +49,9 @@ namespace CSharpAnalytics.WindowsStore
         /// <example>await AutoAnalytics.StartAsync(new Configuration("UA-123123123-1", "myapp.someco.com"));</example>
         public static async Task StartAsync(UrchinConfiguration configuration, TimeSpan? uploadInterval = null)
         {
+            Debug.Assert(Client == null);
+            if (Client != null) return;
+
             await StartRequesterAsync(uploadInterval ?? TimeSpan.FromSeconds(5));
             await RestoreSessionAsync(TimeSpan.FromMinutes(20));
 
@@ -69,6 +71,9 @@ namespace CSharpAnalytics.WindowsStore
         /// <remarks>await AutoAnalytics.StopAsync();</remarks>
         public static async Task StopAsync()
         {
+            Debug.Assert(Client != null);
+            if (Client == null) return;
+
             Client.TrackEvent("ApplicationLifecycle", "Stop");
             UnhookEvents();
 
@@ -154,8 +159,19 @@ namespace CSharpAnalytics.WindowsStore
         /// </remarks>
         private static void PreprocessHttpRequest(HttpRequestMessage requestMessage)
         {
-            requestMessage.Headers.UserAgent.Add(new ProductInfoHeaderValue("Mozilla", "5.0"));
+            var packageId = Package.Current.Id;
+            requestMessage.Headers.UserAgent.Add(new ProductInfoHeaderValue(packageId.Name, FormatVersion(packageId.Version)));
             DebugRequest(requestMessage);
+        }
+
+        /// <summary>
+        /// Get the formatted version number for a PackageVersion.
+        /// </summary>
+        /// <param name="version">PackageVersion to format.</param>
+        /// <returns>Formatted version number of the PackageVersion.</returns>
+        private static string FormatVersion(PackageVersion version)
+        {
+            return String.Join(".", version.Major, version.Minor, version.Revision, version.Build);
         }
 
         private static void DebugRequest(HttpRequestMessage requestMessage)
