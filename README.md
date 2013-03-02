@@ -1,7 +1,7 @@
 CSharpAnalytics
 ===============
 
-CSharpAnalytics is a C# library for adding Google Analytics metrics to your applications.
+CSharpAnalytics is a C# library for tracking your application metrics via Google Analytics.
 
 The pitch
 ---------
@@ -20,6 +20,7 @@ This is the best solution for C# apps wanting to talk to Google Analytics. Why?
 
 1. Ease of use - add *two lines* to your Windows 8 Store app
 1. Pure C# - easy to debug, extend or port (no JavaScript or web views)
+1. Offline support
 
 Platforms
 ---------
@@ -61,7 +62,7 @@ To use it simply add the following two lines to your app.xaml.cs:
 
 **Start analytics** with this line in App.OnLaunched directly before  Window.Current.Activate()
 
-`await AutoAnalytics.StartAsync(new UrchinConfiguration("UA-XXX-YYY", "analytics app name"), "user agent name");`
+`await AutoAnalytics.StartAsync(new UrchinConfiguration("UA-XXX-YYY", "analytics app name"));`
 
 **Stop analytics** with this line in App.OnSuspending directly before deferral.Complete()
 
@@ -85,8 +86,8 @@ Say you want to track when the video "Today's News" is played back:
 
 `AutoAnalytics.Client.TrackEvent("Play", "Video", "Today's News");`
 
-Important notes
----------------
+Privacy
+-------
 Privacy is very important to Google and Microsoft and it should be to you too. Here's a few things you should know:
 
 1. [Google's Measurement Protocol / SDK Policy](https://developers.google.com/analytics/devguides/collection/protocol/policy) (do not track personally identifyable information)
@@ -96,23 +97,21 @@ Privacy is very important to Google and Microsoft and it should be to you too. H
  
 In summary: **Do not share personally identifyable information**
 
-Limitations
------------
-* No throttling of requests to adhere to the limits of Google Analytics (go easy on events for now)
-* No tracking of operating system type or version
-* Campaign tracking has limited use as Windows Store doesn't pass through parameters (iOS has same limitation)
-* Session and visitor custom variables do not persist
+Not fully tested
+----------------
+1. Google Measurement Protocol support (Urchin is tested)
+1. E-commerce tracking
+1. Timed events
+1. Campaign tracking (limited use as Windows Store doesn't pass through parameters)
 
-Still to do
------------
-1. Address custom variable limitations
-1. Other platforms (Windows Phone 7.x & 8, Silverlight, Mono variants)
-1. Complete Google Measurement Protocol support
-1. E-commerce tracking (Transactions/items coded but untested)
-1. Timed events (coded but untested)
+Future enhancements
+-------------------
+1. Device manufacturer and model tracking
+1. Additional platforms (Windows Phone 7/8, Silverlight, Mono)
 1. Opt-out support via session state switch and null receiver
-1. More unit tests & documentation
-1. Device manufacturer + model tracking
+1. Throttling of hits as per official SDKs
+1. Operating System and version tracking (WinRT limitation)
+1. Persist and restore session and visitor custom variables
 
 If you want to contribute please consider the CSharpAnalytics.sln which will load all platforms and unit tests.
 
