@@ -154,7 +154,7 @@ namespace CSharpAnalytics.WindowsStore
         /// </remarks>
         private static void PreprocessHttpRequest(HttpRequestMessage requestMessage)
         {
-            requestMessage.Headers.UserAgent.Add(new ProductInfoHeaderValue("Windows", "8.0"));
+            requestMessage.Headers.UserAgent.Add(new ProductInfoHeaderValue("Mozilla", "5.0"));
             DebugRequest(requestMessage);
         }
 

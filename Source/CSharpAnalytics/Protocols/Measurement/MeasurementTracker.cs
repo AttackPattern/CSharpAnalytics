@@ -101,8 +101,12 @@ namespace CSharpAnalytics.Protocols.Measurement
         {
             yield return KeyValuePair.Create("ul", environment.LanguageCode.ToLowerInvariant());
             yield return KeyValuePair.Create("de", environment.CharacterSet == null ? "-" : environment.CharacterSet.ToUpperInvariant());
-            yield return KeyValuePair.Create("fl", String.IsNullOrEmpty(environment.FlashVersion) ? "-" : environment.FlashVersion);
-            yield return KeyValuePair.Create("je", !environment.JavaEnabled.HasValue ? "-" : environment.JavaEnabled.Value ? "1" : "0");
+
+            if (!String.IsNullOrWhiteSpace(environment.FlashVersion))
+                yield return KeyValuePair.Create("fl", environment.FlashVersion);
+
+            if (environment.JavaEnabled.HasValue)
+                yield return KeyValuePair.Create("je", environment.JavaEnabled.Value ? "1" : "0");
 
             if (environment.ScreenColorDepth > 0)
                 yield return KeyValuePair.Create("sd", String.Format("{0}-bit", environment.ScreenColorDepth));
