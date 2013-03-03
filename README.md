@@ -39,6 +39,7 @@ Features
 * Manages visitor and session state
 * Can auto-hook into a number of interesting events
 * Built-in debug output window support (ga_debug.js style)
+* Tracks operating system, version, processor and device name
 
 Getting started
 ---------------
@@ -106,11 +107,9 @@ Not fully tested
 
 Future enhancements
 -------------------
-1. Device manufacturer and model tracking
 1. Additional platforms (Windows Phone 7/8, Silverlight, Mono)
 1. Opt-out support via session state switch and null receiver
 1. Throttling of hits as per official SDKs
-1. Operating System and version tracking (WinRT limitation)
 1. Persist and restore session and visitor custom variables
 
 If you want to contribute please consider the CSharpAnalytics.sln which will load all platforms and unit tests.
