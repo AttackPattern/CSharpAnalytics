@@ -19,8 +19,8 @@ Google Analytics is capable, well-supported, easy to use and free. While origina
 This is the best solution for C# apps wanting to talk to Google Analytics. Why?
 
 1. Ease of use - add *two lines* to your Windows 8 Store app
-1. Pure C# - easy to debug, extend or port (no JavaScript or web views)
-1. Offline support
+1. Pure C# - easy to debug, extend or port (no JavaScript, web views or DLLs)
+1. Feature rich - offline, configurable, OS stats
 
 Platforms
 ---------
@@ -39,7 +39,8 @@ Features
 * Manages visitor and session state
 * Can auto-hook into a number of interesting events
 * Built-in debug output window support (ga_debug.js style)
-* Tracks operating system, version, processor and device name
+* Tracks operating system and version
+* Helpers for device model, processor architecture
 
 Getting started
 ---------------
@@ -59,7 +60,7 @@ The easiest way to start is to use the AutoAnalytics class. It hooks into a few 
 * Social sharing events
 * Basic page navigation activity
 
-To use it simply add the following two lines to your app.xaml.cs:
+To use it simply add two lines to your app.xaml.cs:
 
 **Start analytics** with this line in App.OnLaunched directly before  Window.Current.Activate()
 

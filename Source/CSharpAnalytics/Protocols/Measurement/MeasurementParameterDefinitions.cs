@@ -113,7 +113,6 @@ namespace CSharpAnalytics.Protocols.Measurement
 
             // Undocumented
             new ParameterDefinition("_v",       "Library Version"),
-            new ParameterDefinition("_u",       "Usage"),
             new ParameterDefinition("ht",       "Hit Time", EpochTime.FormatDate)
         };
 

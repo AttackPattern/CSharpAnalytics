@@ -106,8 +106,7 @@ namespace CSharpAnalytics.Protocols.Measurement
             if (!String.IsNullOrWhiteSpace(environment.FlashVersion))
                 yield return KeyValuePair.Create("fl", environment.FlashVersion);
 
-            if (environment.JavaEnabled.HasValue)
-                yield return KeyValuePair.Create("je", environment.JavaEnabled.Value ? "1" : "0");
+            yield return KeyValuePair.Create("je", environment.JavaEnabled == true ? "1" : "0");
 
             if (environment.ScreenColorDepth > 0)
                 yield return KeyValuePair.Create("sd", String.Format("{0}-bit", environment.ScreenColorDepth));
