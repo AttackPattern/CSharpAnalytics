@@ -153,6 +153,7 @@
     <Compile Include="Sessions\SessionState.cs" />
     <Compile Include="Sessions\Visitor.cs" />
     <Compile Include="WindowsStore\AutoMeasurement.cs" />
+    <Compile Include="WindowsStore\SystemInformation.cs" />
     <Compile Include="WindowsStore\WindowsStoreEnvironment.cs" />
     <Compile Include="WindowsStore\LocalFolderContractSerializer.cs" />
   </ItemGroup>

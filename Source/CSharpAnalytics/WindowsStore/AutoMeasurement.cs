@@ -10,8 +10,10 @@ using System.Diagnostics;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using Windows.ApplicationModel;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
+using Windows.System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
@@ -160,8 +162,44 @@ namespace CSharpAnalytics.WindowsStore
         /// </remarks>
         private static void PreprocessHttpRequest(HttpRequestMessage requestMessage)
         {
-            requestMessage.Headers.UserAgent.Add(new ProductInfoHeaderValue("Mozilla", "5.0"));
+            AddUserAgent(requestMessage.Headers.UserAgent);
             DebugRequest(requestMessage);
+        }
+
+        private static void AddUserAgent(ICollection<ProductInfoHeaderValue> userAgent)
+        {
+            userAgent.Add(new ProductInfoHeaderValue("GoogleAnalytics", "2.0"));
+
+            var agentParts = new[] {
+                "Windows NT " + SystemInformation.GetWindowsVersionAsync().Result,
+                GetProcessorArchitectureAsync().Result,
+                SystemInformation.GetDeviceManufacturerAsync().Result + " " + SystemInformation.GetDeviceModelAsync().Result
+            };
+
+            userAgent.Add(new ProductInfoHeaderValue("(" + String.Join("; ", agentParts) + ")"));
+        }
+
+        private static async Task<string> GetProcessorArchitectureAsync()
+        {
+            switch (await SystemInformation.GetProcessorArchitectureAsync())
+            {
+                case ProcessorArchitecture.X64:
+                    return "x64";
+                case ProcessorArchitecture.Arm:
+                    return "ARM";
+                default:
+                    return "";
+            }
+        }
+
+        /// <summary>
+        /// Get the formatted version number for a PackageVersion.
+        /// </summary>
+        /// <param name="version">PackageVersion to format.</param>
+        /// <returns>Formatted version number of the PackageVersion.</returns>
+        public static string FormatVersion(PackageVersion version)
+        {
+            return String.Join(".", version.Major, version.Minor, version.Revision, version.Build);
         }
 
         [Conditional("DEBUG")]
