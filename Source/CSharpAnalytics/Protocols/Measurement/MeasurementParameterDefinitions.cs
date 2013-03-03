@@ -109,7 +109,12 @@ namespace CSharpAnalytics.Protocols.Measurement
 
             // Custom Dimensions / Metrics
             new ParameterDefinition("cd[0-9]+", "Custom Dimension"),
-            new ParameterDefinition("cm[0-9]+", "Custom Metric")
+            new ParameterDefinition("cm[0-9]+", "Custom Metric"),
+
+            // Undocumented
+            new ParameterDefinition("_v",       "Library Version"),
+            new ParameterDefinition("_u",       "Usage"),
+            new ParameterDefinition("ht",       "Hit Time", EpochTime.FormatDate)
         };
 
         /// <summary>

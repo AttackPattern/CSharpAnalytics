@@ -90,6 +90,7 @@ namespace CSharpAnalytics.Protocols.Measurement
         {
             yield return KeyValuePair.Create("v", ProtocolVersion);
             yield return KeyValuePair.Create("z", random.Next().ToString(CultureInfo.InvariantCulture));
+            yield return KeyValuePair.Create("ht", EpochTime.Now.ToString());
         }
 
         /// <summary>

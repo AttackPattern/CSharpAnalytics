@@ -41,11 +41,11 @@ namespace CSharpAnalytics.Protocols.Urchin
 
             new ParameterDefinition("utmcc",    "Visitor ID", s => ExtractUtma(s, 1)),
             new ParameterDefinition("utmcc",    "Session Count", s => ExtractUtma(s, 5)),
-            new ParameterDefinition("utmcc",    "Session Time - First", s => FormatDate(ExtractUtma(s, 2))),
-            new ParameterDefinition("utmcc",    "Session Time - Last"  , s => FormatDate(ExtractUtma(s, 3))),
-            new ParameterDefinition("utmcc",    "Session Time - Current", s => FormatDate(ExtractUtma(s, 4))),
+            new ParameterDefinition("utmcc",    "Session Time - First", s => EpochTime.FormatDate(ExtractUtma(s, 2))),
+            new ParameterDefinition("utmcc",    "Session Time - Last"  , s => EpochTime.FormatDate(ExtractUtma(s, 3))),
+            new ParameterDefinition("utmcc",    "Session Time - Current", s => EpochTime.FormatDate(ExtractUtma(s, 4))),
 
-            new ParameterDefinition("utmcc",    "Campaign Time", s => FormatDate(ExtractUtmz(s, 1))),
+            new ParameterDefinition("utmcc",    "Campaign Time", s => EpochTime.FormatDate(ExtractUtmz(s, 1))),
             new ParameterDefinition("utmcc",    "Campaign Session", s => ExtractUtmz(s, 2)),
             new ParameterDefinition("utmcc",    "Campaign Count", s => ExtractUtmz(s, 3)),
             new ParameterDefinition("utmcc",    "Campaign Source", s => ExtractUtmz(s, 4, "utmcsr")),
@@ -86,7 +86,7 @@ namespace CSharpAnalytics.Protocols.Urchin
             // Additional debug info not present in ga_debug.js
             new ParameterDefinition("utms",     "Session Hit Count"),
             new ParameterDefinition("aip",      "Anonymize IP", FormatBoolean),
-            new ParameterDefinition("utmht",    "Real Event Time", FormatDate)
+            new ParameterDefinition("utmht",    "Real Event Time", EpochTime.FormatDate)
         };
 
         /// <summary>
@@ -193,19 +193,6 @@ namespace CSharpAnalytics.Protocols.Urchin
         private static string SubstringAfter(string input, char after)
         {
             return input.Substring(input.IndexOf(after) + 1);
-        }
-
-        /// <summary>
-        /// Format a date as UTC format.
-        /// </summary>
-        /// <param name="secondsSince1970">Number of seconds since 01-Jan-1970.</param>
-        /// <returns>Formatted UTC date.</returns>
-        private static string FormatDate(string secondsSince1970)
-        {
-            long numericSecondsSince1970;
-            return !long.TryParse(secondsSince1970, out numericSecondsSince1970)
-                ? String.Empty
-                : new EpochTime(numericSecondsSince1970).ToUtcString();
         }
     }
 }
