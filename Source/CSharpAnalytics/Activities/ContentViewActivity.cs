@@ -15,37 +15,59 @@ namespace CSharpAnalytics.Activities
     public class ContentViewActivity : IMeasurementActivity
     {
         private readonly Uri documentLocation;
+        private readonly string documentHostName;
+        private readonly string documentPath;
+        private readonly string documentTitle;
+        private readonly string contentDescription;
 
+        /// <summary>
+        /// Location of the document being viewed.
+        /// </summary>
         public Uri DocumentLocation
         {
             get { return documentLocation; }
         }
 
-        private readonly string documentHostName;
-
+        /// <summary>
+        /// Host name of the document being viewed.
+        /// </summary>
         public string DocumentHostName
         {
             get { return documentHostName; }
         }
 
-        private readonly string documentPath;
-
+        /// <summary>
+        /// Path of the document being viewed.
+        /// </summary>
         public string DocumentPath
         {
             get { return documentPath; }
         }
 
-        private readonly string documentTitle;
-
+        /// <summary>
+        /// Title of the document being viewed.
+        /// </summary>
         public string DocumentTitle
         {
             get { return documentTitle; }
         }
 
-        private readonly string contentDescription;
+        /// <summary>
+        /// Description of the content being viewed.
+        /// </summary>
+        public string ContentDescription
+        {
+            get { return contentDescription; }
+        }
 
-        public string ContentDescription { get { return contentDescription; } }
-
+        /// <summary>
+        /// Create a ContentViewActivity to capture details of the content or document being viewed.
+        /// </summary>
+        /// <param name="documentLocation">Location of the document.</param>
+        /// <param name="documentTitle">Title of the document.</param>
+        /// <param name="contentDescription">Optional description of the content.</param>
+        /// <param name="documentPath">Optional path of the content - will be determined by documentLocation if not provided.</param>
+        /// <param name="documentHostName">Optional host name of the content - will be determined by documentLocation if not provided..</param>
         public ContentViewActivity(Uri documentLocation, string documentTitle, string contentDescription = null, string documentPath = null, string documentHostName = null)
         {
             this.documentLocation = documentLocation;
@@ -62,9 +84,9 @@ namespace CSharpAnalytics
     public static class ContentViewExtensions
     {
         /// <summary>
-        /// Track a new AppView for a given view.
+        /// Track a new AppView for a given view within an application.
         /// </summary>
-        /// <param name="analyticsClient">AnalyticsClient currently configured.</param>
+        /// <param name="analyticsClient">MeasurementAnalyticsClient object with queue and configuration set-up.</param>
         /// <param name="name">Name of the view.</param>
         public static void TrackAppView(this MeasurementAnalyticsClient analyticsClient, string name)
         {

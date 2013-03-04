@@ -92,7 +92,7 @@ namespace CSharpAnalytics
         /// <summary>
         /// Capture the details of an event that will be sent to analytics.
         /// </summary>
-        /// <param name="analyticsClient">Analytics object with queue and configuration set-up.</param>
+        /// <param name="analyticsClient">UrchinAnalyticsClient object with queue and configuration set-up.</param>
         /// <param name="action">Action name of the event to send.</param>
         /// <param name="category">Category of the event to send.</param>
         /// <param name="label">Optional label name of the event to send.</param>
@@ -104,6 +104,15 @@ namespace CSharpAnalytics
             analyticsClient.Track(new EventActivity(action, category, label, value, nonInteraction));
         }
 
+        /// <summary>
+        /// Capture the details of an event that will be sent to analytics.
+        /// </summary>
+        /// <param name="analyticsClient">MeasurementAnalyticsClient object with queue and configuration set-up.</param>
+        /// <param name="action">Action name of the event to send.</param>
+        /// <param name="category">Category of the event to send.</param>
+        /// <param name="label">Optional label name of the event to send.</param>
+        /// <param name="value">Optional numeric value of the event to send.</param>
+        /// <param name="nonInteraction">Optional boolean value to be assigned to the NonInteraction property.</param>
         public static void TrackEvent(this MeasurementAnalyticsClient analyticsClient, string action, string category, string label = null, int? value = null, bool nonInteraction = false)
         {
             if (analyticsClient == null) throw new ArgumentNullException("analyticsClient");

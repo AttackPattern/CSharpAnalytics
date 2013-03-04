@@ -53,7 +53,7 @@ namespace CSharpAnalytics
         /// <summary>
         /// Track a new PageView for a given page and title.
         /// </summary>
-        /// <param name="analyticsClient">AnalyticsClient currently configured.</param>
+        /// <param name="analyticsClient">UrchinAnalyticsClient object with queue and configuration set-up.</param>
         /// <param name="title">Title of the page.</param>
         /// <param name="page">Relative path of the page.</param>
         public static void TrackPageView(this UrchinAnalyticsClient analyticsClient, string title, string page)

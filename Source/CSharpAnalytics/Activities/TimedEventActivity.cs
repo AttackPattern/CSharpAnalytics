@@ -80,12 +80,26 @@ namespace CSharpAnalytics
         /// <summary>
         /// Capture the details of a timed event that will be sent to analytics.
         /// </summary>
-        /// <param name="analyticsClient">Analytics object with queue and configuration set-up.</param>
+        /// <param name="analyticsClient">UrchinAnalyticsClient object with queue and configuration set-up.</param>
         /// <param name="category">Category of the event to send.</param>
         /// <param name="variable">Variable name of the event to send.</param>
         /// <param name="time">Time of the event to send.</param>
         /// <param name="label">Optional label name of the event to send.</param>
         public static void TrackTimedEvent(this UrchinAnalyticsClient analyticsClient, string category, string variable, TimeSpan time, string label = null)
+        {
+            if (analyticsClient == null) throw new ArgumentNullException("analyticsClient");
+            analyticsClient.Track(new TimedEventActivity(category, variable, time, label));
+        }
+
+        /// <summary>
+        /// Capture the details of a timed event that will be sent to analytics.
+        /// </summary>
+        /// <param name="analyticsClient">MeasurementAnalyticsClient object with queue and configuration set-up.</param>
+        /// <param name="category">Category of the event to send.</param>
+        /// <param name="variable">Variable name of the event to send.</param>
+        /// <param name="time">Time of the event to send.</param>
+        /// <param name="label">Optional label name of the event to send.</param>
+        public static void TrackTimedEvent(this MeasurementAnalyticsClient analyticsClient, string category, string variable, TimeSpan time, string label = null)
         {
             if (analyticsClient == null) throw new ArgumentNullException("analyticsClient");
             analyticsClient.Track(new TimedEventActivity(category, variable, time, label));
