@@ -1,4 +1,6 @@
-﻿using CSharpAnalytics.Protocols.Urchin;
+﻿using System.Threading.Tasks;
+using CSharpAnalytics.Protocols.Measurement;
+using CSharpAnalytics.Protocols.Urchin;
 using CSharpAnalytics.Sample.WindowsStore.Common;
 using System;
 using CSharpAnalytics.WindowsStore;
@@ -72,8 +74,11 @@ namespace CSharpAnalytics.Sample.WindowsStore
                 }
             }
 
-            // AutoAnalytics currently uses Urchin Web API, see AutoMeasurement for Measurement Protocol API
-            await AutoAnalytics.StartAsync(new UrchinConfiguration("UA-319000-8", "sample.csharpanalytics.com"));
+            // AutoAnalytics currently uses Urchin API originally designed for web sites
+            await AutoAnalytics.StartAsync(new UrchinConfiguration("UA-319000-10", "sample.csharpanalytics.com"));
+
+            // AutoMeasurement uses the Measurement Protocol API that Google's Native SDK's for iOS and Android use
+            await AutoMeasurement.StartAsync(new MeasurementConfiguration("UA-319000-8"));
             
             // Ensure the current window is active
             Window.Current.Activate();
@@ -89,8 +94,7 @@ namespace CSharpAnalytics.Sample.WindowsStore
         private static async void OnSuspending(object sender, SuspendingEventArgs e)
         {
             var deferral = e.SuspendingOperation.GetDeferral();
-            await SuspensionManager.SaveAsync();
-            await AutoAnalytics.StopAsync();
+            await Task.WhenAll(SuspensionManager.SaveAsync(), AutoAnalytics.StopAsync(), AutoMeasurement.StopAsync());
             deferral.Complete();
         }
     }

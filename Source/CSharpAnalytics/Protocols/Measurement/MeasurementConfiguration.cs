@@ -58,5 +58,21 @@ namespace CSharpAnalytics.Protocols.Measurement
             this.applicationVersion = applicationVersion;
             AnonymizeIp = true;
         }
+
+#if WINDOWS_STORE
+        /// <summary>
+        /// Create a new cofiguration for analytics.
+        /// </summary>
+        /// <param name="accountId">Google Analytics provided property id in the format UA-XXXX-Y.</param>
+        public MeasurementConfiguration(string accountId)
+            : this(accountId, Windows.ApplicationModel.Package.Current.Id.Name, FormatVersion(Windows.ApplicationModel.Package.Current.Id.Version))
+        {
+        }
+
+        private static string FormatVersion(Windows.ApplicationModel.PackageVersion version)
+        {
+            return String.Join(".", version.Major, version.Minor, version.Revision, version.Build);
+        }
+#endif
     }
 }

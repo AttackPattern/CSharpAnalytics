@@ -192,16 +192,6 @@ namespace CSharpAnalytics.WindowsStore
             }
         }
 
-        /// <summary>
-        /// Get the formatted version number for a PackageVersion.
-        /// </summary>
-        /// <param name="version">PackageVersion to format.</param>
-        /// <returns>Formatted version number of the PackageVersion.</returns>
-        public static string FormatVersion(PackageVersion version)
-        {
-            return String.Join(".", version.Major, version.Minor, version.Revision, version.Build);
-        }
-
         [Conditional("DEBUG")]
         private static void DebugRequest(HttpRequestMessage requestMessage)
         {
