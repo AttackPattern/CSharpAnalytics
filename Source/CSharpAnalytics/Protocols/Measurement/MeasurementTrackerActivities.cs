@@ -1,7 +1,8 @@
 ﻿// Copyright (c) Attack Pattern LLC.  All rights reserved.
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
-﻿using CSharpAnalytics.Activities;
+﻿
+using CSharpAnalytics.Activities;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -10,10 +11,19 @@ using System.Linq;
 
 namespace CSharpAnalytics.Protocols.Measurement
 {
+    /// <summary>
+    /// Converts MeasurementActivities into key/value pairs that will form the Measurement Protocol URIs generated.
+    /// </summary>
     internal class MeasurementTrackerActivities
     {
         private string lastTransactionId;
 
+        /// <summary>
+        /// Turn an IMeasurementActivity into the key/value pairs necessary for building
+        /// the URI to track with Measurement Protocol.
+        /// </summary>
+        /// <param name="activity">Activity to turn into key/value pairs.</param>
+        /// <returns>Enumerable of key/value pairs representing the activity.</returns>
         internal IEnumerable<KeyValuePair<string, string>> GetActivityParameters(IMeasurementActivity activity)
         {
             if (activity is ContentViewActivity)
@@ -35,26 +45,36 @@ namespace CSharpAnalytics.Protocols.Measurement
             return Enumerable.Empty<KeyValuePair<string, string>>();
         }
 
-        internal static IEnumerable<KeyValuePair<string, string>> GetParameters(ContentViewActivity content)
+        /// <summary>
+        /// Obtain the key/value pairs for a ContentViewActivity.
+        /// </summary>
+        /// <param name="contentView">ContentViewActivity to turn into key/value pairs.</param>
+        /// <returns>Key/value pairs representing this ContentViewActivity.</returns>
+        internal static IEnumerable<KeyValuePair<string, string>> GetParameters(ContentViewActivity contentView)
         {
             yield return KeyValuePair.Create("t", "appview");
 
-            if (content.DocumentLocation != null)
-                yield return KeyValuePair.Create("dl", content.DocumentLocation.OriginalString);
+            if (contentView.DocumentLocation != null)
+                yield return KeyValuePair.Create("dl", contentView.DocumentLocation.OriginalString);
 
-            if (!String.IsNullOrEmpty(content.DocumentHostName))
-                yield return KeyValuePair.Create("dh", content.DocumentHostName);
+            if (!String.IsNullOrEmpty(contentView.DocumentHostName))
+                yield return KeyValuePair.Create("dh", contentView.DocumentHostName);
 
-            if (!String.IsNullOrEmpty(content.DocumentPath))
-                yield return KeyValuePair.Create("dp", content.DocumentPath);
+            if (!String.IsNullOrEmpty(contentView.DocumentPath))
+                yield return KeyValuePair.Create("dp", contentView.DocumentPath);
 
-            if (!String.IsNullOrEmpty(content.DocumentTitle))
-                yield return KeyValuePair.Create("dt", content.DocumentTitle);
+            if (!String.IsNullOrEmpty(contentView.DocumentTitle))
+                yield return KeyValuePair.Create("dt", contentView.DocumentTitle);
 
-            if (!String.IsNullOrEmpty(content.ContentDescription))
-                yield return KeyValuePair.Create("cd", content.ContentDescription);
+            if (!String.IsNullOrEmpty(contentView.ContentDescription))
+                yield return KeyValuePair.Create("cd", contentView.ContentDescription);
         }
 
+        /// <summary>
+        /// Obtain the key/value pairs for a ExceptionActivity.
+        /// </summary>
+        /// <param name="exception">ExceptionActivity to turn into key/value pairs.</param>
+        /// <returns>Key/value pairs representing this ExceptionActivity.</returns>
         internal static IEnumerable<KeyValuePair<string, string>> GetParameters(ExceptionActivity exception)
         {
             yield return KeyValuePair.Create("exd", exception.Description);
@@ -62,6 +82,11 @@ namespace CSharpAnalytics.Protocols.Measurement
                 yield return KeyValuePair.Create("exf", "0");
         }
 
+        /// <summary>
+        /// Obtain the key/value pairs for a CampaignActivity.
+        /// </summary>
+        /// <param name="campaign">CampaignActivity to turn into key/value pairs.</param>
+        /// <returns>Key/value pairs representing this CampaignActivity.</returns>
         internal static IEnumerable<KeyValuePair<string, string>> GetParameters(CampaignActivity campaign)
         {
             if (!String.IsNullOrEmpty(campaign.Name))
@@ -80,6 +105,11 @@ namespace CSharpAnalytics.Protocols.Measurement
                 yield return KeyValuePair.Create("ct", campaign.Content);
         }
 
+        /// <summary>
+        /// Obtain the key/value pairs for an EventActivity.
+        /// </summary>
+        /// <param name="event">EventActivity to turn into key/value pairs.</param>
+        /// <returns>Key/value pairs representing this EventActivity.</returns>
         internal static IEnumerable<KeyValuePair<string, string>> GetParameters(EventActivity @event)
         {
             yield return KeyValuePair.Create("t", "event");
@@ -100,6 +130,25 @@ namespace CSharpAnalytics.Protocols.Measurement
                 yield return KeyValuePair.Create("ni", "1");
         }
 
+        /// <summary>
+        /// Obtain the key/value pairs for a SocialActivity.
+        /// </summary>
+        /// <param name="social">SocialActivity to turn into key/value pairs.</param>
+        /// <returns>Key/value pairs representing this SocialActivity.</returns>
+        internal static IEnumerable<KeyValuePair<string, string>> GetParameters(SocialActivity social)
+        {
+            yield return KeyValuePair.Create("t", "social");
+
+            yield return KeyValuePair.Create("sn", social.Network);
+            yield return KeyValuePair.Create("sa", social.Action);
+            yield return KeyValuePair.Create("st", social.Target);
+        }
+
+        /// <summary>
+        /// Obtain the key/value pairs for a TimedEventActivity.
+        /// </summary>
+        /// <param name="timedEvent">TimedEventActivity to turn into key/value pairs.</param>
+        /// <returns>Key/value pairs representing this TimedEventActivity.</returns>
         internal static IEnumerable<KeyValuePair<string, string>> GetParameters(TimedEventActivity timedEvent)
         {
             yield return KeyValuePair.Create("t", "timing");
@@ -116,15 +165,11 @@ namespace CSharpAnalytics.Protocols.Measurement
             yield return KeyValuePair.Create("utt", timedEvent.Time.TotalMilliseconds.ToString(CultureInfo.InvariantCulture));
         }
 
-        internal static IEnumerable<KeyValuePair<string, string>> GetParameters(SocialActivity social)
-        {
-            yield return KeyValuePair.Create("t", "social");
-
-            yield return KeyValuePair.Create("sn", social.Network);            
-            yield return KeyValuePair.Create("sa", social.Action);
-            yield return KeyValuePair.Create("st", social.Target);
-        }
-
+        /// <summary>
+        /// Obtain the key/value pairs for a TransactionActivity.
+        /// </summary>
+        /// <param name="transaction">TransactionActivity to turn into key/value pairs.</param>
+        /// <returns>Key/value pairs representing this TransactionActivity.</returns>
         internal IEnumerable<KeyValuePair<string, string>> GetParameters(TransactionActivity transaction)
         {
             yield return KeyValuePair.Create("t", "transaction");
@@ -145,6 +190,11 @@ namespace CSharpAnalytics.Protocols.Measurement
                 yield return KeyValuePair.Create("tt", transaction.ShippingCost.ToString("0.00", CultureInfo.InvariantCulture));
         }
 
+        /// <summary>
+        /// Obtain the key/value pairs for a TransactionItemActivity.
+        /// </summary>
+        /// <param name="item">TransactionItemActivity to turn into key/value pairs.</param>
+        /// <returns>Key/value pairs representing this TransactionItemActivity.</returns>
         internal IEnumerable<KeyValuePair<string, string>> GetParameters(TransactionItemActivity item)
         {
             yield return KeyValuePair.Create("t", "item");

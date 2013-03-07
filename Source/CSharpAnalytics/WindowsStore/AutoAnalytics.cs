@@ -1,6 +1,7 @@
 ﻿﻿// Copyright (c) Attack Pattern LLC.  All rights reserved.
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+
 using CSharpAnalytics.Protocols;
 using CSharpAnalytics.Protocols.Urchin;
 using CSharpAnalytics.Sessions;
@@ -30,12 +31,19 @@ namespace CSharpAnalytics.WindowsStore
         private const string SessionStateFileName = "CSharpAnalytics-SessionState";
 
         private static readonly ProtocolDebugger protocolDebugger = new ProtocolDebugger(s => Debug.WriteLine(s), UrchinParameterDefinitions.All);
+        private static readonly EventHandler<object> applicationResume = (sender, e) => Client.TrackEvent("ApplicationLifecycle", "Resume");
+        private static readonly SuspendingEventHandler applicationSuspend = (sender, e) => Client.TrackEvent("ApplicationLifecycle", "Suspend");
+        private static readonly UnhandledExceptionEventHandler applicationException = (sender, e) => Client.TrackEvent("UnhandledException", e.Exception.GetType().Name, e.Exception.Source);
+        private static readonly TypedEventHandler<DataTransferManager, TargetApplicationChosenEventArgs> socialShare = (sender, e) => Client.TrackSocial("ShareCharm", e.ApplicationName);
 
         private static BackgroundHttpRequester requester;
         private static SessionManager sessionManager;
         private static Frame attachedFrame;
         private static DataTransferManager attachedDataTransferManager;
 
+        /// <summary>
+        /// Access to the UrchinAnalyticsClient necessary to send additional events.
+        /// </summary>
         public static UrchinAnalyticsClient Client { get; private set; }
 
         /// <summary>
@@ -131,11 +139,6 @@ namespace CSharpAnalytics.WindowsStore
             Client.TrackPageView(e.SourcePageType.Name, "/" + e.SourcePageType.Name);
         }
 
-        private static readonly EventHandler<object> applicationResume = (sender, e) => Client.TrackEvent("ApplicationLifecycle", "Resume");
-        private static readonly SuspendingEventHandler applicationSuspend = (sender, e) => Client.TrackEvent("ApplicationLifecycle", "Suspend");
-        private static readonly UnhandledExceptionEventHandler applicationException = (sender, e) => Client.TrackEvent("UnhandledException", e.Exception.GetType().Name, e.Exception.Source);
-        private static readonly TypedEventHandler<DataTransferManager, TargetApplicationChosenEventArgs> socialShare = (sender, e) => Client.TrackSocial("ShareCharm", e.ApplicationName);
-
         /// <summary>
         /// Start the requester with any unsent URIs from the last application run.
         /// </summary>
@@ -174,6 +177,7 @@ namespace CSharpAnalytics.WindowsStore
             return String.Join(".", version.Major, version.Minor, version.Revision, version.Build);
         }
 
+        [Conditional("DEBUG")]
         private static void DebugRequest(HttpRequestMessage requestMessage)
         {
             protocolDebugger.Examine(requestMessage.RequestUri);

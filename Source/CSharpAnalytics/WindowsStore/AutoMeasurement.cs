@@ -10,7 +10,6 @@ using System.Diagnostics;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using Windows.ApplicationModel;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
 using Windows.System;
@@ -31,6 +30,10 @@ namespace CSharpAnalytics.WindowsStore
         private const string SessionStateFileName = "CSharpAnalytics-SessionState";
 
         private static readonly ProtocolDebugger protocolDebugger = new ProtocolDebugger(s => Debug.WriteLine(s), MeasurementParameterDefinitions.All);
+        private static readonly EventHandler<object> applicationResume = (sender, e) => Client.TrackEvent("ApplicationLifecycle", "Resume");
+        private static readonly SuspendingEventHandler applicationSuspend = (sender, e) => Client.TrackEvent("ApplicationLifecycle", "Suspend");
+        private static readonly UnhandledExceptionEventHandler applicationException = (sender, e) => Client.TrackEvent("UnhandledException", e.Exception.GetType().Name, e.Exception.Source);
+        private static readonly TypedEventHandler<DataTransferManager, TargetApplicationChosenEventArgs> socialShare = (sender, e) => Client.TrackSocial("ShareCharm", e.ApplicationName);
 
         private static BackgroundHttpRequester requester;
         private static SessionManager sessionManager;
@@ -134,11 +137,6 @@ namespace CSharpAnalytics.WindowsStore
             Client.TrackAppView(e.SourcePageType.Name);
         }
 
-        private static readonly EventHandler<object> applicationResume = (sender, e) => Client.TrackEvent("ApplicationLifecycle", "Resume");
-        private static readonly SuspendingEventHandler applicationSuspend = (sender, e) => Client.TrackEvent("ApplicationLifecycle", "Suspend");
-        private static readonly UnhandledExceptionEventHandler applicationException = (sender, e) => Client.TrackEvent("UnhandledException", e.Exception.GetType().Name, e.Exception.Source);
-        private static readonly TypedEventHandler<DataTransferManager, TargetApplicationChosenEventArgs> socialShare = (sender, e) => Client.TrackSocial("ShareCharm", e.ApplicationName);
-
         /// <summary>
         /// Start the requester with any unsent URIs from the last application run.
         /// </summary>
@@ -166,19 +164,30 @@ namespace CSharpAnalytics.WindowsStore
             DebugRequest(requestMessage);
         }
 
+        /// <summary>
+        /// Figure out the user agent and add it to the header collection.
+        /// </summary>
+        /// <param name="userAgent">User agent header collection.</param>
         private static void AddUserAgent(ICollection<ProductInfoHeaderValue> userAgent)
         {
-            userAgent.Add(new ProductInfoHeaderValue("GoogleAnalytics", "2.0"));
+            userAgent.Add(new ProductInfoHeaderValue("CSharpAnalytics", "0.1"));
 
             var agentParts = new[] {
                 "Windows NT " + SystemInformation.GetWindowsVersionAsync().Result,
-                GetProcessorArchitectureAsync().Result,
-                SystemInformation.GetDeviceManufacturerAsync().Result + " " + SystemInformation.GetDeviceModelAsync().Result
+                GetProcessorArchitectureAsync().Result
             };
 
             userAgent.Add(new ProductInfoHeaderValue("(" + String.Join("; ", agentParts) + ")"));
         }
 
+        /// <summary>
+        /// Determine the current processor architecture string for the user agent.
+        /// </summary>
+        /// <remarks>
+        /// The strings this returns should be compatible with web browser user agent
+        /// processor strings.
+        /// </remarks>
+        /// <returns>String containing the processor architecture.</returns>
         private static async Task<string> GetProcessorArchitectureAsync()
         {
             switch (await SystemInformation.GetProcessorArchitectureAsync())

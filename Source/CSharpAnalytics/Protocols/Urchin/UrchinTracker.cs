@@ -1,6 +1,7 @@
 ﻿﻿// Copyright (c) Attack Pattern LLC.  All rights reserved.
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+
 using CSharpAnalytics.Activities;
 using CSharpAnalytics.CustomVariables;
 using CSharpAnalytics.Sessions;
@@ -216,6 +217,11 @@ namespace CSharpAnalytics.Protocols.Urchin
                     sessionManager.Session.Number);
         }
 
+        /// <summary>
+        /// Reduce a Guid down to what can be represented in a uint.
+        /// </summary>
+        /// <param name="guid">Guid to reduce.</param>
+        /// <returns>Uint to represent the Guid.</returns>
         private static uint ReduceGuidToUint(Guid guid)
         {
             var bytes = guid.ToByteArray();

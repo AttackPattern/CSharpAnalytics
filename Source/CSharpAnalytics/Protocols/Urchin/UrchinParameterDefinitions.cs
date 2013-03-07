@@ -1,6 +1,7 @@
 ﻿﻿// Copyright (c) Attack Pattern LLC.  All rights reserved.
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+
 using System;
 using System.Linq;
 
@@ -185,11 +186,23 @@ namespace CSharpAnalytics.Protocols.Urchin
                 .FirstOrDefault();
         }
 
+        /// <summary>
+        /// Extract part of a string up to and not including the first instance of the before character.
+        /// </summary>
+        /// <param name="input">String to extract from.</param>
+        /// <param name="before">Character to stop before.</param>
+        /// <returns>Substring of input up to but not including before character.</returns>
         private static string SubstringBefore(string input, char before)
         {
             return input.Substring(0, input.IndexOf(before));
         }
 
+        /// <summary>
+        /// Extract part of a string from the point directly following the after character to the end.
+        /// </summary>
+        /// <param name="input">String to extract from.</param>
+        /// <param name="after">Character to start after.</param>
+        /// <returns>Substring of input directly following the after character to the end of the string.</returns>
         private static string SubstringAfter(string input, char after)
         {
             return input.Substring(input.IndexOf(after) + 1);

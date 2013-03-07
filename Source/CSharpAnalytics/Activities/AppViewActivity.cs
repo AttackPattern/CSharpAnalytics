@@ -31,6 +31,9 @@ namespace CSharpAnalytics.Activities
 
 namespace CSharpAnalytics
 {
+    /// <summary>
+    /// Extension methods for adding AppViews to compatible analytics clients.
+    /// </summary>
     public static class AppViewExtensions
     {
         /// <summary>
