@@ -33,7 +33,8 @@ namespace CSharpAnalytics.WindowsStore
         private static readonly ProtocolDebugger protocolDebugger = new ProtocolDebugger(s => Debug.WriteLine(s), UrchinParameterDefinitions.All);
         private static readonly EventHandler<object> applicationResume = (sender, e) => Client.TrackEvent("ApplicationLifecycle", "Resume");
         private static readonly SuspendingEventHandler applicationSuspend = (sender, e) => Client.TrackEvent("ApplicationLifecycle", "Suspend");
-        private static readonly UnhandledExceptionEventHandler applicationException = (sender, e) => Client.TrackEvent("UnhandledException", e.Exception.GetType().Name, e.Exception.Source);
+        private static readonly UnhandledExceptionEventHandler unhandledApplicationException = (sender, e) => TrackException(e.Exception);
+        private static readonly EventHandler<UnobservedTaskExceptionEventArgs> unobservedTaskException = (sender, e) => TrackException(e.Exception);
         private static readonly TypedEventHandler<DataTransferManager, TargetApplicationChosenEventArgs> socialShare = (sender, e) => Client.TrackSocial("ShareCharm", e.ApplicationName);
 
         private static BackgroundHttpRequester requester;
@@ -98,7 +99,8 @@ namespace CSharpAnalytics.WindowsStore
             var application = Application.Current;
             application.Resuming += applicationResume;
             application.Suspending += applicationSuspend;
-            application.UnhandledException += applicationException;
+            application.UnhandledException += unhandledApplicationException;
+            TaskScheduler.UnobservedTaskException += unobservedTaskException;
 
             attachedFrame = Window.Current.Content as Frame;
             if (attachedFrame != null)
@@ -116,7 +118,8 @@ namespace CSharpAnalytics.WindowsStore
             var application = Application.Current;
             application.Resuming -= applicationResume;
             application.Suspending -= applicationSuspend;
-            application.UnhandledException -= applicationException;
+            application.UnhandledException -= unhandledApplicationException;
+            TaskScheduler.UnobservedTaskException -= unobservedTaskException;
 
             if (attachedFrame != null)
                 attachedFrame.Navigated -= FrameNavigated;
@@ -211,6 +214,20 @@ namespace CSharpAnalytics.WindowsStore
         private static async Task SaveSessionAsync()
         {
             await LocalFolderContractSerializer<SessionState>.SaveAsync(sessionManager.GetState(), SessionStateFileName);            
+        }
+
+        /// <summary>
+        /// Track an exception in analytics.
+        /// </summary>
+        /// <remarks>
+        /// Urchin does not explicitly support exceptions so send as an event.
+        /// Be very careful calling this explicitly in non-fatal scenarios as exceptions
+        /// can cascade and subsequently overload your tracking limits.
+        /// </remarks>
+        /// <param name="ex">Exception to track</param>
+        public static void TrackException(Exception ex)
+        {
+            Client.TrackEvent(ex.GetType().Name, "UnhandledException", ex.Source);
         }
     }
 

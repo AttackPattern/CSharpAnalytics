@@ -1,6 +1,8 @@
 ﻿﻿// Copyright (c) Attack Pattern LLC.  All rights reserved.
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+
+using System.Linq;
 using CSharpAnalytics.Protocols;
 using CSharpAnalytics.Protocols.Measurement;
 using CSharpAnalytics.Sessions;
@@ -32,7 +34,8 @@ namespace CSharpAnalytics.WindowsStore
         private static readonly ProtocolDebugger protocolDebugger = new ProtocolDebugger(s => Debug.WriteLine(s), MeasurementParameterDefinitions.All);
         private static readonly EventHandler<object> applicationResume = (sender, e) => Client.TrackEvent("ApplicationLifecycle", "Resume");
         private static readonly SuspendingEventHandler applicationSuspend = (sender, e) => Client.TrackEvent("ApplicationLifecycle", "Suspend");
-        private static readonly UnhandledExceptionEventHandler applicationException = (sender, e) => Client.TrackEvent("UnhandledException", e.Exception.GetType().Name, e.Exception.Source);
+        private static readonly UnhandledExceptionEventHandler unhandledApplicationException = (sender, e) => TrackException(e.Exception);
+        private static readonly EventHandler<UnobservedTaskExceptionEventArgs> unobservedTaskException = (sender, e) => TrackException(e.Exception);
         private static readonly TypedEventHandler<DataTransferManager, TargetApplicationChosenEventArgs> socialShare = (sender, e) => Client.TrackSocial("ShareCharm", e.ApplicationName);
 
         private static BackgroundHttpRequester requester;
@@ -96,7 +99,8 @@ namespace CSharpAnalytics.WindowsStore
             var application = Application.Current;
             application.Resuming += applicationResume;
             application.Suspending += applicationSuspend;
-            application.UnhandledException += applicationException;
+            application.UnhandledException += unhandledApplicationException;
+            TaskScheduler.UnobservedTaskException += unobservedTaskException;
 
             attachedFrame = Window.Current.Content as Frame;
             if (attachedFrame != null)
@@ -114,7 +118,8 @@ namespace CSharpAnalytics.WindowsStore
             var application = Application.Current;
             application.Resuming -= applicationResume;
             application.Suspending -= applicationSuspend;
-            application.UnhandledException -= applicationException;
+            application.UnhandledException -= unhandledApplicationException;
+            TaskScheduler.UnobservedTaskException -= unobservedTaskException;
 
             if (attachedFrame != null)
                 attachedFrame.Navigated -= FrameNavigated;
@@ -235,6 +240,23 @@ namespace CSharpAnalytics.WindowsStore
         private static async Task SaveSessionAsync()
         {
             await LocalFolderContractSerializer<SessionState>.SaveAsync(sessionManager.GetState(), SessionStateFileName);            
+        }
+
+        /// <summary>
+        /// Track an unhandled exception in analytics.
+        /// </summary>
+        /// <param name="ex">Exception to track in analytics.</param>
+        private static void TrackException(Exception ex)
+        {
+            var aggregateException = ex as AggregateException;
+            if (aggregateException != null && aggregateException.InnerExceptions.Count == 1)
+                ex = aggregateException.InnerExceptions.First();
+
+            // TODO: Figure out a good compressed summary format for exceptions
+            var description = ex.Message;
+
+            // Technically another handler could fix things but no mechanism to know that
+            Client.TrackException(description, isFatal:true); 
         }
     }
 }
