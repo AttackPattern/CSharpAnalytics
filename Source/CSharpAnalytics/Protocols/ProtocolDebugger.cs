@@ -1,6 +1,7 @@
 ﻿﻿// Copyright (c) Attack Pattern LLC.  All rights reserved.
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,17 +31,16 @@ namespace CSharpAnalytics.Protocols
         }
 
         /// <summary>
-        /// Examine an Urchin style URI to break down into constituent parts via the writer
+        /// Examine an URI to break down into constituent parts via the writer
         /// for this debugger.
         /// </summary>
-        /// <param name="uri">Urchin style URI to examine.</param>
+        /// <param name="uri">Analytisc tracking URI to examine.</param>
         public void Examine(Uri uri)
         {
             writer("-Analytics-------------------------------------");
 
             var parameters = ExtractParameters(uri);
 
-            writer("Track " + (parameters.ContainsKey("utmt") ? parameters["utmt"] : "page"));
             writer(uri.Query);
 
             foreach (var parameterDefinition in parameterDefinitions)

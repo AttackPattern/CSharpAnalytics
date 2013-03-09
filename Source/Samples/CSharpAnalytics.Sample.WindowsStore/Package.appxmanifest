@@ -15,7 +15,7 @@
   </Resources>
   <Applications>
     <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="CSharpAnalytics.Sample.WindowsStore.App">
-      <VisualElements DisplayName="CSharpAnalytics.Sample.WindowsStore" Logo="Assets\Logo.png" SmallLogo="Assets\SmallLogo.png" Description="CSharpAnalytics sample WindowsStore application." ForegroundText="light" BackgroundColor="#464646">
+      <VisualElements DisplayName="CSharpAnalyticsWindowStoreSample" Logo="Assets\Logo.png" SmallLogo="Assets\SmallLogo.png" Description="CSharpAnalytics sample WindowsStore application." ForegroundText="light" BackgroundColor="#464646">
         <DefaultTile ShowName="allLogos" />
         <SplashScreen Image="Assets\SplashScreen.png" />
       </VisualElements>

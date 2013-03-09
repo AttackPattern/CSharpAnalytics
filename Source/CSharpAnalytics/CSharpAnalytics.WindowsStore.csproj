@@ -20,7 +20,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\WindowsStore\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;NETFX_CORE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NETFX_CORE;WINDOWS_STORE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>ExtendedCorrectnessRules.ruleset</CodeAnalysisRuleSet>
@@ -29,7 +29,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\WindowsStore\</OutputPath>
-    <DefineConstants>TRACE;NETFX_CORE</DefineConstants>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_STORE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -106,11 +106,11 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Activities\ActivityBase.cs" />
+    <Compile Include="Activities\AppViewActivity.cs" />
     <Compile Include="Activities\AutoTimedEventActivity.cs" />
     <Compile Include="Activities\CampaignActivity.cs" />
+    <Compile Include="Activities\ContentViewActivity.cs" />
     <Compile Include="Activities\ExceptionActivity.cs" />
-    <Compile Include="Activities\IActivity.cs" />
     <Compile Include="Activities\TimedEventActivity.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -120,10 +120,13 @@
     <Compile Include="Activities\SocialActivity.cs" />
     <Compile Include="Activities\TransactionItemActivity.cs" />
     <Compile Include="CustomVariables\ScopedCustomVariable.cs" />
+    <Compile Include="Protocols\Measurement\IMeasurementActivity.cs" />
+    <Compile Include="Protocols\Measurement\MeasurementAnalyticsClient.cs" />
     <Compile Include="Protocols\Measurement\MeasurementConfiguration.cs" />
     <Compile Include="Protocols\Measurement\MeasurementParameterDefinitions.cs" />
     <Compile Include="Protocols\Measurement\MeasurementTracker.cs" />
     <Compile Include="Protocols\Measurement\MeasurementTrackerActivities.cs" />
+    <Compile Include="Protocols\Urchin\IUrchinActivity.cs" />
     <Compile Include="Protocols\Urchin\UrchinAnalyticsClient.cs" />
     <Compile Include="Protocols\Urchin\UrchinConfiguration.cs" />
     <Compile Include="WindowsStore\AutoAnalytics.cs" />
@@ -139,7 +142,6 @@
     <Compile Include="Protocols\Urchin\UrchinParameterDefinitions.cs" />
     <Compile Include="Protocols\Urchin\UtmeDecoder.cs" />
     <Compile Include="Environment.cs" />
-    <Compile Include="AnalyticsClient.cs" />
     <Compile Include="Protocols\EpochTime.cs" />
     <Compile Include="Protocols\Urchin\UrchinTracker.cs" />
     <Compile Include="Protocols\Urchin\UrchinTrackerActivities.cs" />
@@ -150,6 +152,8 @@
     <Compile Include="Sessions\SessionManager.cs" />
     <Compile Include="Sessions\SessionState.cs" />
     <Compile Include="Sessions\Visitor.cs" />
+    <Compile Include="WindowsStore\AutoMeasurement.cs" />
+    <Compile Include="WindowsStore\SystemInformation.cs" />
     <Compile Include="WindowsStore\WindowsStoreEnvironment.cs" />
     <Compile Include="WindowsStore\LocalFolderContractSerializer.cs" />
   </ItemGroup>

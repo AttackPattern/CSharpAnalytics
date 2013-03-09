@@ -2,8 +2,9 @@
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
+using System.Linq;
 using CSharpAnalytics.Protocols;
-using CSharpAnalytics.Protocols.Urchin;
+using CSharpAnalytics.Protocols.Measurement;
 using CSharpAnalytics.Sessions;
 using System;
 using System.Collections.Generic;
@@ -11,9 +12,9 @@ using System.Diagnostics;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using Windows.ApplicationModel;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
+using Windows.System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
@@ -25,12 +26,12 @@ namespace CSharpAnalytics.WindowsStore
     /// Either use as-is by calling StartAsync and StopAsync from your App.xaml.cs or use as a
     /// starting point to wire up your own way.
     /// </summary>
-    public static class AutoAnalytics
+    public static class AutoMeasurement
     {
         private const string RequestQueueFileName = "CSharpAnalytics-RequestQueue";
         private const string SessionStateFileName = "CSharpAnalytics-SessionState";
 
-        private static readonly ProtocolDebugger protocolDebugger = new ProtocolDebugger(s => Debug.WriteLine(s), UrchinParameterDefinitions.All);
+        private static readonly ProtocolDebugger protocolDebugger = new ProtocolDebugger(s => Debug.WriteLine(s), MeasurementParameterDefinitions.All);
         private static readonly EventHandler<object> applicationResume = (sender, e) => Client.TrackEvent("ApplicationLifecycle", "Resume");
         private static readonly SuspendingEventHandler applicationSuspend = (sender, e) => Client.TrackEvent("ApplicationLifecycle", "Suspend");
         private static readonly UnhandledExceptionEventHandler unhandledApplicationException = (sender, e) => TrackException(e.Exception);
@@ -42,10 +43,7 @@ namespace CSharpAnalytics.WindowsStore
         private static Frame attachedFrame;
         private static DataTransferManager attachedDataTransferManager;
 
-        /// <summary>
-        /// Access to the UrchinAnalyticsClient necessary to send additional events.
-        /// </summary>
-        public static UrchinAnalyticsClient Client { get; private set; }
+        public static MeasurementAnalyticsClient Client { get; private set; }
 
         /// <summary>
         /// Start CSharpAnalytics by restoring the session state, starting the background sender,
@@ -56,7 +54,7 @@ namespace CSharpAnalytics.WindowsStore
         /// <param name="uploadInterval">How often to upload to the server. Lower times = more traffic but realtime. Defaults to 5 seconds.</param>
         /// <returns>A Task that will complete once CSharpAnalytics is available.</returns>
         /// <example>await AutoAnalytics.StartAsync(new Configuration("UA-123123123-1", "myapp.someco.com"));</example>
-        public static async Task StartAsync(UrchinConfiguration configuration, TimeSpan? uploadInterval = null)
+        public static async Task StartAsync(MeasurementConfiguration configuration, TimeSpan? uploadInterval = null)
         {
             Debug.Assert(Client == null);
             if (Client != null) return;
@@ -64,9 +62,9 @@ namespace CSharpAnalytics.WindowsStore
             await StartRequesterAsync(uploadInterval ?? TimeSpan.FromSeconds(5));
             await RestoreSessionAsync(TimeSpan.FromMinutes(20));
 
-            Client = new UrchinAnalyticsClient(configuration, sessionManager, new WindowsStoreEnvironment(), requester.Add);
+            Client = new MeasurementAnalyticsClient(configuration, sessionManager, new WindowsStoreEnvironment(), requester.Add);
             Client.TrackEvent("ApplicationLifecycle", "Start");
-            Client.TrackPageView("Home", "/");
+            Client.TrackAppView("Home");
 
             HookEvents();
         }
@@ -88,6 +86,8 @@ namespace CSharpAnalytics.WindowsStore
 
             await SuspendRequesterAsync();
             await SaveSessionAsync();
+
+            Client = null;
         }
 
         /// <summary>
@@ -139,7 +139,7 @@ namespace CSharpAnalytics.WindowsStore
         private static void FrameNavigated(object sender, NavigationEventArgs e)
         {
             if (e.Content is ITrackPageView) return;
-            Client.TrackPageView(e.SourcePageType.Name, "/" + e.SourcePageType.Name);
+            Client.TrackAppView(e.SourcePageType.Name);
         }
 
         /// <summary>
@@ -165,19 +165,45 @@ namespace CSharpAnalytics.WindowsStore
         /// </remarks>
         private static void PreprocessHttpRequest(HttpRequestMessage requestMessage)
         {
-            var packageId = Package.Current.Id;
-            requestMessage.Headers.UserAgent.Add(new ProductInfoHeaderValue(packageId.Name, FormatVersion(packageId.Version)));
+            AddUserAgent(requestMessage.Headers.UserAgent);
             DebugRequest(requestMessage);
         }
 
         /// <summary>
-        /// Get the formatted version number for a PackageVersion.
+        /// Figure out the user agent and add it to the header collection.
         /// </summary>
-        /// <param name="version">PackageVersion to format.</param>
-        /// <returns>Formatted version number of the PackageVersion.</returns>
-        private static string FormatVersion(PackageVersion version)
+        /// <param name="userAgent">User agent header collection.</param>
+        private static void AddUserAgent(ICollection<ProductInfoHeaderValue> userAgent)
         {
-            return String.Join(".", version.Major, version.Minor, version.Revision, version.Build);
+            userAgent.Add(new ProductInfoHeaderValue("CSharpAnalytics", "0.1"));
+
+            var agentParts = new[] {
+                "Windows NT " + SystemInformation.GetWindowsVersionAsync().Result,
+                GetProcessorArchitectureAsync().Result
+            };
+
+            userAgent.Add(new ProductInfoHeaderValue("(" + String.Join("; ", agentParts) + ")"));
+        }
+
+        /// <summary>
+        /// Determine the current processor architecture string for the user agent.
+        /// </summary>
+        /// <remarks>
+        /// The strings this returns should be compatible with web browser user agent
+        /// processor strings.
+        /// </remarks>
+        /// <returns>String containing the processor architecture.</returns>
+        private static async Task<string> GetProcessorArchitectureAsync()
+        {
+            switch (await SystemInformation.GetProcessorArchitectureAsync())
+            {
+                case ProcessorArchitecture.X64:
+                    return "x64";
+                case ProcessorArchitecture.Arm:
+                    return "ARM";
+                default:
+                    return "";
+            }
         }
 
         [Conditional("DEBUG")]
@@ -217,30 +243,20 @@ namespace CSharpAnalytics.WindowsStore
         }
 
         /// <summary>
-        /// Track an exception in analytics.
+        /// Track an unhandled exception in analytics.
         /// </summary>
-        /// <remarks>
-        /// Urchin does not explicitly support exceptions so send as an event.
-        /// Be very careful calling this explicitly in non-fatal scenarios as exceptions
-        /// can cascade and subsequently overload your tracking limits.
-        /// </remarks>
-        /// <param name="ex">Exception to track</param>
-        public static void TrackException(Exception ex)
+        /// <param name="ex">Exception to track in analytics.</param>
+        private static void TrackException(Exception ex)
         {
-            Client.TrackEvent(ex.GetType().Name, "UnhandledException", ex.Source);
-        }
-    }
+            var aggregateException = ex as AggregateException;
+            if (aggregateException != null && aggregateException.InnerExceptions.Count == 1)
+                ex = aggregateException.InnerExceptions.First();
 
-    /// <summary>
-    /// Implement this interface on any Pages in your application where you want
-    /// to override the page titles or paths generated for that page by emitting them yourself at
-    /// the end of the page's LoadState method.
-    /// </summary>
-    /// <remarks>
-    /// This is especially useful for a page that obtains its content from a data source to
-    /// track it as seperate virtual pages.
-    /// </remarks>
-    public interface ITrackPageView
-    {
+            // TODO: Figure out a good compressed summary format for exceptions
+            var description = ex.Message;
+
+            // Technically another handler could fix things but no mechanism to know that
+            Client.TrackException(description, isFatal:true); 
+        }
     }
 }

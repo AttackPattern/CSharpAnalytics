@@ -1,15 +1,14 @@
 ﻿﻿// Copyright (c) Attack Pattern LLC.  All rights reserved.
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
-using CSharpAnalytics.CustomVariables;
 
-namespace CSharpAnalytics.Activities
+namespace CSharpAnalytics.Protocols.Urchin
 {
     /// <summary>
-    /// Base class for all activities.
+    /// Indicates that an Activity is compatible with Urchin and
+    /// can be tracked using the UrchinTracker.
     /// </summary>
-    public interface IActivity
+    public interface IUrchinActivity
     {
-        ScopedCustomVariableSlots CustomVariables { get; }
     }
 }

@@ -1,6 +1,7 @@
 ﻿﻿// Copyright (c) Attack Pattern LLC.  All rights reserved.
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+
 using System;
 using System.Globalization;
 
@@ -14,6 +15,11 @@ namespace CSharpAnalytics.Protocols
         private static readonly DateTimeOffset epochMoment = new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero);
 
         private readonly long secondsSince1970;
+
+        /// <summary>
+        /// Current system time expressed in EpochTime.
+        /// </summary>
+        public static EpochTime Now { get { return new EpochTime(DateTimeOffset.Now); } }
 
         /// <summary>
         /// Create a new EpochTime with a given number of seconds since the start of 1970.
@@ -30,9 +36,9 @@ namespace CSharpAnalytics.Protocols
         /// <param name="offset"></param>
         public EpochTime(DateTimeOffset offset)
         {
-            secondsSince1970 = Convert.ToInt64((offset - epochMoment).TotalSeconds);            
+            secondsSince1970 = Convert.ToInt64((offset - epochMoment).TotalSeconds);
         }
-       
+
         /// <summary>
         /// Return an EpochTime as a DateTimeOffset.
         /// </summary>
@@ -58,6 +64,19 @@ namespace CSharpAnalytics.Protocols
         public string ToUtcString()
         {
             return ToDateTimeOffset().ToString("r");
+        }
+
+        /// <summary>
+        /// Format a date as UTC format.
+        /// </summary>
+        /// <param name="secondsSince1970">Number of seconds since 01-Jan-1970.</param>
+        /// <returns>Formatted UTC date.</returns>
+        public static string FormatDate(string secondsSince1970)
+        {
+            long numericSecondsSince1970;
+            return !long.TryParse(secondsSince1970, out numericSecondsSince1970)
+                ? String.Empty
+                : new EpochTime(numericSecondsSince1970).ToUtcString();
         }
     }
 }

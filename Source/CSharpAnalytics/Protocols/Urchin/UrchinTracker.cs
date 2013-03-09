@@ -1,6 +1,7 @@
 ﻿﻿// Copyright (c) Attack Pattern LLC.  All rights reserved.
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+
 using CSharpAnalytics.Activities;
 using CSharpAnalytics.CustomVariables;
 using CSharpAnalytics.Sessions;
@@ -47,7 +48,7 @@ namespace CSharpAnalytics.Protocols.Urchin
         /// <param name="activity">Activity to create a URI for.</param>
         /// <param name="customVariables">Custom variables to include in the URI.</param>
         /// <returns>Uri that when requested will track this activity.</returns>
-        public Uri CreateUri(IActivity activity, ScopedCustomVariableSlots[] customVariables)
+        public Uri CreateUri(IUrchinActivity activity, ScopedCustomVariableSlots[] customVariables)
         {
             var parameters = BuildParameterList(activity, customVariables);
 
@@ -62,7 +63,7 @@ namespace CSharpAnalytics.Protocols.Urchin
         /// </summary>
         /// <param name="activity">Current activity being processed.</param>C:\src\CSharpAnalytics\Source\CSharpAnalytics\Internal\
         /// <param name="parameters">Current parameters for this request.</param>
-        private void CarryForwardLastPageParameter(IActivity activity, ICollection<KeyValuePair<string, string>> parameters)
+        private void CarryForwardLastPageParameter(IUrchinActivity activity, ICollection<KeyValuePair<string, string>> parameters)
         {
             if (activity is EventActivity && lastUtmpParameterValue != null)
                 parameters.Add(KeyValuePair.Create("utmp", lastUtmpParameterValue));
@@ -77,7 +78,7 @@ namespace CSharpAnalytics.Protocols.Urchin
         /// <param name="activity">Activity to include in the parameter list.</param>
         /// <param name="customVariables">Custom variables to include in the parameter list.</param>
         /// <returns>List of key/value pairs containing the parameters necessary for this request.</returns>
-        private List<KeyValuePair<string, string>> BuildParameterList(IActivity activity, ScopedCustomVariableSlots[] customVariables)
+        private List<KeyValuePair<string, string>> BuildParameterList(IUrchinActivity activity, ScopedCustomVariableSlots[] customVariables)
         {
             var finalCustomVariables = GetFinalCustomVariables(customVariables);
 
@@ -97,11 +98,13 @@ namespace CSharpAnalytics.Protocols.Urchin
         /// <returns>An array of custom variables with their scope indexed by slot.</returns>
         internal static ScopedCustomVariable[] GetFinalCustomVariables(params ScopedCustomVariableSlots[] scopedCustomVariableSlots)
         {
-            var allSlots = scopedCustomVariableSlots.SelectMany(s => s.AllSlots).ToList();
+            var goodSlots = scopedCustomVariableSlots.Where(c => c != null).ToArray();
+
+            var allSlots = goodSlots.SelectMany(s => s.AllSlots).ToList();
             var highestSlotIndex = allSlots.Any() ? allSlots.Max(s => s.Key) : 0;
             var finalCustomVariables = new ScopedCustomVariable[highestSlotIndex + 1];
 
-            foreach (var scopedSlots in scopedCustomVariableSlots.OrderByDescending(s => s.Scope))
+            foreach (var scopedSlots in goodSlots.OrderByDescending(s => s.Scope))
                 foreach (var slot in scopedSlots.AllSlots)
                     finalCustomVariables[slot.Key] = new ScopedCustomVariable(scopedSlots.Scope, slot.Value);
 
@@ -214,6 +217,11 @@ namespace CSharpAnalytics.Protocols.Urchin
                     sessionManager.Session.Number);
         }
 
+        /// <summary>
+        /// Reduce a Guid down to what can be represented in a uint.
+        /// </summary>
+        /// <param name="guid">Guid to reduce.</param>
+        /// <returns>Uint to represent the Guid.</returns>
         private static uint ReduceGuidToUint(Guid guid)
         {
             var bytes = guid.ToByteArray();

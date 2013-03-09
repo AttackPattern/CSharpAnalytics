@@ -1,6 +1,7 @@
 ﻿﻿// Copyright (c) Attack Pattern LLC.  All rights reserved.
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+
 using System;
 using System.Diagnostics;
 
@@ -34,6 +35,12 @@ namespace CSharpAnalytics.Activities
             get { return (EndedAt ?? DateTimeOffset.Now) - StartedAt; }
         }
 
+        /// <summary>
+        /// Create a new AutoTimedEventActivity to capture details of a timed event.
+        /// </summary>
+        /// <param name="category">Category of this event.</param>
+        /// <param name="variable">Variable name of this event.</param>
+        /// <param name="label">Label for this event.</param>
         public AutoTimedEventActivity(string category, string variable, string label = null)
             : base(category, variable, TimeSpan.Zero, label)
         {

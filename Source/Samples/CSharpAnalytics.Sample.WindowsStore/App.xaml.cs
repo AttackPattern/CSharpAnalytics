@@ -1,4 +1,7 @@
-﻿using CSharpAnalytics.Protocols.Urchin;
+﻿using System.Threading.Tasks;
+using CSharpAnalytics.Activities;
+using CSharpAnalytics.Protocols.Measurement;
+using CSharpAnalytics.Protocols.Urchin;
 using CSharpAnalytics.Sample.WindowsStore.Common;
 using System;
 using CSharpAnalytics.WindowsStore;
@@ -32,6 +35,7 @@ namespace CSharpAnalytics.Sample.WindowsStore
         /// <param name="args">Details about the launch request and process.</param>
         protected override async void OnLaunched(LaunchActivatedEventArgs args)
         {
+            var timeLaunch = new AutoTimedEventActivity("ApplicationLifecycle", "Launching");
             var rootFrame = Window.Current.Content as Frame;
 
             // Do not repeat app initialization when the Window already has content,
@@ -41,7 +45,7 @@ namespace CSharpAnalytics.Sample.WindowsStore
             {
                 // Create a Frame to act as the navigation context and navigate to the first page
                 rootFrame = new Frame();
-                //Associate the frame with a SuspensionManager key                                
+                // Associate the frame with a SuspensionManager key
                 SuspensionManager.RegisterFrame(rootFrame, "AppFrame");
 
                 if (args.PreviousExecutionState == ApplicationExecutionState.Terminated)
@@ -53,8 +57,8 @@ namespace CSharpAnalytics.Sample.WindowsStore
                     }
                     catch (SuspensionManagerException)
                     {
-                        //Something went wrong restoring state.
-                        //Assume there is no state and continue
+                        // Something went wrong restoring state.
+                        // Assume there is no state and continue
                     }
                 }
 
@@ -71,9 +75,20 @@ namespace CSharpAnalytics.Sample.WindowsStore
                     throw new Exception("Failed to create initial page");
                 }
             }
+
+            // You choose *one* of these two techniques - NOT BOTH - depending on whether your property is a site or an app in GA.
+
+            // AutoAnalytics currently uses Urchin API originally designed for web sites
+            await AutoAnalytics.StartAsync(new UrchinConfiguration("UA-319000-10", "sample.csharpanalytics.com"));
+
+            // AutoMeasurement uses the Measurement Protocol API that Google's Native SDKs for iOS and Android use
+            await AutoMeasurement.StartAsync(new MeasurementConfiguration("UA-319000-8"));
+            
             // Ensure the current window is active
-            await AutoAnalytics.StartAsync(new UrchinConfiguration("UA-319000-10", "test"), "CSharpAnalyticsSampleApp");
             Window.Current.Activate();
+
+            AutoAnalytics.Client.Track(timeLaunch);
+            AutoMeasurement.Client.Track(timeLaunch);
         }
 
         /// <summary>
@@ -86,8 +101,7 @@ namespace CSharpAnalytics.Sample.WindowsStore
         private static async void OnSuspending(object sender, SuspendingEventArgs e)
         {
             var deferral = e.SuspendingOperation.GetDeferral();
-            await SuspensionManager.SaveAsync();
-            await AutoAnalytics.StopAsync();
+            await Task.WhenAll(SuspensionManager.SaveAsync(), AutoAnalytics.StopAsync(), AutoMeasurement.StopAsync());
             deferral.Complete();
         }
     }

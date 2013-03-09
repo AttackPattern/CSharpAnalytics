@@ -1,6 +1,7 @@
 ﻿﻿// Copyright (c) Attack Pattern LLC.  All rights reserved.
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+
 using System;
 using System.Text.RegularExpressions;
 
@@ -58,5 +59,21 @@ namespace CSharpAnalytics.Protocols.Measurement
             this.applicationVersion = applicationVersion;
             AnonymizeIp = true;
         }
+
+#if WINDOWS_STORE
+        /// <summary>
+        /// Create a new cofiguration for analytics.
+        /// </summary>
+        /// <param name="accountId">Google Analytics provided property id in the format UA-XXXX-Y.</param>
+        public MeasurementConfiguration(string accountId)
+            : this(accountId, Windows.ApplicationModel.Package.Current.Id.Name, FormatVersion(Windows.ApplicationModel.Package.Current.Id.Version))
+        {
+        }
+
+        private static string FormatVersion(Windows.ApplicationModel.PackageVersion version)
+        {
+            return String.Join(".", version.Major, version.Minor, version.Revision, version.Build);
+        }
+#endif
     }
 }
