@@ -1,6 +1,7 @@
 ﻿﻿// Copyright (c) Attack Pattern LLC.  All rights reserved.
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+
 using System;
 using System.Linq;
 
@@ -41,11 +42,11 @@ namespace CSharpAnalytics.Protocols.Urchin
 
             new ParameterDefinition("utmcc",    "Visitor ID", s => ExtractUtma(s, 1)),
             new ParameterDefinition("utmcc",    "Session Count", s => ExtractUtma(s, 5)),
-            new ParameterDefinition("utmcc",    "Session Time - First", s => FormatDate(ExtractUtma(s, 2))),
-            new ParameterDefinition("utmcc",    "Session Time - Last"  , s => FormatDate(ExtractUtma(s, 3))),
-            new ParameterDefinition("utmcc",    "Session Time - Current", s => FormatDate(ExtractUtma(s, 4))),
+            new ParameterDefinition("utmcc",    "Session Time - First", s => EpochTime.FormatDate(ExtractUtma(s, 2))),
+            new ParameterDefinition("utmcc",    "Session Time - Last"  , s => EpochTime.FormatDate(ExtractUtma(s, 3))),
+            new ParameterDefinition("utmcc",    "Session Time - Current", s => EpochTime.FormatDate(ExtractUtma(s, 4))),
 
-            new ParameterDefinition("utmcc",    "Campaign Time", s => FormatDate(ExtractUtmz(s, 1))),
+            new ParameterDefinition("utmcc",    "Campaign Time", s => EpochTime.FormatDate(ExtractUtmz(s, 1))),
             new ParameterDefinition("utmcc",    "Campaign Session", s => ExtractUtmz(s, 2)),
             new ParameterDefinition("utmcc",    "Campaign Count", s => ExtractUtmz(s, 3)),
             new ParameterDefinition("utmcc",    "Campaign Source", s => ExtractUtmz(s, 4, "utmcsr")),
@@ -86,7 +87,7 @@ namespace CSharpAnalytics.Protocols.Urchin
             // Additional debug info not present in ga_debug.js
             new ParameterDefinition("utms",     "Session Hit Count"),
             new ParameterDefinition("aip",      "Anonymize IP", FormatBoolean),
-            new ParameterDefinition("utmht",    "Real Event Time", FormatDate)
+            new ParameterDefinition("utmht",    "Real Event Time", EpochTime.FormatDate)
         };
 
         /// <summary>
@@ -185,27 +186,26 @@ namespace CSharpAnalytics.Protocols.Urchin
                 .FirstOrDefault();
         }
 
+        /// <summary>
+        /// Extract part of a string up to and not including the first instance of the before character.
+        /// </summary>
+        /// <param name="input">String to extract from.</param>
+        /// <param name="before">Character to stop before.</param>
+        /// <returns>Substring of input up to but not including before character.</returns>
         private static string SubstringBefore(string input, char before)
         {
             return input.Substring(0, input.IndexOf(before));
         }
 
+        /// <summary>
+        /// Extract part of a string from the point directly following the after character to the end.
+        /// </summary>
+        /// <param name="input">String to extract from.</param>
+        /// <param name="after">Character to start after.</param>
+        /// <returns>Substring of input directly following the after character to the end of the string.</returns>
         private static string SubstringAfter(string input, char after)
         {
             return input.Substring(input.IndexOf(after) + 1);
-        }
-
-        /// <summary>
-        /// Format a date as UTC format.
-        /// </summary>
-        /// <param name="secondsSince1970">Number of seconds since 01-Jan-1970.</param>
-        /// <returns>Formatted UTC date.</returns>
-        private static string FormatDate(string secondsSince1970)
-        {
-            long numericSecondsSince1970;
-            return !long.TryParse(secondsSince1970, out numericSecondsSince1970)
-                ? String.Empty
-                : new EpochTime(numericSecondsSince1970).ToUtcString();
         }
     }
 }
