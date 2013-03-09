@@ -108,7 +108,7 @@ Privacy is very important to Google and Microsoft and it should be to you too. H
 1. [Google's Measurement Protocol / SDK Policy](https://developers.google.com/analytics/devguides/collection/protocol/policy) (do not track personally identifyable information)
 1. [Microsoft's Windows 8 app certification requirements](http://msdn.microsoft.com/en-us/library/windows/apps/hh694083.aspx) (include a privacy policy with your app)
 1. AnonymizeIp is set to true by default. We recommend you leave this on as it scrubs the last IP octet at Google's end.
-1. Do not share the names of user-generated content. e.g. Page titles for mail apps or photo album apps.
+1. Do not track the names of user-generated content. e.g. Page titles for mail apps or photo album apps.
  
 In summary: **Do not share personally identifyable information**
 
