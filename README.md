@@ -49,6 +49,8 @@ You will need:
 * Google Analytics account - Head to http://analytics.google.com and sign-up if you don't have one
 * Analytics property set-up as a **web site**
 
+If you want to set-up your Analytisc property as an App then try out our experimental AutoMeasurement and MeasurementAnalyticsClient classes.
+
 Download or clone the source and add a reference to CSharpAnalytics.WindowsStore from your application.
 
 AutoAnalytics for Windows 8
@@ -59,12 +61,13 @@ The easiest way to start is to use the AutoAnalytics class. It hooks into a few 
 * Visitor, session counts, time-spent
 * Social sharing events
 * Basic page navigation activity
+* Unhandled exception details
 
-To use it simply add two lines to your app.xaml.cs:
+To use it simply add two lines to your App.xaml.cs:
 
-**Start analytics** with this line in App.OnLaunched directly before  Window.Current.Activate()
+**Start analytics** with this line in App.OnLaunched directly before Window.Current.Activate() - replace the configuration values with your own.
 
-`await AutoAnalytics.StartAsync(new UrchinConfiguration("UA-XXX-YYY", "analytics app name"));`
+`await AutoAnalytics.StartAsync(new UrchinConfiguration("UA-319000-10", "sample.csharpanalytics.com"));`
 
 **Stop analytics** with this line in App.OnSuspending directly before deferral.Complete()
 
@@ -88,6 +91,16 @@ Say you want to track when the video "Today's News" is played back:
 
 `AutoAnalytics.Client.TrackEvent("Play", "Video", "Today's News");`
 
+**For timing**
+
+If you want to track how long something takes:
+
+```
+var timedActivity = new AutoTimedEventActivity("Loading", "Pictures");
+// do something that takes time
+AutoAnalytics.Client.Track(timedActivity);
+```
+
 Privacy
 -------
 Privacy is very important to Google and Microsoft and it should be to you too. Here's a few things you should know:
@@ -99,11 +112,9 @@ Privacy is very important to Google and Microsoft and it should be to you too. H
  
 In summary: **Do not share personally identifyable information**
 
-Not fully tested
+Untested
 ----------------
-1. Google Measurement Protocol support (Urchin is tested)
-1. E-commerce tracking
-1. Timed events
+1. E-commerce tracking (Windows Store already has its own)
 1. Campaign tracking (limited use as Windows Store doesn't pass through parameters)
 
 Future enhancements
