@@ -28,8 +28,8 @@ namespace CSharpAnalytics.WindowsStore
     /// </summary>
     public static class AutoMeasurement
     {
-        private const string RequestQueueFileName = "CSharpAnalytics-RequestQueue";
-        private const string SessionStateFileName = "CSharpAnalytics-SessionState";
+        private const string RequestQueueFileName = "CSharpAnalytics-MeasurementQueue";
+        private const string SessionStateFileName = "CSharpAnalytics-MeasurementSession";
 
         private static readonly ProtocolDebugger protocolDebugger = new ProtocolDebugger(s => Debug.WriteLine(s), MeasurementParameterDefinitions.All);
         private static readonly EventHandler<object> applicationResume = (sender, e) => Client.TrackEvent("ApplicationLifecycle", "Resume");
