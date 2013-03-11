@@ -16,7 +16,7 @@ namespace CSharpAnalytics.Protocols.Measurement
     /// </summary>
     internal class MeasurementActivityTracker
     {
-        private string lastTransactionId;
+        private TransactionActivity lastTransaction;
 
         /// <summary>
         /// Turn an IMeasurementActivity into the key/value pairs necessary for building
@@ -26,6 +26,8 @@ namespace CSharpAnalytics.Protocols.Measurement
         /// <returns>Enumerable of key/value pairs representing the activity.</returns>
         internal IEnumerable<KeyValuePair<string, string>> GetActivityParameters(IMeasurementActivity activity)
         {
+            if (activity is AppViewActivity)
+                return GetParameters((AppViewActivity)activity);
             if (activity is ContentViewActivity)
                 return GetParameters((ContentViewActivity)activity);
             if (activity is CampaignActivity)
@@ -48,12 +50,36 @@ namespace CSharpAnalytics.Protocols.Measurement
         /// <summary>
         /// Obtain the key/value pairs for a ContentViewActivity.
         /// </summary>
+        /// <param name="appView">AppViewActivity to turn into key/value pairs.</param>
+        /// <returns>Key/value pairs representing this ContentViewActivity.</returns>
+        internal static IEnumerable<KeyValuePair<string, string>> GetParameters(AppViewActivity appView)
+        {
+            yield return KeyValuePair.Create("t", "appview");
+
+            foreach (var pair in GetSharedParameters(appView))
+                yield return pair;
+        }
+
+        /// <summary>
+        /// Obtain the key/value pairs for a ContentViewActivity.
+        /// </summary>
         /// <param name="contentView">ContentViewActivity to turn into key/value pairs.</param>
         /// <returns>Key/value pairs representing this ContentViewActivity.</returns>
         internal static IEnumerable<KeyValuePair<string, string>> GetParameters(ContentViewActivity contentView)
         {
-            yield return KeyValuePair.Create("t", "appview");
+            yield return KeyValuePair.Create("t", "pageview");
 
+            foreach (var pair in GetSharedParameters(contentView))
+                yield return pair;
+        }
+
+        /// <summary>
+        /// Obtain the key/value pairs shared by all ContentViewActivity classes.
+        /// </summary>
+        /// <param name="contentView">ContentViewActivity to turn into key/value pairs.</param>
+        /// <returns>Key/value pairs representing this ContentViewActivity.</returns>
+        internal static IEnumerable<KeyValuePair<string, string>> GetSharedParameters(ContentViewActivity contentView)
+        {
             if (contentView.DocumentLocation != null)
                 yield return KeyValuePair.Create("dl", contentView.DocumentLocation.OriginalString);
 
@@ -77,6 +103,8 @@ namespace CSharpAnalytics.Protocols.Measurement
         /// <returns>Key/value pairs representing this ExceptionActivity.</returns>
         internal static IEnumerable<KeyValuePair<string, string>> GetParameters(ExceptionActivity exception)
         {
+            yield return KeyValuePair.Create("t", "exception");
+
             yield return KeyValuePair.Create("exd", exception.Description);
             if (!exception.IsFatal)
                 yield return KeyValuePair.Create("exf", "0");
@@ -172,9 +200,9 @@ namespace CSharpAnalytics.Protocols.Measurement
         /// <returns>Key/value pairs representing this TransactionActivity.</returns>
         internal IEnumerable<KeyValuePair<string, string>> GetParameters(TransactionActivity transaction)
         {
-            yield return KeyValuePair.Create("t", "transaction");
+            lastTransaction = transaction;
 
-            lastTransactionId = transaction.OrderId;
+            yield return KeyValuePair.Create("t", "transaction");
             yield return KeyValuePair.Create("ti", transaction.OrderId);
 
             if (!String.IsNullOrWhiteSpace(transaction.StoreName))
@@ -188,6 +216,9 @@ namespace CSharpAnalytics.Protocols.Measurement
 
             if (transaction.TaxCost != Decimal.Zero)
                 yield return KeyValuePair.Create("tt", transaction.ShippingCost.ToString("0.00", CultureInfo.InvariantCulture));
+
+            if (!String.IsNullOrWhiteSpace(transaction.Currency))
+                yield return KeyValuePair.Create("cu", transaction.Currency);
         }
 
         /// <summary>
@@ -199,7 +230,7 @@ namespace CSharpAnalytics.Protocols.Measurement
         {
             yield return KeyValuePair.Create("t", "item");
 
-            yield return KeyValuePair.Create("ti", lastTransactionId);
+            yield return KeyValuePair.Create("ti", lastTransaction.OrderId);
 
             if (item.Price != Decimal.Zero)
                 yield return KeyValuePair.Create("ip", item.Price.ToString("0.00", CultureInfo.InvariantCulture));
@@ -215,6 +246,9 @@ namespace CSharpAnalytics.Protocols.Measurement
 
             if (!String.IsNullOrEmpty(item.Variation))
                 yield return KeyValuePair.Create("iv", item.Variation);
+
+            if (!String.IsNullOrWhiteSpace(lastTransaction.Currency))
+                yield return KeyValuePair.Create("cu", lastTransaction.Currency);
         }
     }
 }

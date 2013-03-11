@@ -73,6 +73,12 @@ namespace CSharpAnalytics.Activities
         public string BillingCountry { get; set; }
 
         /// <summary>
+        /// Currency of the order.
+        /// </summary>
+        /// <example>USD</example>
+        public string Currency { get; set; }
+
+        /// <summary>
         /// Add an itemActivity to the transaction.
         /// </summary>
         /// <param name="itemActivity"></param>
