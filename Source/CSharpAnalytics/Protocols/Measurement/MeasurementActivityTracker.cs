@@ -14,7 +14,7 @@ namespace CSharpAnalytics.Protocols.Measurement
     /// <summary>
     /// Converts MeasurementActivities into key/value pairs that will form the Measurement Protocol URIs generated.
     /// </summary>
-    internal class MeasurementTrackerActivities
+    internal class MeasurementActivityTracker
     {
         private string lastTransactionId;
 

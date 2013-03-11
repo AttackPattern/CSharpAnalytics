@@ -18,7 +18,7 @@ namespace CSharpAnalytics.Test.Protocols.Urchin
         {
             var activity = new CampaignActivity("source");
 
-            var parameters = UrchinTrackerActivities.GetParameters(activity).ToDictionary(k => k.Key, v => v.Value);
+            var parameters = UrchinActivityTracker.GetParameters(activity).ToDictionary(k => k.Key, v => v.Value);
 
             Assert.AreEqual("source", parameters["utmcsr"]);
         }
@@ -34,7 +34,7 @@ namespace CSharpAnalytics.Test.Protocols.Urchin
                 Content = "content"
             };
 
-            var parameters = UrchinTrackerActivities.GetParameters(activity).ToDictionary(k => k.Key, v => v.Value);
+            var parameters = UrchinActivityTracker.GetParameters(activity).ToDictionary(k => k.Key, v => v.Value);
 
             Assert.AreEqual("name", parameters["utmccn"]);
             Assert.AreEqual("medium", parameters["utmcmd"]);
@@ -47,7 +47,7 @@ namespace CSharpAnalytics.Test.Protocols.Urchin
         {
             var activity = new CampaignActivity("source") { IsNewVisit = true };
 
-            var results = UrchinTrackerActivities.GetParameters(activity).ToDictionary(k => k.Key, v => v);
+            var results = UrchinActivityTracker.GetParameters(activity).ToDictionary(k => k.Key, v => v);
 
             var expectedKeys = new[] { "utmcsr", "utmcn" };
             CollectionAssert.AreEquivalent(expectedKeys, results.Keys);
@@ -58,7 +58,7 @@ namespace CSharpAnalytics.Test.Protocols.Urchin
         {
             var activity = new CampaignActivity("source");
 
-            var results = UrchinTrackerActivities.GetParameters(activity).ToDictionary(k => k.Key, v => v);
+            var results = UrchinActivityTracker.GetParameters(activity).ToDictionary(k => k.Key, v => v);
 
             var expectedKeys = new[] { "utmcsr", "utmcr" };
             CollectionAssert.AreEquivalent(expectedKeys, results.Keys);
@@ -69,7 +69,7 @@ namespace CSharpAnalytics.Test.Protocols.Urchin
         {
             var activity = new EventActivity("action", "category", nonInteraction: true);
 
-            var results = UrchinTrackerActivities.GetParameters(activity).ToDictionary(k => k.Key, v => v);
+            var results = UrchinActivityTracker.GetParameters(activity).ToDictionary(k => k.Key, v => v);
 
             var expectedKeys = new[] { "utmt", "utme", "utmi" };
             CollectionAssert.AreEquivalent(expectedKeys, results.Keys);
@@ -80,7 +80,7 @@ namespace CSharpAnalytics.Test.Protocols.Urchin
         {
             var activity = new EventActivity("action", "category");
 
-            var results = UrchinTrackerActivities.GetParameters(activity).ToDictionary(k => k.Key, v => v);
+            var results = UrchinActivityTracker.GetParameters(activity).ToDictionary(k => k.Key, v => v);
 
             CollectionAssert.Contains(results.Keys, "utmt");
             Assert.AreEqual("event", results["utmt"].Value);
@@ -91,7 +91,7 @@ namespace CSharpAnalytics.Test.Protocols.Urchin
         {
             var activity = new EventActivity("*)!", "a*b)c!d'2", label: "*", value: 1);
 
-            var actual = UrchinTrackerActivities.GetParameters(activity).First(f => f.Key == "utme").Value;
+            var actual = UrchinActivityTracker.GetParameters(activity).First(f => f.Key == "utme").Value;
 
             Assert.AreEqual("5(a'2b'1c'3d'02*'2'1'3*'2)(1)", actual);
         }
@@ -101,7 +101,7 @@ namespace CSharpAnalytics.Test.Protocols.Urchin
         {
             var activity = new EventActivity("action", "category");
 
-            var actual = UrchinTrackerActivities.GetParameters(activity).First(f => f.Key == "utme").Value;
+            var actual = UrchinActivityTracker.GetParameters(activity).First(f => f.Key == "utme").Value;
 
             Assert.AreEqual("5(category*action)", actual);
         }
@@ -111,7 +111,7 @@ namespace CSharpAnalytics.Test.Protocols.Urchin
         {
             var activity = new EventActivity("action", "category", "label");
 
-            var actual = UrchinTrackerActivities.GetParameters(activity).First(f => f.Key == "utme").Value;
+            var actual = UrchinActivityTracker.GetParameters(activity).First(f => f.Key == "utme").Value;
 
             Assert.AreEqual("5(category*action*label)", actual);
         }
@@ -121,7 +121,7 @@ namespace CSharpAnalytics.Test.Protocols.Urchin
         {
             var activity = new EventActivity("action", "category", label: "label", value: 1234);
 
-            var actual = UrchinTrackerActivities.GetParameters(activity).First(f => f.Key == "utme").Value;
+            var actual = UrchinActivityTracker.GetParameters(activity).First(f => f.Key == "utme").Value;
 
             Assert.AreEqual("5(category*action*label)(1234)", actual);
         }
@@ -131,7 +131,7 @@ namespace CSharpAnalytics.Test.Protocols.Urchin
         {
             var activity = new TransactionItemActivity("code", "name", 1.23m, 4, "variation");
 
-            var results = UrchinTrackerActivities.GetParameters(activity).ToDictionary(k => k.Key, v => v);
+            var results = UrchinActivityTracker.GetParameters(activity).ToDictionary(k => k.Key, v => v);
 
             var expectedKeys = new[] { "utmt", "utmipc", "utmipn", "utmipr", "utmiqt", "utmiva" };
             CollectionAssert.AreEquivalent(expectedKeys, results.Keys);
@@ -142,7 +142,7 @@ namespace CSharpAnalytics.Test.Protocols.Urchin
         {
             var activity = new TransactionItemActivity("code", "name", 1.23m, 1);
 
-            var results = UrchinTrackerActivities.GetParameters(activity).ToDictionary(k => k.Key, v => v);
+            var results = UrchinActivityTracker.GetParameters(activity).ToDictionary(k => k.Key, v => v);
 
             CollectionAssert.Contains(results.Keys, "utmt");
             Assert.AreEqual("item", results["utmt"].Value);
@@ -153,7 +153,7 @@ namespace CSharpAnalytics.Test.Protocols.Urchin
         {
             var activity = new TransactionItemActivity("code", "name", 1.23m, 1);
 
-            var parameters = UrchinTrackerActivities.GetParameters(activity).ToDictionary(k => k.Key, v => v.Value);
+            var parameters = UrchinActivityTracker.GetParameters(activity).ToDictionary(k => k.Key, v => v.Value);
 
             Assert.AreEqual("code", parameters["utmipc"]);
             Assert.AreEqual("name", parameters["utmipn"]);
@@ -165,7 +165,7 @@ namespace CSharpAnalytics.Test.Protocols.Urchin
         {
             var activity = new TransactionItemActivity("code", "name", 1.23m, 4, "variation");
 
-            var parameters = UrchinTrackerActivities.GetParameters(activity).ToDictionary(k => k.Key, v => v.Value);
+            var parameters = UrchinActivityTracker.GetParameters(activity).ToDictionary(k => k.Key, v => v.Value);
 
             Assert.AreEqual("4", parameters["utmiqt"]);
             Assert.AreEqual("variation", parameters["utmiva"]);
@@ -176,7 +176,7 @@ namespace CSharpAnalytics.Test.Protocols.Urchin
         {
             var activity = new PageViewActivity("title", "page");
 
-            var results =  UrchinTrackerActivities.GetParameters(activity).ToDictionary(k => k.Key, v => v);
+            var results =  UrchinActivityTracker.GetParameters(activity).ToDictionary(k => k.Key, v => v);
 
             var expectedKeys = new[] { "utmp", "utmdt" };
             CollectionAssert.AreEquivalent(expectedKeys, results.Keys);
@@ -187,7 +187,7 @@ namespace CSharpAnalytics.Test.Protocols.Urchin
         {
             var activity = new PageViewActivity("title", "page");
 
-            var results = UrchinTrackerActivities.GetParameters(activity).ToDictionary(k => k.Key, v => v);
+            var results = UrchinActivityTracker.GetParameters(activity).ToDictionary(k => k.Key, v => v);
 
             CollectionAssert.DoesNotContain(results.Keys, "utmt");
         }
@@ -197,7 +197,7 @@ namespace CSharpAnalytics.Test.Protocols.Urchin
         {
             var activity = new SocialActivity("action", "network", pagePath: "pagePath", target: "target");
 
-            var actualKeys = UrchinTrackerActivities.GetParameters(activity).Select(k => k.Key).ToArray();
+            var actualKeys = UrchinActivityTracker.GetParameters(activity).Select(k => k.Key).ToArray();
 
             var expectedKeys = new[] { "utmsn", "utmsa", "utmsid", "utmp", "utmt" };
             CollectionAssert.AreEquivalent(expectedKeys, actualKeys);
@@ -208,7 +208,7 @@ namespace CSharpAnalytics.Test.Protocols.Urchin
         {
             var activity = new SocialActivity("action", "category");
 
-            var results = UrchinTrackerActivities.GetParameters(activity).ToDictionary(k => k.Key, v => v);
+            var results = UrchinActivityTracker.GetParameters(activity).ToDictionary(k => k.Key, v => v);
 
             CollectionAssert.Contains(results.Keys, "utmt");
             Assert.AreEqual("social", results["utmt"].Value);
@@ -219,7 +219,7 @@ namespace CSharpAnalytics.Test.Protocols.Urchin
         {
             var activity = new SocialActivity("action", "network");
 
-            var parameters = UrchinTrackerActivities.GetParameters(activity).ToDictionary(k => k.Key, v => v.Value);
+            var parameters = UrchinActivityTracker.GetParameters(activity).ToDictionary(k => k.Key, v => v.Value);
 
             Assert.AreEqual("network", parameters["utmsn"]);
             Assert.AreEqual("action", parameters["utmsa"]);
@@ -230,7 +230,7 @@ namespace CSharpAnalytics.Test.Protocols.Urchin
         {
             var activity = new SocialActivity("action", "network", pagePath: "pagePath", target: "target");
 
-            var parameters = UrchinTrackerActivities.GetActivityParameters(activity).ToDictionary(k => k.Key, v => v.Value);
+            var parameters = UrchinActivityTracker.GetActivityParameters(activity).ToDictionary(k => k.Key, v => v.Value);
 
             Assert.AreEqual("target", parameters["utmsid"]);
             Assert.AreEqual("pagePath", parameters["utmp"]);
@@ -241,7 +241,7 @@ namespace CSharpAnalytics.Test.Protocols.Urchin
         {
             var activity = new TimedEventActivity("category", "variable", TimeSpan.FromSeconds(1.5), "label");
 
-            var results = UrchinTrackerActivities.GetParameters(activity).ToDictionary(k => k.Key, v => v);
+            var results = UrchinActivityTracker.GetParameters(activity).ToDictionary(k => k.Key, v => v);
 
             var expectedKeys = new[] { "utmt", "utme" };
             CollectionAssert.AreEquivalent(expectedKeys, results.Keys);
@@ -252,7 +252,7 @@ namespace CSharpAnalytics.Test.Protocols.Urchin
         {
             var activity = new TimedEventActivity("category", "variable", TimeSpan.Zero);
 
-            var results = UrchinTrackerActivities.GetParameters(activity).ToDictionary(k => k.Key, v => v);
+            var results = UrchinActivityTracker.GetParameters(activity).ToDictionary(k => k.Key, v => v);
 
             CollectionAssert.Contains(results.Keys, "utmt");
             Assert.AreEqual("event", results["utmt"].Value);

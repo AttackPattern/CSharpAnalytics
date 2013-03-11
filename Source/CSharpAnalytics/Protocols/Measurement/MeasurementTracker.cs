@@ -22,7 +22,7 @@ namespace CSharpAnalytics.Protocols.Measurement
         private static readonly Uri trackingEndpoint = new Uri("http://www.google-analytics.com/collect");
         private static readonly Uri secureTrackingEndpoint = new Uri("https://ssl.google-analytics.com/collect");
 
-        private readonly MeasurementTrackerActivities trackerActivities = new MeasurementTrackerActivities();
+        private readonly MeasurementActivityTracker activityTracker = new MeasurementActivityTracker();
         private readonly SessionManager sessionManager;
         private readonly MeasurementConfiguration configuration;
         private readonly IEnvironment environment;
@@ -63,7 +63,7 @@ namespace CSharpAnalytics.Protocols.Measurement
                 .Concat(GetParameters(environment))
                 .Concat(GetParameters(configuration))
                 .Concat(GetParameters(sessionManager))
-                .Concat(trackerActivities.GetActivityParameters(activity))
+                .Concat(activityTracker.GetActivityParameters(activity))
                 .ToList();
         }
 

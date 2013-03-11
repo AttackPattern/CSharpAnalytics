@@ -14,7 +14,7 @@ namespace CSharpAnalytics.Protocols.Urchin
     /// <summary>
     /// Converts UrchinActivities into key/value pairs that will form the Urchin-style URIs generated.
     /// </summary>
-    internal static class UrchinTrackerActivities
+    internal static class UrchinActivityTracker
     {
         /// <summary>
         /// Turn an IUrchinActivity into the key/value pairs necessary for building
