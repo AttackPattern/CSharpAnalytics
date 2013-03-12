@@ -35,8 +35,9 @@ namespace CSharpAnalytics.Protocols.Urchin
             new ParameterDefinition("utmsa",    "Social Action"),
             new ParameterDefinition("utmsid",   "Social Action URL"),
 
-            new ParameterDefinition("utme",     "Event Action", s => UtmeDecoder.Decode(s, 5, 0)),
-            new ParameterDefinition("utme",     "Event Type", s => UtmeDecoder.Decode(s, 5, 1)),
+            // Google's own ga_debug.js gets Event Type/Action reversed - this one is correct.
+            new ParameterDefinition("utme",     "Event Type", s => UtmeDecoder.Decode(s, 5, 0)),
+            new ParameterDefinition("utme",     "Event Action", s => UtmeDecoder.Decode(s, 5, 1)),
             new ParameterDefinition("utme",     "Event Label", s => UtmeDecoder.Decode(s, 5, 2)),
             new ParameterDefinition("utme",     "Event Value", s => UtmeDecoder.Decode(s, 5, 3)),
 
