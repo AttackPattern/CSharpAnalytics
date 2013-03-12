@@ -168,8 +168,8 @@ namespace CSharpAnalytics.Network
         /// <returns>HttpRequestMessage for this URI.</returns>
         internal static HttpRequestMessage CreateRequestMessage(Uri uri)
         {
-            //if (uri.AbsoluteUri.Length <= MaxUriLength)
-            //    return new HttpRequestMessage(HttpMethod.Get, uri);
+            if (uri.AbsoluteUri.Length <= MaxUriLength)
+                return new HttpRequestMessage(HttpMethod.Get, uri);
 
             var uriWithoutQuery = new Uri(uri.GetComponents(UriComponents.SchemeAndServer | UriComponents.Path, UriFormat.Unescaped));
             return new HttpRequestMessage(HttpMethod.Post, uriWithoutQuery) { Content = new StringContent(uri.GetComponents(UriComponents.Query, UriFormat.UriEscaped)) };
