@@ -31,10 +31,10 @@ namespace CSharpAnalytics.Protocols
         }
 
         /// <summary>
-        /// Examine an URI to break down into constituent parts via the writer
+        /// Examine URI and break down into constituent parts via the writer
         /// for this debugger.
         /// </summary>
-        /// <param name="uri">Analytisc tracking URI to examine.</param>
+        /// <param name="uri">Analytics tracking URI to examine.</param>
         public void Examine(Uri uri)
         {
             writer("-Analytics-------------------------------------");

@@ -210,10 +210,29 @@ namespace CSharpAnalytics.WindowsStore
             }
         }
 
+        /// <summary>
+        /// Send the HttpRequestMessage with the protocol debugger for examination.
+        /// </summary>
+        /// <param name="requestMessage">HttpRequestMessage to examine with the protocol debugger.</param>
         [Conditional("DEBUG")]
-        private static void DebugRequest(HttpRequestMessage requestMessage)
+        private async static void DebugRequest(HttpRequestMessage requestMessage)
         {
-            protocolDebugger.Examine(requestMessage.RequestUri);
+            var payloadUri = await RejoinPayload(requestMessage);
+            protocolDebugger.Examine(payloadUri);
+        }
+
+        /// <summary>
+        /// Rejoin the POST body payload with the Uri parameter if necessary so it can be sent to the
+        /// protocol debugger.
+        /// </summary>
+        /// <param name="requestMessage">HttpRequestMessage to obtain complete payload for.</param>
+        /// <returns>Uri with final payload to be sent.</returns>
+        private async static Task<Uri> RejoinPayload(HttpRequestMessage requestMessage)
+        {
+            if (requestMessage.Content == null) return requestMessage.RequestUri;
+
+            var bodyPayload = await requestMessage.Content.ReadAsStringAsync();
+            return new UriBuilder(requestMessage.RequestUri) { Query = bodyPayload }.Uri;
         }
 
         /// <summary>

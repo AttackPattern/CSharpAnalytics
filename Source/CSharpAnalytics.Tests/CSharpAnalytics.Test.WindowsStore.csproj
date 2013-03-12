@@ -129,6 +129,7 @@
     <Compile Include="CustomVariables\ScopedCustomVariableTests.cs" />
     <Compile Include="CustomVariableTests.cs" />
     <Compile Include="EnvironmentTests.cs" />
+    <Compile Include="Network\BackgroundHttpRequesterTests.cs" />
     <Compile Include="Protocols\EpochTimeTests.cs" />
     <Compile Include="Protocols\Measurement\MeasurementActivityTrackerTests.cs" />
     <Compile Include="Protocols\Measurement\MeasurementConfigurationTests.cs" />
