@@ -2,13 +2,13 @@
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
-using System.Linq;
 using CSharpAnalytics.Protocols;
 using CSharpAnalytics.Protocols.Measurement;
 using CSharpAnalytics.Sessions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -32,8 +32,8 @@ namespace CSharpAnalytics.WindowsStore
         private const string SessionStateFileName = "CSharpAnalytics-MeasurementSession";
 
         private static readonly ProtocolDebugger protocolDebugger = new ProtocolDebugger(s => Debug.WriteLine(s), MeasurementParameterDefinitions.All);
-        private static readonly EventHandler<object> applicationResume = (sender, e) => Client.TrackEvent("ApplicationLifecycle", "Resume");
-        private static readonly SuspendingEventHandler applicationSuspend = (sender, e) => Client.TrackEvent("ApplicationLifecycle", "Suspend");
+        private static readonly EventHandler<object> applicationResume = (sender, e) => Client.TrackEvent("Resume", "ApplicationLifecycle");
+        private static readonly SuspendingEventHandler applicationSuspend = (sender, e) => Client.TrackEvent("Suspend", "ApplicationLifecycle");
         private static readonly UnhandledExceptionEventHandler unhandledApplicationException = (sender, e) => TrackException(e.Exception);
         private static readonly EventHandler<UnobservedTaskExceptionEventArgs> unobservedTaskException = (sender, e) => TrackException(e.Exception);
         private static readonly TypedEventHandler<DataTransferManager, TargetApplicationChosenEventArgs> socialShare = (sender, e) => Client.TrackSocial("ShareCharm", e.ApplicationName);
@@ -63,7 +63,7 @@ namespace CSharpAnalytics.WindowsStore
             await RestoreSessionAsync(TimeSpan.FromMinutes(20));
 
             Client = new MeasurementAnalyticsClient(configuration, sessionManager, new WindowsStoreEnvironment(), requester.Add);
-            Client.TrackEvent("ApplicationLifecycle", "Start");
+            Client.TrackEvent("Start", "ApplicationLifecycle");
             Client.TrackAppView("Home");
 
             HookEvents();
@@ -81,7 +81,7 @@ namespace CSharpAnalytics.WindowsStore
             Debug.Assert(Client != null);
             if (Client == null) return;
 
-            Client.TrackEvent("ApplicationLifecycle", "Stop");
+            Client.TrackEvent("Stop", "ApplicationLifecycle");
             UnhookEvents();
 
             await SuspendRequesterAsync();
@@ -166,6 +166,9 @@ namespace CSharpAnalytics.WindowsStore
         private static void PreprocessHttpRequest(HttpRequestMessage requestMessage)
         {
             AddUserAgent(requestMessage.Headers.UserAgent);
+
+            if (requestMessage.Method == HttpMethod.Get && requestMessage.RequestUri.AbsoluteUri.Length > 2000)
+
             DebugRequest(requestMessage);
         }
 

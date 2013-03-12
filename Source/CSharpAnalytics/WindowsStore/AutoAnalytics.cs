@@ -31,8 +31,8 @@ namespace CSharpAnalytics.WindowsStore
         private const string SessionStateFileName = "CSharpAnalytics-SessionState";
 
         private static readonly ProtocolDebugger protocolDebugger = new ProtocolDebugger(s => Debug.WriteLine(s), UrchinParameterDefinitions.All);
-        private static readonly EventHandler<object> applicationResume = (sender, e) => Client.TrackEvent("ApplicationLifecycle", "Resume");
-        private static readonly SuspendingEventHandler applicationSuspend = (sender, e) => Client.TrackEvent("ApplicationLifecycle", "Suspend");
+        private static readonly EventHandler<object> applicationResume = (sender, e) => Client.TrackEvent( "Resume", "ApplicationLifecycle");
+        private static readonly SuspendingEventHandler applicationSuspend = (sender, e) => Client.TrackEvent("Suspend", "ApplicationLifecycle");
         private static readonly UnhandledExceptionEventHandler unhandledApplicationException = (sender, e) => TrackException(e.Exception);
         private static readonly EventHandler<UnobservedTaskExceptionEventArgs> unobservedTaskException = (sender, e) => TrackException(e.Exception);
         private static readonly TypedEventHandler<DataTransferManager, TargetApplicationChosenEventArgs> socialShare = (sender, e) => Client.TrackSocial("ShareCharm", e.ApplicationName);
@@ -65,7 +65,7 @@ namespace CSharpAnalytics.WindowsStore
             await RestoreSessionAsync(TimeSpan.FromMinutes(20));
 
             Client = new UrchinAnalyticsClient(configuration, sessionManager, new WindowsStoreEnvironment(), requester.Add);
-            Client.TrackEvent("ApplicationLifecycle", "Start");
+            Client.TrackEvent("Start", "ApplicationLifecycle");
             Client.TrackPageView("Home", "/");
 
             HookEvents();
@@ -83,7 +83,7 @@ namespace CSharpAnalytics.WindowsStore
             Debug.Assert(Client != null);
             if (Client == null) return;
 
-            Client.TrackEvent("ApplicationLifecycle", "Stop");
+            Client.TrackEvent("Stop", "ApplicationLifecycle");
             UnhookEvents();
 
             await SuspendRequesterAsync();
