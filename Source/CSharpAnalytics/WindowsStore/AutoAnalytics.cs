@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
+using Windows.System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
@@ -166,9 +167,46 @@ namespace CSharpAnalytics.WindowsStore
         /// </remarks>
         private static void PreprocessHttpRequest(HttpRequestMessage requestMessage)
         {
-            var packageId = Package.Current.Id;
-            requestMessage.Headers.UserAgent.Add(new ProductInfoHeaderValue(packageId.Name, FormatVersion(packageId.Version)));
-            Task.Run(() => DebugRequest(requestMessage));
+            AddUserAgent(requestMessage.Headers.UserAgent, Package.Current.Id);
+            DebugRequest(requestMessage);
+        }
+
+        /// <summary>
+        /// Figure out the user agent and add it to the header collection.
+        /// </summary>
+        /// <param name="userAgent">User agent header collection.</param>
+        /// <param name="packageId">PackageId to extract application name and version from.</param>
+        private static void AddUserAgent(ICollection<ProductInfoHeaderValue> userAgent, PackageId packageId)
+        {
+            userAgent.Add(new ProductInfoHeaderValue(packageId.Name, FormatVersion(packageId.Version)));
+
+            var agentParts = new[] {
+                "Windows NT " + SystemInformation.GetWindowsVersionAsync().Result,
+                GetProcessorArchitectureAsync().Result
+            };
+
+            userAgent.Add(new ProductInfoHeaderValue("(" + String.Join("; ", agentParts) + ")"));
+        }
+
+        /// <summary>
+        /// Determine the current processor architecture string for the user agent.
+        /// </summary>
+        /// <remarks>
+        /// The strings this returns should be compatible with web browser user agent
+        /// processor strings.
+        /// </remarks>
+        /// <returns>String containing the processor architecture.</returns>
+        private static async Task<string> GetProcessorArchitectureAsync()
+        {
+            switch (await SystemInformation.GetProcessorArchitectureAsync())
+            {
+                case ProcessorArchitecture.X64:
+                    return "x64";
+                case ProcessorArchitecture.Arm:
+                    return "ARM";
+                default:
+                    return "";
+            }
         }
 
         /// <summary>
