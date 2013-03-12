@@ -76,10 +76,7 @@ namespace CSharpAnalytics.Test.Protocols.Urchin
         [TestMethod]
         public void UrchinTracker_GetParameters_For_Environment_Returns_Correct_Utmje_Value()
         {
-            var environment = new Environment("en-gb")
-                {
-                    JavaEnabled = false
-                };
+            var environment = new Environment("en-gb") { JavaEnabled = false };
 
             var utmjeValue = UrchinTracker.GetParameters(environment).First(f => f.Key == "utmje").Value;
 
@@ -104,7 +101,6 @@ namespace CSharpAnalytics.Test.Protocols.Urchin
 
             Assert.AreEqual("__utma=1.1159017511.1349874855.1355145255.1355490855.5;", cookieSubstitute);
         }
-
 
         [TestMethod]
         public void UrchinTracker_GetFinalCustomVariables_Selects_Correct_Final_Variables()

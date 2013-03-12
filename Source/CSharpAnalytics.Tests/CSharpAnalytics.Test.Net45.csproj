@@ -56,6 +56,7 @@
     <Compile Include="Activities\AppViewActivityTests.cs" />
     <Compile Include="Activities\CampaignActivityTests.cs" />
     <Compile Include="Activities\AutoTimedEventActivityTests.cs" />
+    <Compile Include="Activities\ContentViewActivityTests.cs" />
     <Compile Include="Activities\ExceptionActivityTests.cs" />
     <Compile Include="Activities\TransactionItemActivityTests.cs" />
     <Compile Include="Activities\EventActivityTests.cs" />
@@ -64,6 +65,9 @@
     <Compile Include="Activities\TimedEventActivityTests.cs" />
     <Compile Include="Activities\TransactionActivityTests.cs" />
     <Compile Include="AnalyticsClientTests.cs" />
+    <Compile Include="Protocols\Measurement\MeasurementConfigurationTests.cs" />
+    <Compile Include="Protocols\Measurement\MeasurementTrackerTests.cs" />
+    <Compile Include="Protocols\Measurement\MeasurementActivityTrackerTests.cs" />
     <Compile Include="Protocols\Urchin\UrchinConfigurationTests.cs" />
     <Compile Include="CustomVariables\CustomVariableTests.cs" />
     <Compile Include="CustomVariables\EvaluatedCustomVariableTests.cs" />
@@ -73,7 +77,7 @@
     <Compile Include="EnvironmentTests.cs" />
     <Compile Include="Protocols\EpochTimeTests.cs" />
     <Compile Include="Protocols\ParameterDefinition.cs" />
-    <Compile Include="Protocols\Urchin\UrchinTrackerActivityTests.cs" />
+    <Compile Include="Protocols\Urchin\UrchinActivityTrackerTests.cs" />
     <Compile Include="Protocols\Urchin\UrchinTrackerTests.cs" />
     <Compile Include="Protocols\Urchin\UtmeDecoderTests.cs" />
     <Compile Include="Protocols\Urchin\UtmeEncoderTests.cs" />

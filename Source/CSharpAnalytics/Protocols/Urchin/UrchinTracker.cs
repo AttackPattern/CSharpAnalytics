@@ -87,7 +87,7 @@ namespace CSharpAnalytics.Protocols.Urchin
                 .Concat(GetParameters(configuration))
                 .Concat(GetParameters(sessionManager, configuration.GetHostNameHash()))
                 .Concat(GetParameters(finalCustomVariables))
-                .Concat(UrchinActivityTracker.GetActivityParameters(activity))
+                .Concat(UrchinActivityTracker.GetParameters(activity))
                 .ToList();
         }
 

@@ -11,10 +11,10 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace CSharpAnalytics.Test.Protocols.Urchin
 {
     [TestClass]
-    public class UrchinTrackerActivityTests
+    public class UrchinActivityTrackerTests
     {
         [TestMethod]
-        public void UrchinTrackerActivities_GetParameter_For_CampaignActivity_Returns_Correct_Values()
+        public void UrchinActivityTracker_GetParameter_For_CampaignActivity_Returns_Correct_Values()
         {
             var activity = new CampaignActivity("source");
 
@@ -24,7 +24,7 @@ namespace CSharpAnalytics.Test.Protocols.Urchin
         }
 
         [TestMethod]
-        public void UrchinTrackerActivities_GetParameter_For_CampaignActivity_Returns_Correct_Optional_Values()
+        public void UrchinActivityTracker_GetParameter_For_CampaignActivity_Returns_Correct_Optional_Values()
         {
             var activity = new CampaignActivity("source")
             {
@@ -36,6 +36,7 @@ namespace CSharpAnalytics.Test.Protocols.Urchin
 
             var parameters = UrchinActivityTracker.GetParameters(activity).ToDictionary(k => k.Key, v => v.Value);
 
+            Assert.AreEqual("source", parameters["utmcsr"]);
             Assert.AreEqual("name", parameters["utmccn"]);
             Assert.AreEqual("medium", parameters["utmcmd"]);
             Assert.AreEqual("term", parameters["utmctr"]);
@@ -43,7 +44,7 @@ namespace CSharpAnalytics.Test.Protocols.Urchin
         }
 
         [TestMethod]
-        public void UrchinTrackerActivities_GetParameter_For_CampaignActivity_Returns_Correct_Keys_When_IsNewVisit()
+        public void UrchinActivityTracker_GetParameter_For_CampaignActivity_Returns_Correct_Keys_When_IsNewVisit()
         {
             var activity = new CampaignActivity("source") { IsNewVisit = true };
 
@@ -54,7 +55,7 @@ namespace CSharpAnalytics.Test.Protocols.Urchin
         }
 
         [TestMethod]
-        public void UrchinTrackerActivities_GetParameter_For_CampaignActivity_Returns_Correct_Keys_When_Not_IsNewVisit()
+        public void UrchinActivityTracker_GetParameter_For_CampaignActivity_Returns_Correct_Keys_When_Not_IsNewVisit()
         {
             var activity = new CampaignActivity("source");
 
@@ -65,7 +66,7 @@ namespace CSharpAnalytics.Test.Protocols.Urchin
         }
 
         [TestMethod]
-        public void UrchinTrackerActivities_GetParameter_For_EventActivity_Returns_Correct_Keys()
+        public void UrchinActivityTracker_GetParameter_For_EventActivity_Returns_Correct_Keys()
         {
             var activity = new EventActivity("action", "category", nonInteraction: true);
 
@@ -76,7 +77,7 @@ namespace CSharpAnalytics.Test.Protocols.Urchin
         }
 
         [TestMethod]
-        public void UrchinTrackerActivities_GetParameter_For_EventActivity_Returns_Correct_Utmt_Value()
+        public void UrchinActivityTracker_GetParameter_For_EventActivity_Returns_Correct_Utmt_Value()
         {
             var activity = new EventActivity("action", "category");
 
@@ -87,7 +88,7 @@ namespace CSharpAnalytics.Test.Protocols.Urchin
         }
 
         [TestMethod]
-        public void UrchinTrackerActivities_GetParameter_For_EventActivity_Returns_Correctly_Encoded_Utme_Value()
+        public void UrchinActivityTracker_GetParameter_For_EventActivity_Returns_Correctly_Encoded_Utme_Value()
         {
             var activity = new EventActivity("*)!", "a*b)c!d'2", label: "*", value: 1);
 
@@ -97,7 +98,7 @@ namespace CSharpAnalytics.Test.Protocols.Urchin
         }
 
         [TestMethod]
-        public void UrchinTrackerActivities_GetParameter_For_EventActivity_With_Two_Parameters_Returns_Correct_Utme_Value()
+        public void UrchinActivityTracker_GetParameter_For_EventActivity_With_Two_Parameters_Returns_Correct_Utme_Value()
         {
             var activity = new EventActivity("action", "category");
 
@@ -107,7 +108,7 @@ namespace CSharpAnalytics.Test.Protocols.Urchin
         }
 
         [TestMethod]
-        public void UrchinTrackerActivities_GetParameter_For_EventActivity_With_Three_Parameters_Returns_Correct_Utme_Value()
+        public void UrchinActivityTracker_GetParameter_For_EventActivity_With_Three_Parameters_Returns_Correct_Utme_Value()
         {
             var activity = new EventActivity("action", "category", "label");
 
@@ -117,7 +118,7 @@ namespace CSharpAnalytics.Test.Protocols.Urchin
         }
 
         [TestMethod]
-        public void UrchinTrackerActivities_GetParameter_For_EventActivity_With_Four_Parameters_Returns_Correct_Utme_Value()
+        public void UrchinActivityTracker_GetParameter_For_EventActivity_With_Four_Parameters_Returns_Correct_Utme_Value()
         {
             var activity = new EventActivity("action", "category", label: "label", value: 1234);
 
@@ -127,7 +128,7 @@ namespace CSharpAnalytics.Test.Protocols.Urchin
         }
 
         [TestMethod]
-        public void UrchinTrackerActivities_GetParameter_For_ItemActivity_Returns_Correct_Keys()
+        public void UrchinActivityTracker_GetParameter_For_ItemActivity_Returns_Correct_Keys()
         {
             var activity = new TransactionItemActivity("code", "name", 1.23m, 4, "variation");
 
@@ -138,7 +139,7 @@ namespace CSharpAnalytics.Test.Protocols.Urchin
         }
 
         [TestMethod]
-        public void UrchinTrackerActivities_GetParameter_For_ItemActivity_Returns_Correct_Utmt_Value()
+        public void UrchinActivityTracker_GetParameter_For_ItemActivity_Returns_Correct_Utmt_Value()
         {
             var activity = new TransactionItemActivity("code", "name", 1.23m, 1);
 
@@ -149,7 +150,7 @@ namespace CSharpAnalytics.Test.Protocols.Urchin
         }
 
         [TestMethod]
-        public void UrchinTrackerActivities_GetParameter_For_ItemActivity_Returns_Correct_Values()
+        public void UrchinActivityTracker_GetParameter_For_ItemActivity_Returns_Correct_Values()
         {
             var activity = new TransactionItemActivity("code", "name", 1.23m, 1);
 
@@ -161,18 +162,17 @@ namespace CSharpAnalytics.Test.Protocols.Urchin
         }
 
         [TestMethod]
-        public void UrchinTrackerActivities_GetParameter_For_ItemActivity_Returns_Correct_Optional_Values()
+        public void UrchinActivityTracker_GetParameter_For_ItemActivity_Returns_Correct_Optional_Values()
         {
             var activity = new TransactionItemActivity("code", "name", 1.23m, 4, "variation");
 
             var parameters = UrchinActivityTracker.GetParameters(activity).ToDictionary(k => k.Key, v => v.Value);
 
-            Assert.AreEqual("4", parameters["utmiqt"]);
             Assert.AreEqual("variation", parameters["utmiva"]);
         }
 
         [TestMethod]
-        public void UrchinTrackerActivities_GetParameter_For_PageViewActivity_Returns_Correct_Keys()
+        public void UrchinActivityTracker_GetParameter_For_PageViewActivity_Returns_Correct_Keys()
         {
             var activity = new PageViewActivity("title", "page");
 
@@ -183,7 +183,7 @@ namespace CSharpAnalytics.Test.Protocols.Urchin
         }
 
         [TestMethod]
-        public void UrchinTrackerActivities_GetParameter_For_PageViewActivity_Returns_No_Utmt_Value()
+        public void UrchinActivityTracker_GetParameter_For_PageViewActivity_Returns_No_Utmt_Value()
         {
             var activity = new PageViewActivity("title", "page");
 
@@ -193,7 +193,7 @@ namespace CSharpAnalytics.Test.Protocols.Urchin
         }
 
         [TestMethod]
-        public void UrchinTrackerActivities_GetParameter_For_SocialActivity_Returns_Correct_Keys()
+        public void UrchinActivityTracker_GetParameter_For_SocialActivity_Returns_Correct_Keys()
         {
             var activity = new SocialActivity("action", "network", pagePath: "pagePath", target: "target");
 
@@ -204,7 +204,7 @@ namespace CSharpAnalytics.Test.Protocols.Urchin
         }
 
         [TestMethod]
-        public void UrchinTrackerActivities_GetParameter_For_SocialActivity_Returns_Correct_Utmt_Type()
+        public void UrchinActivityTracker_GetParameter_For_SocialActivity_Returns_Correct_Utmt_Type()
         {
             var activity = new SocialActivity("action", "category");
 
@@ -215,7 +215,7 @@ namespace CSharpAnalytics.Test.Protocols.Urchin
         }
 
         [TestMethod]
-        public void UrchinTrackerActivities_GetParameter_For_SocialActivity_Returns_Correct_Values()
+        public void UrchinActivityTracker_GetParameter_For_SocialActivity_Returns_Correct_Values()
         {
             var activity = new SocialActivity("action", "network");
 
@@ -226,18 +226,18 @@ namespace CSharpAnalytics.Test.Protocols.Urchin
         }
 
         [TestMethod]
-        public void UrchinTrackerActivities_GetParameter_For_SocialActivity_Returns_Correct_Optional_Values()
+        public void UrchinActivityTracker_GetParameter_For_SocialActivity_Returns_Correct_Optional_Values()
         {
             var activity = new SocialActivity("action", "network", pagePath: "pagePath", target: "target");
 
-            var parameters = UrchinActivityTracker.GetActivityParameters(activity).ToDictionary(k => k.Key, v => v.Value);
+            var parameters = UrchinActivityTracker.GetParameters(activity).ToDictionary(k => k.Key, v => v.Value);
 
             Assert.AreEqual("target", parameters["utmsid"]);
             Assert.AreEqual("pagePath", parameters["utmp"]);
         }
 
         [TestMethod]
-        public void UrchinTrackerActivities_GetParameter_For_TimedEventActivity_Returns_Correct_Keys()
+        public void UrchinActivityTracker_GetParameter_For_TimedEventActivity_Returns_Correct_Keys()
         {
             var activity = new TimedEventActivity("category", "variable", TimeSpan.FromSeconds(1.5), "label");
 
@@ -248,7 +248,7 @@ namespace CSharpAnalytics.Test.Protocols.Urchin
         }
 
         [TestMethod]
-        public void UrchinTrackerActivities_GetParameter_For_TimedEventActivity_Returns_Correct_Utmt_Value()
+        public void UrchinActivityTracker_GetParameter_For_TimedEventActivity_Returns_Correct_Utmt_Value()
         {
             var activity = new TimedEventActivity("category", "variable", TimeSpan.Zero);
 

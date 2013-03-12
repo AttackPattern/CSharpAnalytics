@@ -41,7 +41,13 @@ namespace CSharpAnalytics.Protocols.Measurement
             if (activity is SocialActivity)
                 return GetParameters((SocialActivity)activity);
             if (activity is TransactionActivity)
-                return GetParameters((TransactionActivity)activity);
+            {
+                var transaction = (TransactionActivity) activity;
+                lastTransaction = transaction;
+                return GetParameters(transaction);
+            }
+            if (activity is TransactionItemActivity)
+                return GetParameters((TransactionItemActivity)activity);
 
             Debug.Assert(false, "Unknown Activity type");
             return Enumerable.Empty<KeyValuePair<string, string>>();
@@ -130,7 +136,7 @@ namespace CSharpAnalytics.Protocols.Measurement
                 yield return KeyValuePair.Create("ck", campaign.Term);
 
             if (!String.IsNullOrEmpty(campaign.Content))
-                yield return KeyValuePair.Create("ct", campaign.Content);
+                yield return KeyValuePair.Create("cc", campaign.Content);
         }
 
         /// <summary>
@@ -200,8 +206,6 @@ namespace CSharpAnalytics.Protocols.Measurement
         /// <returns>Key/value pairs representing this TransactionActivity.</returns>
         internal IEnumerable<KeyValuePair<string, string>> GetParameters(TransactionActivity transaction)
         {
-            lastTransaction = transaction;
-
             yield return KeyValuePair.Create("t", "transaction");
             yield return KeyValuePair.Create("ti", transaction.OrderId);
 
@@ -212,10 +216,10 @@ namespace CSharpAnalytics.Protocols.Measurement
                 yield return KeyValuePair.Create("tr", transaction.OrderTotal.ToString("0.00", CultureInfo.InvariantCulture));
 
             if (transaction.ShippingCost != Decimal.Zero)
-                yield return KeyValuePair.Create("ts", transaction.TaxCost.ToString("0.00", CultureInfo.InvariantCulture));
+                yield return KeyValuePair.Create("ts", transaction.ShippingCost.ToString("0.00", CultureInfo.InvariantCulture));
 
             if (transaction.TaxCost != Decimal.Zero)
-                yield return KeyValuePair.Create("tt", transaction.ShippingCost.ToString("0.00", CultureInfo.InvariantCulture));
+                yield return KeyValuePair.Create("tt", transaction.TaxCost.ToString("0.00", CultureInfo.InvariantCulture));
 
             if (!String.IsNullOrWhiteSpace(transaction.Currency))
                 yield return KeyValuePair.Create("cu", transaction.Currency);

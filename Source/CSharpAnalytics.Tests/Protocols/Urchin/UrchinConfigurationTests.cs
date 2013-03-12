@@ -6,13 +6,13 @@ using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 #endif
 
-namespace CSharpAnalytics.Test
+namespace CSharpAnalytics.Test.Protocols.Urchin
 {
     [TestClass]
     public class UrchinConfigurationTests
     {
         [TestMethod]
-        public void Configuration_Constructor_With_Required_Parameters_Sets_Correct_Properties()
+        public void UrchinConfiguration_Constructor_With_Required_Parameters_Sets_Correct_Properties()
         {
             var sessionTimeout = TimeSpan.FromDays(10);
             var configuration = new UrchinConfiguration("UA-1234-5", "hostName", sessionTimeout);
@@ -23,7 +23,7 @@ namespace CSharpAnalytics.Test
         }
 
         [TestMethod]
-        public void Configuration_Constructor_With_Required_Parameters_Sets_Correct_Defaults()
+        public void UrchinConfiguration_Constructor_With_Required_Parameters_Sets_Correct_Defaults()
         {
             var configuration = new UrchinConfiguration("UA-1234-5", "hostName");
 
@@ -34,7 +34,7 @@ namespace CSharpAnalytics.Test
         }
 
         [TestMethod]
-        public void Configuration_GetHostNameHash_Returns_Correct_Hash_When_CalculateHostNameHash_Is_True()
+        public void UrchinConfiguration_GetHostNameHash_Returns_Correct_Hash_When_CalculateHostNameHash_Is_True()
         {
             var attackPatternConfiguration = new UrchinConfiguration("UA-1234-5", "attackpattern.com") { CalculateHostNameHash = true };
             var stickerTalesConfiguration = new UrchinConfiguration("UA-1234-6", "stickertales.com") { CalculateHostNameHash = true };
@@ -46,7 +46,7 @@ namespace CSharpAnalytics.Test
         }
 
         [TestMethod]
-        public void Configuration_GetHostNameHash_Returns_One_When_CalculateHostNameHash_Is_False()
+        public void UrchinConfiguration_GetHostNameHash_Returns_One_When_CalculateHostNameHash_Is_False()
         {
             var attackPatternConfiguration = new UrchinConfiguration("UA-1234-5", "attackpattern.com") { CalculateHostNameHash = false };
             Assert.AreEqual(1, attackPatternConfiguration.GetHostNameHash());
@@ -54,13 +54,13 @@ namespace CSharpAnalytics.Test
 
 #if WINDOWS_STORE
         [TestMethod]
-        public void Configuration_Constructor_Throws_ArgumentException_If_AccountID_Does_Not_Start_With_UA()
+        public void UrchinConfiguration_Constructor_Throws_ArgumentException_If_AccountID_Does_Not_Start_With_UA()
         {
             Assert.ThrowsException<ArgumentException>(() => new UrchinConfiguration("NO-1234-5", "host"));
         }
 
         [TestMethod]
-        public void Configuration_Constructor_Throws_ArgumentException_If_AccountID_Does_Not_Have_Two_Numeric_Parts()
+        public void UrchinConfiguration_Constructor_Throws_ArgumentException_If_AccountID_Does_Not_Have_Two_Numeric_Parts()
         {
             Assert.ThrowsException<ArgumentException>(() => new UrchinConfiguration("UA-1234", "host"));
         }
@@ -77,7 +77,7 @@ namespace CSharpAnalytics.Test
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
-        public void Configuration_Constructor_Throws_ArgumentException_If_AccountID_Does_Not_Have_Two_Numeric_Parts()
+        public void UrchinConfiguration_Constructor_Throws_ArgumentException_If_AccountID_Does_Not_Have_Two_Numeric_Parts()
         {
             var configuration = new UrchinConfiguration("UA-1234", "host");
         }

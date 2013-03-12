@@ -2,11 +2,11 @@
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
-using System;
 using CSharpAnalytics.Activities;
-using System.Diagnostics;
 using CSharpAnalytics.Protocols.Measurement;
 using CSharpAnalytics.Protocols.Urchin;
+using System;
+using System.Diagnostics;
 
 namespace CSharpAnalytics.Activities
 {
@@ -40,6 +40,9 @@ namespace CSharpAnalytics.Activities
         /// <summary>
         /// Optional path of the page from which the action occured.
         /// </summary>
+        /// <remarks>
+        /// Urchin only, not supported by MeasurementProtocol.
+        /// </remarks>
         public string PagePath
         {
             get { return pagePath; }

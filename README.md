@@ -119,6 +119,7 @@ Untested
 
 Future enhancements
 -------------------
+1. Custom dimensions/parameters for Measurement Protocol
 1. Additional platforms (Windows Phone 7/8, Silverlight, Mono)
 1. Opt-out support via session state switch and null receiver
 1. Throttling of hits as per official SDKs

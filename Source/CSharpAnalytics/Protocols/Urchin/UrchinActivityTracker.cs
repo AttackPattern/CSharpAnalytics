@@ -22,7 +22,7 @@ namespace CSharpAnalytics.Protocols.Urchin
         /// </summary>
         /// <param name="activity">Activity to turn into key/value pairs.</param>
         /// <returns>Enumerable of key/value pairs representing the activity.</returns>
-        internal static IEnumerable<KeyValuePair<string, string>> GetActivityParameters(IUrchinActivity activity)
+        internal static IEnumerable<KeyValuePair<string, string>> GetParameters(IUrchinActivity activity)
         {
             if (activity is CampaignActivity)
                 return GetParameters((CampaignActivity)activity);
