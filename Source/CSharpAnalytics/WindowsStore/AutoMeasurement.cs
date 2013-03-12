@@ -167,9 +167,6 @@ namespace CSharpAnalytics.WindowsStore
         private static void PreprocessHttpRequest(HttpRequestMessage requestMessage)
         {
             AddUserAgent(requestMessage.Headers.UserAgent);
-
-            if (requestMessage.Method == HttpMethod.Get && requestMessage.RequestUri.AbsoluteUri.Length > 2000)
-
             DebugRequest(requestMessage);
         }
 
