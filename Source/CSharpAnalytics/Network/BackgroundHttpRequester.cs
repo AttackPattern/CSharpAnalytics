@@ -9,13 +9,15 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace CSharpAnalytics
+namespace CSharpAnalytics.Network
 {
     /// <summary>
     /// Responsible for requesting a queue of URIs over HTTP or HTTPS in background.
     /// </summary>
     public class BackgroundHttpRequester : IDisposable
     {
+        private const int MaxUriLength = 2000;
+
         private static readonly TimeSpan delayBetweenRequestBatch = TimeSpan.FromSeconds(0.25);
         private static readonly TimeSpan networkRetryWaitStep = TimeSpan.FromSeconds(5);
         private static readonly TimeSpan networkRetryWaitMax = TimeSpan.FromMinutes(10);
@@ -125,7 +127,7 @@ namespace CSharpAnalytics
             {
                 do
                 {
-                    var message = new HttpRequestMessage(HttpMethod.Get, uri);
+                    var message = CreateRequestMessage(uri);
                     if (preprocessor != null)
                         preprocessor(message);
 
@@ -155,6 +157,18 @@ namespace CSharpAnalytics
                     }
                 } while (!successfullySent);
             }
+        }
+
+        /// <summary>
+        /// Creates the HttpRequestMessage for a URI taking into consideration the length.
+        /// For Uri's over 2000 bytes it will be a GET otherwise it will become a POST
+        /// with the query payload moved to the POST body.
+        /// </summary>
+        /// <param name="uri">URI to request.</param>
+        /// <returns>HttpRequestMessage for this URI.</returns>
+        private static HttpRequestMessage CreateRequestMessage(Uri uri)
+        {
+            return new HttpRequestMessage(HttpMethod.Get, uri);
         }
 
         /// <summary>

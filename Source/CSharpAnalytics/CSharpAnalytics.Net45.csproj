@@ -55,7 +55,7 @@
     <Compile Include="Activities\PageViewActivity.cs" />
     <Compile Include="Activities\SocialActivity.cs" />
     <Compile Include="Activities\TransactionActivity.cs" />
-    <Compile Include="BackgroundHttpRequester.cs" />
+    <Compile Include="Network\BackgroundHttpRequester.cs" />
     <Compile Include="Protocols\Measurement\IMeasurementActivity.cs" />
     <Compile Include="Protocols\Measurement\MeasurementActivityTracker.cs" />
     <Compile Include="Protocols\Measurement\MeasurementAnalyticsClient.cs" />
