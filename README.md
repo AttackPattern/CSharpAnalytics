@@ -42,6 +42,11 @@ Features
 * Tracks operating system and version
 * Helpers for device model, processor architecture
 
+Important notes
+---------------
+* This project is new and under active development, ensure suitability of code for your purposes
+* Windows 8 network metering is not honored by analytics at this time
+
 Getting started
 ---------------
 You will need:
@@ -119,6 +124,7 @@ Untested
 
 Future enhancements
 -------------------
+1. Add support for Windows 8 network metering modes
 1. Custom dimensions/parameters for Measurement Protocol
 1. Additional platforms (Windows Phone 7/8, Silverlight, Mono)
 1. Opt-out support via session state switch and null receiver
