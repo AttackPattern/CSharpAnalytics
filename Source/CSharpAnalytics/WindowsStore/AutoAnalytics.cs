@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
+using System.Linq;
 using CSharpAnalytics.Network;
 using CSharpAnalytics.Protocols;
 using CSharpAnalytics.Protocols.Urchin;
@@ -286,7 +287,29 @@ namespace CSharpAnalytics.WindowsStore
         /// <param name="ex">Exception to track</param>
         public static void TrackException(Exception ex)
         {
-            Client.TrackEvent(ex.GetType().Name, "UnhandledException", ex.Source);
+            var aggregateException = ex as AggregateException;
+            if (aggregateException != null && aggregateException.InnerExceptions.Count == 1)
+                ex = aggregateException.InnerExceptions.First();
+
+            if (!ShouldTrackException(ex)) return;
+
+            // TODO: Figure out a good compressed summary format for exceptions
+            var description = ex.Message;
+
+            Client.TrackEvent(ex.GetType().Name, "UnhandledException", description);
+        }
+
+        /// <summary>
+        /// Determine whether we should track an exception message or not.
+        /// </summary>
+        /// <param name="ex">Exception to consider for tracking.</param>
+        /// <returns>True if the exception should be tracked, false if it should be ignored.</returns>
+        private static bool ShouldTrackException(Exception ex)
+        {
+            // Microsoft Advertising SDK throws unobserved exceptions when no ads available.
+            if (ex.Source == "MicrosoftAdvertising") return false;
+
+            return true;
         }
     }
 
