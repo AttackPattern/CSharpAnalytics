@@ -15,6 +15,8 @@ namespace CSharpAnalytics.WindowsStore
     /// </summary>
     internal class WindowsStoreEnvironment : IEnvironment
     {
+        private Rect lastGoodScreen = new Rect(0, 0, 0, 0);
+
         public string CharacterSet { get { return "UTF-8"; } }
         public string LanguageCode { get { return ApplicationLanguages.Languages.First(); } }
 
@@ -44,6 +46,15 @@ namespace CSharpAnalytics.WindowsStore
             get { return (uint)Screen.Width; }
         }
 
-        private static Rect Screen { get { return Window.Current.CoreWindow.Bounds; } }
+        private Rect Screen
+        {
+            get
+            {
+                var currentWindow = Window.Current;
+                if (currentWindow != null)
+                    lastGoodScreen = currentWindow.CoreWindow.Bounds;
+                return lastGoodScreen;
+            }
+        }
     }
 }
