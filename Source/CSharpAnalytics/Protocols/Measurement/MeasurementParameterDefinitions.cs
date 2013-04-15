@@ -93,7 +93,7 @@ namespace CSharpAnalytics.Protocols.Measurement
 
             // Timing
             new ParameterDefinition("utc",      "User Timing Category"),
-            new ParameterDefinition("utv",      "User Timing Variable Name"),
+            new ParameterDefinition("utv",      "User Timing Variable"),
             new ParameterDefinition("utt",      "User Timing Time"),
             new ParameterDefinition("utl",      "User Timing Label"),
 

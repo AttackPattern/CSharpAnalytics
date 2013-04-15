@@ -196,7 +196,7 @@ namespace CSharpAnalytics.Protocols.Measurement
             if (!String.IsNullOrWhiteSpace(timedEvent.Label))
                 yield return KeyValuePair.Create("utl", timedEvent.Label);
 
-            yield return KeyValuePair.Create("utt", timedEvent.Time.TotalMilliseconds.ToString(CultureInfo.InvariantCulture));
+            yield return KeyValuePair.Create("utt", timedEvent.Time.TotalMilliseconds.ToString("0", CultureInfo.InvariantCulture));
         }
 
         /// <summary>
