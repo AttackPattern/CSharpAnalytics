@@ -273,11 +273,26 @@ namespace CSharpAnalytics.WindowsStore
             if (aggregateException != null && aggregateException.InnerExceptions.Count == 1)
                 ex = aggregateException.InnerExceptions.First();
 
+            if (!ShouldTrackException(ex)) return;
+
             // TODO: Figure out a good compressed summary format for exceptions
             var description = ex.Message;
 
             // Technically another handler could fix things but no mechanism to know that
             Client.TrackException(description, isFatal: true);
+        }
+
+        /// <summary>
+        /// Determine whether we should track an exception message or not.
+        /// </summary>
+        /// <param name="ex">Exception to consider for tracking.</param>
+        /// <returns>True if the exception should be tracked, false if it should be ignored.</returns>
+        private static bool ShouldTrackException(Exception ex)
+        {
+            // Microsoft Advertising SDK throws unobserved exceptions
+            if (ex.Source == "MicrosoftAdvertising") return false;
+
+            return true;
         }
     }
 }
