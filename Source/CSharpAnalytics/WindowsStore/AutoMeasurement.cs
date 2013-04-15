@@ -65,7 +65,7 @@ namespace CSharpAnalytics.WindowsStore
 
             Client = new MeasurementAnalyticsClient(configuration, sessionManager, new WindowsStoreEnvironment(), requester.Add);
             Client.TrackEvent("Start", "ApplicationLifecycle");
-            Client.TrackAppView("Home");
+            Client.TrackAppView("Home " + DateTime.Now);
 
             HookEvents();
         }
@@ -251,6 +251,7 @@ namespace CSharpAnalytics.WindowsStore
         {
             var sessionState = await LocalFolderContractSerializer<SessionState>.RestoreAsync(SessionStateFileName);
             sessionManager = new SessionManager(sessionTimeout, sessionState);
+            await SaveSessionAsync();
         }
 
         /// <summary>
@@ -259,7 +260,7 @@ namespace CSharpAnalytics.WindowsStore
         /// <returns>Task that completes when the session has been saved.</returns>
         private static async Task SaveSessionAsync()
         {
-            await LocalFolderContractSerializer<SessionState>.SaveAsync(sessionManager.GetState(), SessionStateFileName);            
+            await LocalFolderContractSerializer<SessionState>.SaveAsync(sessionManager.GetState(), SessionStateFileName);
         }
 
         /// <summary>
@@ -276,7 +277,7 @@ namespace CSharpAnalytics.WindowsStore
             var description = ex.Message;
 
             // Technically another handler could fix things but no mechanism to know that
-            Client.TrackException(description, isFatal:true); 
+            Client.TrackException(description, isFatal: true);
         }
     }
 }
