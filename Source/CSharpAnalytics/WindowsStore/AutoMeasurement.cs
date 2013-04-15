@@ -65,7 +65,7 @@ namespace CSharpAnalytics.WindowsStore
 
             Client = new MeasurementAnalyticsClient(configuration, sessionManager, new WindowsStoreEnvironment(), requester.Add);
             Client.TrackEvent("Start", "ApplicationLifecycle");
-            Client.TrackAppView("Home " + DateTime.Now);
+            Client.TrackAppView("Home");
 
             HookEvents();
         }

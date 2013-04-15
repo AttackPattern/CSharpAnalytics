@@ -263,6 +263,7 @@ namespace CSharpAnalytics.WindowsStore
         {
             var sessionState = await LocalFolderContractSerializer<SessionState>.RestoreAsync(SessionStateFileName);
             sessionManager = new SessionManager(sessionTimeout, sessionState);
+            await SaveSessionAsync();
         }
 
         /// <summary>
