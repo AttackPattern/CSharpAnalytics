@@ -107,15 +107,17 @@ namespace CSharpAnalytics.Sessions
         {
             var now = DateTimeOffset.Now;
 
+            if (SessionStatus == SessionStatus.Ending)
+                SessionStatus = SessionStatus.Starting;
+            else if (SessionStatus == SessionStatus.Starting)
+                SessionStatus = SessionStatus.Active;
+
             StartNewSessionIfTimedOut(now);
 
             if (now > lastActivityAt)
                 lastActivityAt = now;
 
             Session.IncreaseHitCount();
-
-            if (Session.HitCount > 0 && SessionStatus == SessionStatus.Starting)
-                SessionStatus = SessionStatus.Active;
         }
 
         /// <summary>
