@@ -18,7 +18,6 @@ namespace CSharpAnalytics.Network
     {
         private const int MaxUriLength = 2000;
 
-        private static readonly TimeSpan delayBetweenRequestBatch = TimeSpan.FromSeconds(0.25);
         private static readonly TimeSpan networkRetryWaitStep = TimeSpan.FromSeconds(5);
         private static readonly TimeSpan networkRetryWaitMax = TimeSpan.FromMinutes(10);
 
@@ -28,6 +27,7 @@ namespace CSharpAnalytics.Network
         private CancellationTokenSource cancellationTokenSource;
         private Queue<Uri> priorRequests = new Queue<Uri>();
         private Task backgroundSender;
+        private TimeSpan currentUploadInterval;
 
         /// <summary>
         /// Determines whether the BackgroundHttpRequester is currently started.
@@ -66,6 +66,7 @@ namespace CSharpAnalytics.Network
                 priorRequests = new Queue<Uri>(previouslyUnrequested);
 
             cancellationTokenSource = new CancellationTokenSource();
+            currentUploadInterval = uploadInterval;
             backgroundSender = Task.Factory.StartNew(RequestLoop, cancellationTokenSource.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
         }
 
@@ -105,7 +106,7 @@ namespace CSharpAnalytics.Network
                             requestQueue.Dequeue();
                         }
 
-                        queueEmptyWait.Wait(delayBetweenRequestBatch, cancellationTokenSource.Token);
+                        queueEmptyWait.Wait(currentUploadInterval, cancellationTokenSource.Token);
                     }
                 }
                 catch (OperationCanceledException)
