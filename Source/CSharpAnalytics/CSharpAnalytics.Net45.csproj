@@ -57,7 +57,7 @@
     <Compile Include="Activities\TransactionActivity.cs" />
     <Compile Include="Network\BackgroundHttpRequester.cs" />
     <Compile Include="Protocols\Measurement\IMeasurementActivity.cs" />
-    <Compile Include="Protocols\Measurement\MeasurementActivityTracker.cs" />
+    <Compile Include="Protocols\Measurement\MeasurementActivityParameterBuilder.cs" />
     <Compile Include="Protocols\Measurement\MeasurementAnalyticsClient.cs" />
     <Compile Include="Protocols\Urchin\IUrchinActivity.cs" />
     <Compile Include="Protocols\Urchin\UrchinActivityTracker.cs" />
@@ -76,7 +76,7 @@
     <Compile Include="Protocols\KeyValuePair.cs" />
     <Compile Include="Protocols\Measurement\MeasurementConfiguration.cs" />
     <Compile Include="Protocols\Measurement\MeasurementParameterDefinitions.cs" />
-    <Compile Include="Protocols\Measurement\MeasurementTracker.cs" />
+    <Compile Include="Protocols\Measurement\MeasurementUriBuilder.cs" />
     <Compile Include="Protocols\ParameterDefinition.cs" />
     <Compile Include="Protocols\ProtocolDebugger.cs" />
     <Compile Include="Protocols\Urchin\UrchinParameterDefinitions.cs" />

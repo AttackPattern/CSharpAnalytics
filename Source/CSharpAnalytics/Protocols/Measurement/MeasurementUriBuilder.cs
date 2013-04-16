@@ -11,9 +11,9 @@ using CSharpAnalytics.Sessions;
 namespace CSharpAnalytics.Protocols.Measurement
 {
     /// <summary>
-    /// Creates Measurement Protocol URIs for tracking by Google Analytics Measurement Protocol endpoint.
+    /// Builds Measurement Protocol URIs for tracking by Google Analytics Measurement Protocol endpoint.
     /// </summary>
-    internal class MeasurementTracker
+    internal class MeasurementUriBuilder
     {
         private const string ProtocolVersion = "1";
         private const string ResolutionFormat = "{0}x{1}";
@@ -22,7 +22,7 @@ namespace CSharpAnalytics.Protocols.Measurement
         private static readonly Uri trackingEndpoint = new Uri("http://www.google-analytics.com/collect");
         private static readonly Uri secureTrackingEndpoint = new Uri("https://ssl.google-analytics.com/collect");
 
-        private readonly MeasurementActivityTracker activityTracker = new MeasurementActivityTracker();
+        private readonly MeasurementActivityParameterBuilder activityTracker = new MeasurementActivityParameterBuilder();
         private readonly SessionManager sessionManager;
         private readonly MeasurementConfiguration configuration;
         private readonly IEnvironment environment;
@@ -33,7 +33,7 @@ namespace CSharpAnalytics.Protocols.Measurement
         /// <param name="configuration">Configuration of analytics.</param>
         /// <param name="sessionManager">Session manager.</param>
         /// <param name="environment">Environment details.</param>
-        public MeasurementTracker(MeasurementConfiguration configuration, SessionManager sessionManager, IEnvironment environment)
+        public MeasurementUriBuilder(MeasurementConfiguration configuration, SessionManager sessionManager, IEnvironment environment)
         {
             this.configuration = configuration;
             this.sessionManager = sessionManager;
@@ -45,7 +45,7 @@ namespace CSharpAnalytics.Protocols.Measurement
         /// </summary>
         /// <param name="activity">Activity to create a URI for.</param>
         /// <returns>URI that when requested will track this activity.</returns>
-        public Uri CreateUri(IMeasurementActivity activity)
+        public Uri BuildUri(IMeasurementActivity activity)
         {
             var parameters = BuildParameterList(activity);
             var uriBuilder = new UriBuilder(configuration.UseSsl ? secureTrackingEndpoint : trackingEndpoint) { Query = CreateQueryString(parameters) };

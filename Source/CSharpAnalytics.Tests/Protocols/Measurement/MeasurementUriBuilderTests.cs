@@ -10,30 +10,30 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace CSharpAnalytics.Test.Protocols.Measurement
 {
     [TestClass]
-    public class MeasurementTrackerTests
+    public class MeasurementUriBuilderTests
     {
         [TestMethod]
-        public void MeasurementTracker_GetParameters_For_Configuration_Returns_Correct_Keys()
+        public void MeasurementUriBuilderTests_GetParameters_For_Configuration_Returns_Correct_Keys()
         {
             var configuration = new MeasurementConfiguration("UA-1234-5", "AppName", "1.2.3.4");
 
-            var keys = MeasurementTracker.GetParameters(configuration).Select(k => k.Key).ToArray();
+            var keys = MeasurementUriBuilder.GetParameters(configuration).Select(k => k.Key).ToArray();
 
             CollectionAssert.AreEquivalent(new[] { "tid", "an", "av", "aip" }, keys);
         }
 
         [TestMethod]
-        public void MeasurementTracker_GetParameters_For_Configuration_Returns_No_Aip_Value_When_False()
+        public void MeasurementUriBuilderTests_GetParameters_For_Configuration_Returns_No_Aip_Value_When_False()
         {
             var configuration = new MeasurementConfiguration("UA-1234-5", "AppName", "1.2.3.4") { AnonymizeIp = false };
 
-            var keys = MeasurementTracker.GetParameters(configuration).Select(k => k.Key).ToArray();
+            var keys = MeasurementUriBuilder.GetParameters(configuration).Select(k => k.Key).ToArray();
 
             CollectionAssert.DoesNotContain(keys, "aip");
         }
 
         [TestMethod]
-        public void MeasurementTracker_GetParameters_For_Environment_Returns_Correct_Values()
+        public void MeasurementUriBuilderTests_GetParameters_For_Environment_Returns_Correct_Values()
         {
             var environment = new Environment("en-gb")
                 {
@@ -47,7 +47,7 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
                     ViewportWidth = 1024
                 };
 
-            var parameters = MeasurementTracker.GetParameters(environment).ToDictionary(k => k.Key, v => v.Value);
+            var parameters = MeasurementUriBuilder.GetParameters(environment).ToDictionary(k => k.Key, v => v.Value);
 
             Assert.AreEqual("ISO-8550-1", parameters["de"]);
             Assert.AreEqual("en-gb", parameters["ul"]);
@@ -59,11 +59,11 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
         }
 
         [TestMethod]
-        public void MeasurementTracker_GetParameters_For_Environment_Returns_Correct_Je_Value()
+        public void MeasurementUriBuilderTests_GetParameters_For_Environment_Returns_Correct_Je_Value()
         {
             var environment = new Environment("en-gb") { JavaEnabled = false };
 
-            var jeValue = MeasurementTracker.GetParameters(environment).First(f => f.Key == "je").Value;
+            var jeValue = MeasurementUriBuilder.GetParameters(environment).First(f => f.Key == "je").Value;
 
             Assert.AreEqual("0", jeValue);
         }

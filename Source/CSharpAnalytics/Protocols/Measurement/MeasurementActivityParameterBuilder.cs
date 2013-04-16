@@ -12,9 +12,9 @@ using System.Linq;
 namespace CSharpAnalytics.Protocols.Measurement
 {
     /// <summary>
-    /// Converts MeasurementActivities into key/value pairs that will form the Measurement Protocol URIs generated.
+    /// Builds key/value pairs from MeasurementActivities that will form the generated Measurement Protocol URIs.
     /// </summary>
-    internal class MeasurementActivityTracker
+    internal class MeasurementActivityParameterBuilder
     {
         private TransactionActivity lastTransaction;
 

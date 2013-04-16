@@ -11,14 +11,14 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace CSharpAnalytics.Test.Protocols.Measurement
 {
     [TestClass]
-    public class MeasurementActivityTrackerTests
+    public class MeasurementActivityParameterBuilderTrackerTests
     {
         [TestMethod]
-        public void MeasurementActivityTracker_GetParameter_For_AppViewActivity_Returns_Correct_Values()
+        public void MeasurementActivityParameterBuilder_GetParameter_For_AppViewActivity_Returns_Correct_Values()
         {
             var activity = new AppViewActivity("page");
 
-            var parameters = MeasurementActivityTracker.GetParameters(activity).ToDictionary(k => k.Key, v => v.Value);
+            var parameters = MeasurementActivityParameterBuilder.GetParameters(activity).ToDictionary(k => k.Key, v => v.Value);
 
             Assert.AreEqual(2, parameters.Count);
             Assert.AreEqual("appview", parameters["t"]);
@@ -26,7 +26,7 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
         }
 
         [TestMethod]
-        public void MeasurementActivityTracker_GetParameter_For_CampaignActivity_Returns_Correct_Values()
+        public void MeasurementActivityParameterBuilder_GetParameter_For_CampaignActivity_Returns_Correct_Values()
         {
             var activity = new CampaignActivity("source")
             {
@@ -36,7 +36,7 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
                 Content = "content"
             };
 
-            var parameters = MeasurementActivityTracker.GetParameters(activity).ToDictionary(k => k.Key, v => v.Value);
+            var parameters = MeasurementActivityParameterBuilder.GetParameters(activity).ToDictionary(k => k.Key, v => v.Value);
 
             Assert.AreEqual(5, parameters.Keys.Count);
             Assert.AreEqual("source", parameters["cs"]);
@@ -47,12 +47,12 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
         }
 
         [TestMethod]
-        public void MeasurementActivityTracker_GetParameter_For_ContentViewActivity_Returns_Correct_Values()
+        public void MeasurementActivityParameterBuilder_GetParameter_For_ContentViewActivity_Returns_Correct_Values()
         {
             var location = new Uri("http://unittest.csharpanalytics.com/some/path");
             var activity = new ContentViewActivity(location, "Document Title", "A content description.", "/document/path", "hostname.csharpanalytics.com");
 
-            var parameters = MeasurementActivityTracker.GetParameters(activity).ToDictionary(k => k.Key, v => v.Value);
+            var parameters = MeasurementActivityParameterBuilder.GetParameters(activity).ToDictionary(k => k.Key, v => v.Value);
 
             Assert.AreEqual(6, parameters.Keys.Count);
             Assert.AreEqual("pageview", parameters["t"]);
@@ -64,11 +64,11 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
         }
 
         [TestMethod]
-        public void MeasurementActivityTracker_GetParameter_For_EventActivity_Returns_Correct_Values()
+        public void MeasurementActivityParameterBuilder_GetParameter_For_EventActivity_Returns_Correct_Values()
         {
             var activity = new EventActivity("action", "category", "label", 123, true);
 
-            var parameters = MeasurementActivityTracker.GetParameters(activity).ToDictionary(k => k.Key, v => v.Value);
+            var parameters = MeasurementActivityParameterBuilder.GetParameters(activity).ToDictionary(k => k.Key, v => v.Value);
 
             Assert.AreEqual(6, parameters.Keys.Count);
             Assert.AreEqual("event", parameters["t"]);
@@ -80,11 +80,11 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
         }
 
         [TestMethod]
-        public void MeasurementActivityTracker_GetParameter_For_ExceptionActivity_Returns_Correct_Values()
+        public void MeasurementActivityParameterBuilder_GetParameter_For_ExceptionActivity_Returns_Correct_Values()
         {
             var activity = new ExceptionActivity("Something wonderful has happened.", false);
 
-            var parameters = MeasurementActivityTracker.GetParameters(activity).ToDictionary(k => k.Key, v => v.Value);
+            var parameters = MeasurementActivityParameterBuilder.GetParameters(activity).ToDictionary(k => k.Key, v => v.Value);
 
             Assert.AreEqual(3, parameters.Keys.Count);
             Assert.AreEqual("Something wonderful has happened.", parameters["exd"]);
@@ -92,11 +92,11 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
         }
 
         [TestMethod]
-        public void MeasurementActivityTracker_GetParameter_For_SocialActivity_Returns_Correct_Values()
+        public void MeasurementActivityParameterBuilder_GetParameter_For_SocialActivity_Returns_Correct_Values()
         {
             var activity = new SocialActivity("action", "network", target: "target");
 
-            var parameters = MeasurementActivityTracker.GetParameters(activity).ToDictionary(k => k.Key, v => v.Value);
+            var parameters = MeasurementActivityParameterBuilder.GetParameters(activity).ToDictionary(k => k.Key, v => v.Value);
 
             Assert.AreEqual(4, parameters.Keys.Count);
             Assert.AreEqual("social", parameters["t"]);
@@ -106,11 +106,11 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
         }
 
         [TestMethod]
-        public void MeasurementActivityTracker_GetParameter_For_TimedEventActivity_Returns_Correct_Values()
+        public void MeasurementActivityParameterBuilder_GetParameter_For_TimedEventActivity_Returns_Correct_Values()
         {
             var activity = new TimedEventActivity("cateogry", "variable", TimeSpan.FromMilliseconds(12345), "label");
 
-            var parameters = MeasurementActivityTracker.GetParameters(activity).ToDictionary(k => k.Key, v => v.Value);
+            var parameters = MeasurementActivityParameterBuilder.GetParameters(activity).ToDictionary(k => k.Key, v => v.Value);
 
             Assert.AreEqual(5, parameters.Keys.Count);
             Assert.AreEqual("timing", parameters["t"]);
@@ -120,9 +120,9 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
         }
 
         [TestMethod]
-        public void MeasurementActivityTracker_GetParameter_For_TransactionActivity_Returns_Correct_Values()
+        public void MeasurementActivityParameterBuilder_GetParameter_For_TransactionActivity_Returns_Correct_Values()
         {
-            var tracker = new MeasurementActivityTracker();
+            var tracker = new MeasurementActivityParameterBuilder();
 
             var activity = new TransactionActivity
             {
@@ -147,9 +147,9 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
         }
 
         [TestMethod]
-        public void MeasurementActivityTracker_GetParameter_For_TransactionItemActivity_Returns_Correct_Values()
+        public void MeasurementActivityParameterBuilder_GetParameter_For_TransactionItemActivity_Returns_Correct_Values()
         {
-            var tracker = new MeasurementActivityTracker();
+            var tracker = new MeasurementActivityParameterBuilder();
             var transaction = new TransactionActivity { OrderId = "567", Currency = "GBP" };
             tracker.GetActivityParameters(transaction);
             var activity = new TransactionItemActivity("code", "name", 1.23m, 4096, "variation");

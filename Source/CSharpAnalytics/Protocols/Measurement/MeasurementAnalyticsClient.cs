@@ -15,7 +15,7 @@ namespace CSharpAnalytics.Protocols.Measurement
     {
         private readonly SessionManager sessionManager;
         private readonly Action<Uri> sender;
-        private readonly MeasurementTracker tracker;
+        private readonly MeasurementUriBuilder tracker;
 
         /// <summary>
         /// Create a new AnalyticsClient with a given configuration, session, environment and URI sender.
@@ -29,7 +29,7 @@ namespace CSharpAnalytics.Protocols.Measurement
             this.sessionManager = sessionManager;
             this.sender = sender;
 
-            tracker = new MeasurementTracker(configuration, sessionManager, environment);
+            tracker = new MeasurementUriBuilder(configuration, sessionManager, environment);
         }
 
         /// <summary>
@@ -45,7 +45,7 @@ namespace CSharpAnalytics.Protocols.Measurement
             sessionManager.Hit();
             if (endSession)
                 sessionManager.End();
-            var trackingUri = tracker.CreateUri(activity);
+            var trackingUri = tracker.BuildUri(activity);
             sender(trackingUri);
         }
     }
