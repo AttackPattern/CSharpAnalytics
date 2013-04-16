@@ -58,7 +58,7 @@ namespace CSharpAnalytics.WindowsStore
         /// <param name="configuration">Configuration to use, must at a minimum specify your Google Analytics ID and app name.</param>
         /// <param name="uploadInterval">How often to upload to the server. Lower times = more traffic but realtime. Defaults to 5 seconds.</param>
         /// <returns>A Task that will complete once CSharpAnalytics is available.</returns>
-        /// <example>await AutoAnalytics.StartAsync(new Configuration("UA-123123123-1", "myapp.someco.com"));</example>
+        /// <example>await AutoAnalytics.StartAsync(new UrchinConfiguration("UA-123123123-1", "myapp.someco.com"));</example>
         public static async Task StartAsync(UrchinConfiguration configuration, TimeSpan? uploadInterval = null)
         {
             Debug.Assert(Client == null);
