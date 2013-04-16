@@ -6,6 +6,8 @@ using System;
 
 namespace CSharpAnalytics.Sessions
 {
+    public enum SessionStatus { Starting, Active, Ending };
+
     /// <summary>
     /// Manages visitors and sessions to ensure they are correctly saved, restored and time-out as appropriate.
     /// </summary>
@@ -16,6 +18,8 @@ namespace CSharpAnalytics.Sessions
         private readonly Visitor visitor;
         private DateTimeOffset lastActivityAt = DateTimeOffset.Now;
 
+        public SessionStatus SessionStatus { get; private set; }
+
         /// <summary>
         /// Recreate a SessionManager from state.
         /// </summary>
@@ -25,6 +29,7 @@ namespace CSharpAnalytics.Sessions
         public SessionManager(TimeSpan timeout, SessionState sessionState)
         {
             this.timeout = timeout;
+            SessionStatus = SessionStatus.Starting;
 
             if (sessionState != null)
             {
@@ -108,6 +113,17 @@ namespace CSharpAnalytics.Sessions
                 lastActivityAt = now;
 
             Session.IncreaseHitCount();
+
+            if (Session.HitCount > 0 && SessionStatus == SessionStatus.Starting)
+                SessionStatus = SessionStatus.Active;
+        }
+
+        /// <summary>
+        /// Tell the session manager it is ending.
+        /// </summary>
+        internal void End()
+        {
+            SessionStatus = SessionStatus.Ending;
         }
 
         /// <summary>
@@ -148,6 +164,7 @@ namespace CSharpAnalytics.Sessions
             lock (newSessionLock) {
                 PreviousSessionStartedAt = Session.StartedAt;
                 Session = new Session(startedAt, Session.Number + 1);
+                SessionStatus = SessionStatus.Starting;
             }
         }
     }

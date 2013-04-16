@@ -36,12 +36,14 @@ namespace CSharpAnalytics.Protocols.Measurement
         /// Track a activity in analytics.
         /// </summary>
         /// <param name="activity">Activity to track in analytics.</param>
-        public void Track(IMeasurementActivity activity)
+        /// <param name="endSession">True if this tracking event should end the session.</param>
+        public void Track(IMeasurementActivity activity, bool endSession = false)
         {
             if (activity is AutoTimedEventActivity)
                 ((AutoTimedEventActivity)activity).End();
 
             sessionManager.Hit();
+            sessionManager.End();
             var trackingUri = tracker.CreateUri(activity);
             sender(trackingUri);
         }

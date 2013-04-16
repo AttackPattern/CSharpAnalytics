@@ -142,8 +142,30 @@ namespace CSharpAnalytics.Protocols.Measurement
         internal static IEnumerable<KeyValuePair<string, string>> GetParameters(SessionManager sessionManager)
         {
             yield return KeyValuePair.Create("cid", sessionManager.Visitor.Id.ToString());
-            if (sessionManager.Session.HitCount == 1)
-                yield return KeyValuePair.Create("sc", "start");
+
+            var sessionControlValue = GetSessionControlValue(sessionManager.SessionStatus);
+            if (!String.IsNullOrEmpty(sessionControlValue))
+                yield return KeyValuePair.Create("sc", sessionControlValue);
+        }
+
+        /// <summary>
+        /// Get the value used for the "sc" session control parameter for a given session status.
+        /// </summary>
+        /// <param name="sessionStatus">Session status to obtain value for.</param>
+        /// <returns>Value for the "sc" session control parameter for the session state.</returns>
+        private static string GetSessionControlValue(SessionStatus sessionStatus)
+        {
+            switch (sessionStatus)
+            {
+                case SessionStatus.Starting:
+                    return "start";
+
+                case SessionStatus.Ending:
+                    return "end";
+
+                default:
+                    return null;
+            }
         }
     }
 }
