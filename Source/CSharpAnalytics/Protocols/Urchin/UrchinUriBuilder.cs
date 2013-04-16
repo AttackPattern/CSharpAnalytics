@@ -51,9 +51,7 @@ namespace CSharpAnalytics.Protocols.Urchin
         public Uri CreateUri(IUrchinActivity activity, ScopedCustomVariableSlots[] customVariables)
         {
             var parameters = BuildParameterList(activity, customVariables);
-
-            CarryForwardLastPageParameter(activity, parameters);
-
+            CarryForwardParameters(activity, parameters);
             var uriBuilder = new UriBuilder(configuration.UseSsl ? secureTrackingEndpoint : trackingEndpoint) { Query = CreateQueryString(parameters) };
             return uriBuilder.Uri;
         }
@@ -61,11 +59,11 @@ namespace CSharpAnalytics.Protocols.Urchin
         /// <summary>
         /// Carry forward the utmp page parameter value to future event activities to know which page they occurred on.
         /// </summary>
-        /// <param name="activity">Current activity being processed.</param>C:\src\CSharpAnalytics\Source\CSharpAnalytics\Internal\
+        /// <param name="activity">Current activity being processed.</param>
         /// <param name="parameters">Current parameters for this request.</param>
-        private void CarryForwardLastPageParameter(IUrchinActivity activity, ICollection<KeyValuePair<string, string>> parameters)
+        private void CarryForwardParameters(IUrchinActivity activity, ICollection<KeyValuePair<string, string>> parameters)
         {
-            if (activity is EventActivity && lastUtmpParameterValue != null)
+            if ((activity is EventActivity || activity is TimedEventActivity) && lastUtmpParameterValue != null)
                 parameters.Add(KeyValuePair.Create("utmp", lastUtmpParameterValue));
 
             if (parameters.Any(k => k.Key == "utmp"))

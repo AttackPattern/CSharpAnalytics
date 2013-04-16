@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using CSharpAnalytics.Sessions;
+using CSharpAnalytics.Activities;
 
 namespace CSharpAnalytics.Protocols.Measurement
 {
@@ -26,6 +27,8 @@ namespace CSharpAnalytics.Protocols.Measurement
         private readonly SessionManager sessionManager;
         private readonly MeasurementConfiguration configuration;
         private readonly IEnvironment environment;
+
+        private string lastCdParameterValue;
 
         /// <summary>
         /// Create new MeasurementUriBuilder to prepare URIs for Google's Measurement Protocol endpoint.
@@ -48,8 +51,23 @@ namespace CSharpAnalytics.Protocols.Measurement
         public Uri BuildUri(IMeasurementActivity activity)
         {
             var parameters = BuildParameterList(activity);
+            CarryForwardParameters(activity, parameters);
             var uriBuilder = new UriBuilder(configuration.UseSsl ? secureTrackingEndpoint : trackingEndpoint) { Query = CreateQueryString(parameters) };
             return uriBuilder.Uri;
+        }
+
+        /// <summary>
+        /// Carry forward the cd parameter value to future event & timing activities to know which page they occurred on.
+        /// </summary>
+        /// <param name="activity">Current activity being processed.</param>
+        /// <param name="parameters">Current parameters for this request.</param>
+        private void CarryForwardParameters(IMeasurementActivity activity, ICollection<KeyValuePair<string, string>> parameters)
+        {
+            if ((activity is EventActivity || activity is TimedEventActivity) && lastCdParameterValue != null)
+                parameters.Add(KeyValuePair.Create("cd", lastCdParameterValue));
+
+            if (parameters.Any(k => k.Key == "cd"))
+                lastCdParameterValue = parameters.First(p => p.Key == "cd").Value;
         }
 
         /// <summary>
@@ -57,7 +75,7 @@ namespace CSharpAnalytics.Protocols.Measurement
         /// </summary>
         /// <param name="activity">Activity to include in the parameter list.</param>
         /// <returns>Enumeration of key/value pairs containing the parameters necessary for this request.</returns>
-        private IEnumerable<KeyValuePair<string, string>> BuildParameterList(IMeasurementActivity activity)
+        private ICollection<KeyValuePair<string, string>> BuildParameterList(IMeasurementActivity activity)
         {
             return GetParameters()
                 .Concat(GetParameters(environment))
