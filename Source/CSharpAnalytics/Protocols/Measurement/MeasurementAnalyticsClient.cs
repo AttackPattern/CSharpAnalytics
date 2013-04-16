@@ -43,7 +43,8 @@ namespace CSharpAnalytics.Protocols.Measurement
                 ((AutoTimedEventActivity)activity).End();
 
             sessionManager.Hit();
-            sessionManager.End();
+            if (endSession)
+                sessionManager.End();
             var trackingUri = tracker.CreateUri(activity);
             sender(trackingUri);
         }
