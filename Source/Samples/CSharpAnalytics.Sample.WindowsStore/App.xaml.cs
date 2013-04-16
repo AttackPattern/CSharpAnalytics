@@ -35,7 +35,9 @@ namespace CSharpAnalytics.Sample.WindowsStore
         /// <param name="args">Details about the launch request and process.</param>
         protected override async void OnLaunched(LaunchActivatedEventArgs args)
         {
-            var timeLaunch = new AutoTimedEventActivity("ApplicationLifecycle", "Launching");
+            // AutoMeasurement uses the Measurement Protocol API that Google's Native SDKs for iOS and Android use
+            await AutoMeasurement.InitializeAsync(new MeasurementConfiguration("UA-319000-8"));
+
             var rootFrame = Window.Current.Content as Frame;
 
             // Do not repeat app initialization when the Window already has content,
@@ -76,19 +78,13 @@ namespace CSharpAnalytics.Sample.WindowsStore
                 }
             }
 
-            // You choose *one* of these two techniques - NOT BOTH - depending on whether your property is a site or an app in GA.
-
             // AutoAnalytics currently uses Urchin API originally designed for web sites
             await AutoAnalytics.StartAsync(new UrchinConfiguration("UA-319000-10", "sample.csharpanalytics.com"));
 
-            // AutoMeasurement uses the Measurement Protocol API that Google's Native SDKs for iOS and Android use
-            await AutoMeasurement.StartAsync(new MeasurementConfiguration("UA-319000-8"));
-            
+            AutoMeasurement.Start(rootFrame);
+
             // Ensure the current window is active
             Window.Current.Activate();
-
-            AutoAnalytics.Client.Track(timeLaunch);
-            AutoMeasurement.Client.Track(timeLaunch);
         }
 
         /// <summary>

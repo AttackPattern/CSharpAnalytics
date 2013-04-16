@@ -10,7 +10,6 @@ using CSharpAnalytics.Sessions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -36,8 +35,6 @@ namespace CSharpAnalytics.WindowsStore
 
         private static readonly ProtocolDebugger protocolDebugger = new ProtocolDebugger(s => Debug.WriteLine(s), MeasurementParameterDefinitions.All);
         private static readonly EventHandler<object> applicationResume = (sender, e) => Client.TrackEvent("Resume", "ApplicationLifecycle");
-        private static readonly UnhandledExceptionEventHandler unhandledApplicationException = (sender, e) => TrackException(e.Exception);
-        private static readonly EventHandler<UnobservedTaskExceptionEventArgs> unobservedTaskException = (sender, e) => TrackException(e.Exception);
         private static readonly TypedEventHandler<DataTransferManager, TargetApplicationChosenEventArgs> socialShare = (sender, e) => Client.TrackSocial("ShareCharm", e.ApplicationName);
 
         private static BackgroundHttpRequester requester;
@@ -48,15 +45,14 @@ namespace CSharpAnalytics.WindowsStore
         public static MeasurementAnalyticsClient Client { get; private set; }
 
         /// <summary>
-        /// Start CSharpAnalytics by restoring the session state, starting the background sender,
-        /// hooking up events to track and firing the application start event and home page view to analytics.
-        /// Call this just before Window.Current.Activate() in your App.OnLaunched method.
+        /// Initialize CSharpAnalytics by restoring the session state and starting the background sender and tracking
+        /// the application lifecycle start event.
         /// </summary>
         /// <param name="configuration">Configuration to use, must at a minimum specify your Google Analytics ID and app name.</param>
         /// <param name="uploadInterval">How often to upload to the server. Lower times = more traffic but realtime. Defaults to 5 seconds.</param>
         /// <returns>A Task that will complete once CSharpAnalytics is available.</returns>
-        /// <example>await AutoAnalytics.StartAsync(new Configuration("UA-123123123-1", "myapp.someco.com"));</example>
-        public static async Task StartAsync(MeasurementConfiguration configuration, TimeSpan? uploadInterval = null)
+        /// <example>await AutoAnalytics.InitializeAsync(new MeasurementConfiguration("UA-123123123-1", "myapp.someco.com"));</example>
+        public static async Task InitializeAsync(MeasurementConfiguration configuration, TimeSpan? uploadInterval = null)
         {
             Debug.Assert(Client == null);
             if (Client != null) return;
@@ -66,9 +62,28 @@ namespace CSharpAnalytics.WindowsStore
 
             Client = new MeasurementAnalyticsClient(configuration, sessionManager, new WindowsStoreEnvironment(), requester.Add);
             Client.TrackEvent("Start", "ApplicationLifecycle");
-            Client.TrackAppView("Home");
 
             HookEvents();
+        }
+
+        /// <summary>
+        /// Start hooking up events to track and recording the initial home page.
+        /// Call this just before Window.Current.Activate() in your App.OnLaunched method.
+        /// </summary>
+        public static void Start(Frame frame)
+        {
+            if (frame == null)
+                throw new ArgumentNullException("frame");
+
+            if (frame != attachedFrame)
+            {
+                if (attachedFrame != null) attachedFrame.Navigated -= FrameNavigated;
+                frame.Navigated += FrameNavigated;
+                attachedFrame = frame;
+            }
+
+            if (frame.Content != null)
+                TrackAppView(frame.Content.GetType().Name);
         }
 
         /// <summary>
@@ -88,8 +103,6 @@ namespace CSharpAnalytics.WindowsStore
 
             await SuspendRequesterAsync();
             await SaveSessionAsync();
-
-            Client = null;
         }
 
         /// <summary>
@@ -101,12 +114,6 @@ namespace CSharpAnalytics.WindowsStore
             var application = Application.Current;
             application.Resuming += applicationResume;
             application.Suspending += ApplicationOnSuspending;
-            application.UnhandledException += unhandledApplicationException;
-            TaskScheduler.UnobservedTaskException += unobservedTaskException;
-
-            attachedFrame = Window.Current.Content as Frame;
-            if (attachedFrame != null)
-                attachedFrame.Navigated += FrameNavigated;
 
             attachedDataTransferManager = DataTransferManager.GetForCurrentView();
             attachedDataTransferManager.TargetApplicationChosen += socialShare;
@@ -126,11 +133,10 @@ namespace CSharpAnalytics.WindowsStore
             var application = Application.Current;
             application.Resuming -= applicationResume;
             application.Suspending -= ApplicationOnSuspending;
-            application.UnhandledException -= unhandledApplicationException;
-            TaskScheduler.UnobservedTaskException -= unobservedTaskException;
 
             if (attachedFrame != null)
                 attachedFrame.Navigated -= FrameNavigated;
+            attachedFrame = null;
 
             attachedDataTransferManager.TargetApplicationChosen -= socialShare;
         }
@@ -147,7 +153,15 @@ namespace CSharpAnalytics.WindowsStore
         private static void FrameNavigated(object sender, NavigationEventArgs e)
         {
             if (e.Content is ITrackPageView) return;
-            var name = e.SourcePageType.Name;
+            TrackAppView(e.SourcePageType.Name);
+        }
+
+        /// <summary>
+        /// Track an app view stripping the Page suffix from the end of the name.
+        /// </summary>
+        /// <param name="name">Name of the page to track.</param>
+        private static void TrackAppView(string name)
+        {
             if (name.EndsWith("Page"))
                 name = name.Substring(0, name.Length - 4);
             Client.TrackAppView(name);
@@ -271,38 +285,6 @@ namespace CSharpAnalytics.WindowsStore
         private static async Task SaveSessionAsync()
         {
             await LocalFolderContractSerializer<SessionState>.SaveAsync(sessionManager.GetState(), SessionStateFileName);
-        }
-
-        /// <summary>
-        /// Track an unhandled exception in analytics.
-        /// </summary>
-        /// <param name="ex">Exception to track in analytics.</param>
-        private static void TrackException(Exception ex)
-        {
-            var aggregateException = ex as AggregateException;
-            if (aggregateException != null && aggregateException.InnerExceptions.Count == 1)
-                ex = aggregateException.InnerExceptions.First();
-
-            if (!ShouldTrackException(ex)) return;
-
-            // TODO: Figure out a good compressed summary format for exceptions
-            var description = ex.Message;
-
-            // Technically another handler could fix things but no mechanism to know that
-            Client.TrackException(description, isFatal: true);
-        }
-
-        /// <summary>
-        /// Determine whether we should track an exception message or not.
-        /// </summary>
-        /// <param name="ex">Exception to consider for tracking.</param>
-        /// <returns>True if the exception should be tracked, false if it should be ignored.</returns>
-        private static bool ShouldTrackException(Exception ex)
-        {
-            // Microsoft Advertising SDK throws unobserved exceptions
-            if (ex.Source == "MicrosoftAdvertising") return false;
-
-            return true;
         }
     }
 }
