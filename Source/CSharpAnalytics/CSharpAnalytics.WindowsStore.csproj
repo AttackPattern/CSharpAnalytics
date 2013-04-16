@@ -127,8 +127,10 @@
     <Compile Include="Protocols\Measurement\MeasurementParameterDefinitions.cs" />
     <Compile Include="Protocols\Measurement\MeasurementUriBuilder.cs" />
     <Compile Include="Protocols\Urchin\IUrchinActivity.cs" />
+    <Compile Include="Protocols\Urchin\UrchinActivityParameterBuilder.cs" />
     <Compile Include="Protocols\Urchin\UrchinAnalyticsClient.cs" />
     <Compile Include="Protocols\Urchin\UrchinConfiguration.cs" />
+    <Compile Include="Protocols\Urchin\UrchinUriBuilder.cs" />
     <Compile Include="WindowsStore\AutoAnalytics.cs" />
     <Compile Include="Network\BackgroundHttpRequester.cs" />
     <Compile Include="IEnvironment.cs" />
@@ -143,8 +145,6 @@
     <Compile Include="Protocols\Urchin\UtmeDecoder.cs" />
     <Compile Include="Environment.cs" />
     <Compile Include="Protocols\EpochTime.cs" />
-    <Compile Include="Protocols\Urchin\UrchinTracker.cs" />
-    <Compile Include="Protocols\Urchin\UrchinActivityTracker.cs" />
     <Compile Include="Protocols\KeyValuePair.cs" />
     <Compile Include="Protocols\Urchin\UtmeEncoder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

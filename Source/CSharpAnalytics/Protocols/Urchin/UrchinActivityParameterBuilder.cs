@@ -12,9 +12,9 @@ using System.Linq;
 namespace CSharpAnalytics.Protocols.Urchin
 {
     /// <summary>
-    /// Converts UrchinActivities into key/value pairs that will form the Urchin-style URIs generated.
+    /// Builds key/value pairs from Urchin Activities that will form the generated Urchin style URIs.
     /// </summary>
-    internal static class UrchinActivityTracker
+    internal static class UrchinActivityParameterBuilder
     {
         /// <summary>
         /// Turn an IUrchinActivity into the key/value pairs necessary for building

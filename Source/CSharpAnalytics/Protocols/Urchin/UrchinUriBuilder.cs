@@ -13,9 +13,9 @@ using System.Linq;
 namespace CSharpAnalytics.Protocols.Urchin
 {
     /// <summary>
-    /// Creates Urchin style URIs for tracking by Google Analytics Urchin tracking endpoint.
+    /// Builds Urchin style URIs for tracking by Google Analytics Urchin tracking endpoint.
     /// </summary>
-    internal class UrchinTracker
+    internal class UrchinUriBuilder
     {
         private const string ClientVersion = "5.3.3csa1"; // Compatible with GA 5.3.3 (CSharpAnalytics v1)
         private const string ResolutionFormat = "{0}x{1}";
@@ -30,12 +30,12 @@ namespace CSharpAnalytics.Protocols.Urchin
         private string lastUtmpParameterValue;
 
         /// <summary>
-        /// Create new UrchinTracker to prepare URIs for Google's Urchin tracker endpoint.
+        /// Create new UrchinUriBuilder to prepare URIs for Google's Urchin tracker endpoint.
         /// </summary>
         /// <param name="configuration">Configuration of analytics.</param>
         /// <param name="sessionManager">Session manager.</param>
         /// <param name="environment">Environment details.</param>
-        public UrchinTracker(UrchinConfiguration configuration, SessionManager sessionManager, IEnvironment environment)
+        public UrchinUriBuilder(UrchinConfiguration configuration, SessionManager sessionManager, IEnvironment environment)
         {
             this.sessionManager = sessionManager;
             this.configuration = configuration;
@@ -43,7 +43,7 @@ namespace CSharpAnalytics.Protocols.Urchin
         }
 
         /// <summary>
-        /// Create an Urchin style URI from an activity and custom variables.
+        /// Build an Urchin style URI from an activity and custom variables.
         /// </summary>
         /// <param name="activity">Activity to create a URI for.</param>
         /// <param name="customVariables">Custom variables to include in the URI.</param>
@@ -87,7 +87,7 @@ namespace CSharpAnalytics.Protocols.Urchin
                 .Concat(GetParameters(configuration))
                 .Concat(GetParameters(sessionManager, configuration.GetHostNameHash()))
                 .Concat(GetParameters(finalCustomVariables))
-                .Concat(UrchinActivityTracker.GetParameters(activity))
+                .Concat(UrchinActivityParameterBuilder.GetParameters(activity))
                 .ToList();
         }
 

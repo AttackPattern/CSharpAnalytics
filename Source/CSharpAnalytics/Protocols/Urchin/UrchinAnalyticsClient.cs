@@ -17,7 +17,7 @@ namespace CSharpAnalytics.Protocols.Urchin
         private readonly SessionManager sessionManager;
         private readonly Action<Uri> sender;
         private readonly string hostName;
-        private readonly UrchinTracker tracker;
+        private readonly UrchinUriBuilder tracker;
 
         /// <summary>
         /// Create a new AnalyticsClient with a given configuration, session, environment and URI sender.
@@ -31,7 +31,7 @@ namespace CSharpAnalytics.Protocols.Urchin
             this.sessionManager = sessionManager;
             this.sender = sender;
 
-            tracker = new UrchinTracker(configuration, sessionManager, environment);
+            tracker = new UrchinUriBuilder(configuration, sessionManager, environment);
             hostName = configuration.HostName;
         }
 

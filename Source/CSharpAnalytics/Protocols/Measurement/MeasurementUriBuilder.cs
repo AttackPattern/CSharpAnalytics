@@ -28,7 +28,7 @@ namespace CSharpAnalytics.Protocols.Measurement
         private readonly IEnvironment environment;
 
         /// <summary>
-        /// Create new MeasurementTracker to prepare URIs for Google's Measurement Protocol endpoint.
+        /// Create new MeasurementUriBuilder to prepare URIs for Google's Measurement Protocol endpoint.
         /// </summary>
         /// <param name="configuration">Configuration of analytics.</param>
         /// <param name="sessionManager">Session manager.</param>
@@ -41,7 +41,7 @@ namespace CSharpAnalytics.Protocols.Measurement
         }
 
         /// <summary>
-        /// Create an Measurement Protocol URI from an activity and custom variables.
+        /// Build an Measurement Protocol URI from an activity and custom variables.
         /// </summary>
         /// <param name="activity">Activity to create a URI for.</param>
         /// <returns>URI that when requested will track this activity.</returns>

@@ -13,40 +13,40 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace CSharpAnalytics.Test.Protocols.Urchin
 {
     [TestClass]
-    public class UrchinTrackerTests
+    public class UrchinUriBuilderTests
     {
         [TestMethod]
-        public void UrchinTracker_GetParameters_For_Configuration_Returns_Correct_Keys()
+        public void UrchinUriBuilder_GetParameters_For_Configuration_Returns_Correct_Keys()
         {
             var configuration = new UrchinConfiguration("UA-1234-5", "hostName");
 
-            var keys = UrchinTracker.GetParameters(configuration).Select(k => k.Key).ToArray();
+            var keys = UrchinUriBuilder.GetParameters(configuration).Select(k => k.Key).ToArray();
 
             CollectionAssert.AreEquivalent(new[] { "utmac", "utmhn", "aip" }, keys);
         }
 
         [TestMethod]
-        public void UrchinTracker_GetParameters_For_Configuration_Returns_No_Aip_Value_When_False()
+        public void UrchinUriBuilder_GetParameters_For_Configuration_Returns_No_Aip_Value_When_False()
         {
             var configuration = new UrchinConfiguration("UA-1234-5", "hostName") { AnonymizeIp = false };
 
-            var keys = UrchinTracker.GetParameters(configuration).Select(k => k.Key).ToArray();
+            var keys = UrchinUriBuilder.GetParameters(configuration).Select(k => k.Key).ToArray();
 
             CollectionAssert.DoesNotContain(keys, "aip");
         }
 
         [TestMethod]
-        public void UrchinTracker_GetParameters_For_Environment_Returns_Correct_Keys()
+        public void UrchinUriBuilder_GetParameters_For_Environment_Returns_Correct_Keys()
         {
             var environment = new Environment("utf-8");
 
-            var keys = UrchinTracker.GetParameters(environment).Select(k => k.Key).ToArray();
+            var keys = UrchinUriBuilder.GetParameters(environment).Select(k => k.Key).ToArray();
 
             CollectionAssert.AreEquivalent(new[] { "utmul", "utmcs", "utmje", "utmfl" }, keys);
         }
 
         [TestMethod]
-        public void UrchinTracker_GetParameters_For_Environment_Returns_Correct_Values()
+        public void UrchinUriBuilder_GetParameters_For_Environment_Returns_Correct_Values()
         {
             var environment = new Environment("en-gb")
                 {
@@ -61,7 +61,7 @@ namespace CSharpAnalytics.Test.Protocols.Urchin
                     ViewportWidth = 1024
                 };
 
-            var parameters = UrchinTracker.GetParameters(environment).ToDictionary(k => k.Key, v => v.Value);
+            var parameters = UrchinUriBuilder.GetParameters(environment).ToDictionary(k => k.Key, v => v.Value);
 
             Assert.AreEqual("ISO-8550-1", parameters["utmcs"]);
             Assert.AreEqual("en-gb", parameters["utmul"]);
@@ -74,17 +74,17 @@ namespace CSharpAnalytics.Test.Protocols.Urchin
         }
 
         [TestMethod]
-        public void UrchinTracker_GetParameters_For_Environment_Returns_Correct_Utmje_Value()
+        public void UrchinUriBuilder_GetParameters_For_Environment_Returns_Correct_Utmje_Value()
         {
             var environment = new Environment("en-gb") { JavaEnabled = false };
 
-            var utmjeValue = UrchinTracker.GetParameters(environment).First(f => f.Key == "utmje").Value;
+            var utmjeValue = UrchinUriBuilder.GetParameters(environment).First(f => f.Key == "utmje").Value;
 
             Assert.AreEqual("0", utmjeValue);
         }
 
         [TestMethod]
-        public void UrchinTracker_CreateCookieSubstituteParameter()
+        public void UrchinUriBuilder_CreateCookieSubstituteParameter()
         {
             var @event = new EventActivity("action", "catgory", "label", 123, true);
             var sessionState = new SessionState
@@ -97,13 +97,13 @@ namespace CSharpAnalytics.Test.Protocols.Urchin
                 };
             var sessionManager = new SessionManager(TimeSpan.FromMinutes(5), sessionState);
 
-            var cookieSubstitute = UrchinTracker.CreateCookieSubstituteParameter(sessionManager, 1);
+            var cookieSubstitute = UrchinUriBuilder.CreateCookieSubstituteParameter(sessionManager, 1);
 
             Assert.AreEqual("__utma=1.1159017511.1349874855.1355145255.1355490855.5;", cookieSubstitute);
         }
 
         [TestMethod]
-        public void UrchinTracker_GetFinalCustomVariables_Selects_Correct_Final_Variables()
+        public void UrchinUriBuilder_GetFinalCustomVariables_Selects_Correct_Final_Variables()
         {
             var sessionScopedVariables = new ScopedCustomVariableSlots(CustomVariableScope.Session);
             sessionScopedVariables[0] = new CustomVariable("session-one-name", "session-one-value");
@@ -118,7 +118,7 @@ namespace CSharpAnalytics.Test.Protocols.Urchin
             activityScopedVariables[1] = new CustomVariable("activity-two-name", "activity-two-value");
             activityScopedVariables[3] = new CustomVariable("activity-four-name", "activity-four-value");
 
-            var final = UrchinTracker.GetFinalCustomVariables(sessionScopedVariables, visitorScopedVariables, activityScopedVariables);
+            var final = UrchinUriBuilder.GetFinalCustomVariables(sessionScopedVariables, visitorScopedVariables, activityScopedVariables);
 
             Assert.AreEqual(CustomVariableScope.Visitor, final[0].Scope);
             Assert.AreEqual(CustomVariableScope.Visitor, final[1].Scope);
