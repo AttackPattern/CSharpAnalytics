@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
+using CSharpAnalytics.Activities;
 using CSharpAnalytics.Network;
 using CSharpAnalytics.Protocols;
 using CSharpAnalytics.Protocols.Measurement;
@@ -13,6 +14,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using Windows.ApplicationModel;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
 using Windows.System;
@@ -34,7 +36,6 @@ namespace CSharpAnalytics.WindowsStore
 
         private static readonly ProtocolDebugger protocolDebugger = new ProtocolDebugger(s => Debug.WriteLine(s), MeasurementParameterDefinitions.All);
         private static readonly EventHandler<object> applicationResume = (sender, e) => Client.TrackEvent("Resume", "ApplicationLifecycle");
-        private static readonly SuspendingEventHandler applicationSuspend = (sender, e) => Client.TrackEvent("Suspend", "ApplicationLifecycle");
         private static readonly UnhandledExceptionEventHandler unhandledApplicationException = (sender, e) => TrackException(e.Exception);
         private static readonly EventHandler<UnobservedTaskExceptionEventArgs> unobservedTaskException = (sender, e) => TrackException(e.Exception);
         private static readonly TypedEventHandler<DataTransferManager, TargetApplicationChosenEventArgs> socialShare = (sender, e) => Client.TrackSocial("ShareCharm", e.ApplicationName);
@@ -99,7 +100,7 @@ namespace CSharpAnalytics.WindowsStore
         {
             var application = Application.Current;
             application.Resuming += applicationResume;
-            application.Suspending += applicationSuspend;
+            application.Suspending += ApplicationOnSuspending;
             application.UnhandledException += unhandledApplicationException;
             TaskScheduler.UnobservedTaskException += unobservedTaskException;
 
@@ -111,6 +112,12 @@ namespace CSharpAnalytics.WindowsStore
             attachedDataTransferManager.TargetApplicationChosen += socialShare;
         }
 
+        private static void ApplicationOnSuspending(object sender, SuspendingEventArgs suspendingEventArgs)
+        {
+            var suspendEvent = new EventActivity("Suspend", "ApplicationLifecycle");
+            Client.Track(suspendEvent, true);
+        }
+
         /// <summary>
         /// Unhook events that were wired up in HookEvents.
         /// </summary>
@@ -118,7 +125,7 @@ namespace CSharpAnalytics.WindowsStore
         {
             var application = Application.Current;
             application.Resuming -= applicationResume;
-            application.Suspending -= applicationSuspend;
+            application.Suspending -= ApplicationOnSuspending;
             application.UnhandledException -= unhandledApplicationException;
             TaskScheduler.UnobservedTaskException -= unobservedTaskException;
 
@@ -140,7 +147,10 @@ namespace CSharpAnalytics.WindowsStore
         private static void FrameNavigated(object sender, NavigationEventArgs e)
         {
             if (e.Content is ITrackPageView) return;
-            Client.TrackAppView(e.SourcePageType.Name);
+            var name = e.SourcePageType.Name;
+            if (name.EndsWith("Page"))
+                name = name.Substring(0, name.Length - 4);
+            Client.TrackAppView(name);
         }
 
         /// <summary>
