@@ -90,7 +90,7 @@ namespace CSharpAnalytics.WindowsStore
         /// <summary>
         /// Get the device category this computer belongs to.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>The category of this device.</returns>
         public static async Task<string> GetDeviceCategoryAsync()
         {
             var rootContainer = await PnpObject.CreateFromIdAsync(PnpObjectType.DeviceContainer, RootContainer, new[] { DisplayPrimaryCategoryKey });
@@ -126,7 +126,14 @@ namespace CSharpAnalytics.WindowsStore
         {
             var actualProperties = properties.Concat(new[] { DeviceClassKey });
             var rootDevices = (await PnpObject.FindAllAsync(PnpObjectType.Device, actualProperties, RootContainerQuery));
-            return rootDevices.FirstOrDefault(y => y.Properties.Last().Value.ToString().Equals(HalDeviceClass));
+            foreach (var rootDevice in rootDevices.Where(d => d.Properties != null && d.Properties.Any()))
+            {
+                var lastProperty = rootDevice.Properties.Last();
+                if (lastProperty.Value != null)
+                    if (lastProperty.Value.ToString().Equals(HalDeviceClass))
+                        return rootDevice;
+            }
+            return null;
         }
 
         /// <summary>
