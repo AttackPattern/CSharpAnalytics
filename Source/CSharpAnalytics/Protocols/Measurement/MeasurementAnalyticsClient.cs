@@ -67,6 +67,21 @@ namespace CSharpAnalytics.Protocols.Measurement
         }
 
         /// <summary>
+        /// Set the value of a custom dimension to be set with the next activity.
+        /// </summary>
+        /// <remarks>
+        /// These need to be configured first in Google Analytics.
+        /// This overide allows you to use an enum instead of integers for the index.
+        /// </remarks>
+        /// <param name="index">Index of the custom dimension the value is for.</param>
+        /// <param name="value">Value for the custom dimension specified by the index.</param>
+        public void SetCustomDimension(Enum index, string value)
+        {
+            ValidateEnum(index);
+            SetCustomDimension(Convert.ToInt32(index), value);
+        }
+
+        /// <summary>
         /// Set the value of a custom metric to be set with the next activity.
         /// </summary>
         /// <remarks>
@@ -77,6 +92,30 @@ namespace CSharpAnalytics.Protocols.Measurement
         public void SetCustomMetric(int index, long? value)
         {
             customMetrics[index] = value;
+        }
+
+        /// <summary>
+        /// Set the value of a custom dimension to be set with the next activity.
+        /// </summary>
+        /// <remarks>
+        /// These need to be configured first in Google Analytics.
+        /// This overide allows you to use an enum instead of integers for the index.
+        /// </remarks>
+        /// <param name="index">Index of the custom dimension the value is for.</param>
+        /// <param name="value">Value for the custom dimension specified by the index.</param>
+        public void SetCustomMetric(Enum index, long? value)
+        {
+            ValidateEnum(index);
+            SetCustomMetric(Convert.ToInt32(index), value);
+        }
+
+        private void ValidateEnum(Enum index)
+        {
+            if (Enum.GetUnderlyingType(index.GetType()) != typeof(int))
+                throw new ArgumentOutOfRangeException("index", "Enum must be of type int");
+
+            if (!Enum.IsDefined(index.GetType(), index))
+                throw new ArgumentOutOfRangeException("index", "Enum value is not defined");
         }
     }
 }
