@@ -32,6 +32,7 @@ namespace CSharpAnalytics.WindowsStore
     {
         private const string RequestQueueFileName = "CSharpAnalytics-RequestQueue";
         private const string SessionStateFileName = "CSharpAnalytics-SessionState";
+        private const int MaximumRequestsToPersist = 50;
 
         private static readonly ProtocolDebugger protocolDebugger = new ProtocolDebugger(s => Debug.WriteLine(s), UrchinParameterDefinitions.All);
         private static readonly EventHandler<object> applicationResume = (sender, e) => Client.TrackEvent( "Resume", "ApplicationLifecycle");
@@ -252,7 +253,8 @@ namespace CSharpAnalytics.WindowsStore
         private static async Task SuspendRequesterAsync()
         {
             var pendingRequests = await requester.StopAsync();
-            await LocalFolderContractSerializer<List<Uri>>.SaveAsync(pendingRequests, RequestQueueFileName);
+            var recentRequestsToPersist = pendingRequests.Skip(pendingRequests.Count - MaximumRequestsToPersist).ToList();
+            await LocalFolderContractSerializer<List<Uri>>.SaveAsync(recentRequestsToPersist, RequestQueueFileName);
         }
 
         /// <summary>

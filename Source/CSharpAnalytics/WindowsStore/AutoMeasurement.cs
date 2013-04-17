@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
+using System.Linq;
 using CSharpAnalytics.Activities;
 using CSharpAnalytics.Network;
 using CSharpAnalytics.Protocols;
@@ -32,6 +33,7 @@ namespace CSharpAnalytics.WindowsStore
     {
         private const string RequestQueueFileName = "CSharpAnalytics-MeasurementQueue";
         private const string SessionStateFileName = "CSharpAnalytics-MeasurementSession";
+        private const int MaximumRequestsToPersist = 50;
 
         private static readonly ProtocolDebugger protocolDebugger = new ProtocolDebugger(s => Debug.WriteLine(s), MeasurementParameterDefinitions.All);
         private static readonly EventHandler<object> applicationResume = (sender, e) => Client.TrackEvent("Resume", "ApplicationLifecycle");
@@ -263,7 +265,8 @@ namespace CSharpAnalytics.WindowsStore
         private static async Task SuspendRequesterAsync()
         {
             var pendingRequests = await requester.StopAsync();
-            await LocalFolderContractSerializer<List<Uri>>.SaveAsync(pendingRequests, RequestQueueFileName);
+            var recentRequestsToPersist = pendingRequests.Skip(pendingRequests.Count - MaximumRequestsToPersist).ToList();
+            await LocalFolderContractSerializer<List<Uri>>.SaveAsync(recentRequestsToPersist, RequestQueueFileName);
         }
 
         /// <summary>
