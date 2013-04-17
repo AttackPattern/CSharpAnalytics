@@ -54,7 +54,7 @@ You will need:
 * Google Analytics account - Head to http://analytics.google.com and sign-up if you don't have one
 * Analytics property set-up as a **web site**
 
-If you want to set-up your Analytisc property as an App then try out our experimental AutoMeasurement and MeasurementAnalyticsClient classes.
+If you want to set-up your Analytics property as an App then try out our **experimental** AutoMeasurement and MeasurementAnalyticsClient classes.
 
 Download or clone the source and add a reference to CSharpAnalytics.WindowsStore from your application.
 
@@ -125,13 +125,11 @@ Untested
 Future enhancements
 -------------------
 1. Add support for Windows 8 network metering modes
-1. Custom dimensions/parameters for Measurement Protocol
 1. Additional platforms (Windows Phone 7/8, Silverlight, Mono)
-1. Opt-out support via session state switch and null receiver
+1. Opt-out support via null receiver
 1. Throttling of hits as per official SDKs
-1. Persist and restore session and visitor custom variables
 
-If you want to contribute please consider the CSharpAnalytics.sln which will load all platforms and unit tests.
+If you want to contribute please consider the CSharpAnalytics.sln which will load all platforms and unit tests (if you get any project load failures you're probably missing an SDK)
 
 Licence
 -------
