@@ -39,6 +39,7 @@ namespace CSharpAnalytics.WindowsStore
         private static readonly EventHandler<object> applicationResume = (sender, e) => Client.TrackEvent("Resume", "ApplicationLifecycle");
         private static readonly TypedEventHandler<DataTransferManager, TargetApplicationChosenEventArgs> socialShare = (sender, e) => Client.TrackSocial("ShareCharm", e.ApplicationName);
 
+        private static string[] agentParts;
         private static BackgroundHttpRequester requester;
         private static SessionManager sessionManager;
         private static Frame attachedFrame;
@@ -204,7 +205,7 @@ namespace CSharpAnalytics.WindowsStore
         {
             userAgent.Add(new ProductInfoHeaderValue("CSharpAnalytics", "0.1"));
 
-            var agentParts = new[] {
+            agentParts = agentParts ?? new[] {
                 "Windows NT " + SystemInformation.GetWindowsVersionAsync().Result,
                 GetProcessorArchitectureAsync().Result
             };

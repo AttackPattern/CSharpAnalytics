@@ -41,6 +41,7 @@ namespace CSharpAnalytics.WindowsStore
         private static readonly EventHandler<UnobservedTaskExceptionEventArgs> unobservedTaskException = (sender, e) => TrackException(e.Exception);
         private static readonly TypedEventHandler<DataTransferManager, TargetApplicationChosenEventArgs> socialShare = (sender, e) => Client.TrackSocial("ShareCharm", e.ApplicationName);
 
+        private static string[] agentParts;
         private static BackgroundHttpRequester requester;
         private static SessionManager sessionManager;
         private static Frame attachedFrame;
@@ -182,7 +183,7 @@ namespace CSharpAnalytics.WindowsStore
         {
             userAgent.Add(new ProductInfoHeaderValue(packageId.Name, FormatVersion(packageId.Version)));
 
-            var agentParts = new[] {
+            agentParts = agentParts ?? new[] {
                 "Windows NT " + SystemInformation.GetWindowsVersionAsync().Result,
                 GetProcessorArchitectureAsync().Result
             };
