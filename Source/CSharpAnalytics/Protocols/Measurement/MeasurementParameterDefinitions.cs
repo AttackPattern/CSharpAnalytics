@@ -109,8 +109,8 @@ namespace CSharpAnalytics.Protocols.Measurement
             new ParameterDefinition("exf",      "Is Exception Fatal", FormatBoolean),
 
             // Custom Dimensions / Metrics
-            new ParameterDefinition("cd[0-9]+", "Custom Dimension"),
-            new ParameterDefinition("cm[0-9]+", "Custom Metric"),
+            new ParameterDefinition("cd([0-9]+)", "Custom Dimension $1", isRegexMatch:true),
+            new ParameterDefinition("cm([0-9]+)", "Custom Metric $1", isRegexMatch:true),
 
             // Undocumented
             new ParameterDefinition("_v",       "Library Version"),

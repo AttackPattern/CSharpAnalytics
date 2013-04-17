@@ -5,7 +5,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
- 
+using System.Text.RegularExpressions;
+
 namespace CSharpAnalytics.Protocols
 {
     /// <summary>
@@ -45,9 +46,24 @@ namespace CSharpAnalytics.Protocols
 
             foreach (var parameterDefinition in parameterDefinitions)
             {
-                string rawValue;
-                if (parameters.TryGetValue(parameterDefinition.Name, out rawValue))
-                    WriteParameter(parameterDefinition, rawValue);
+                if (!parameterDefinition.IsRegexMatch)
+                {
+                    string rawValue;
+                    if (parameters.TryGetValue(parameterDefinition.Name, out rawValue))
+                        WriteParameter(parameterDefinition, parameterDefinition.Label, rawValue);
+                }
+                else
+                {
+                    foreach (var pair in parameters)
+                    {
+                        var match = Regex.Match(pair.Key, parameterDefinition.Name);
+                        if (match.Success)
+                        {
+                            var label = parameterDefinition.Label.Replace("$1", match.Groups[1].Captures[0].Value);
+                            WriteParameter(parameterDefinition, label, pair.Value);
+                        }
+                    }
+                }
             }
         }
 
@@ -69,11 +85,11 @@ namespace CSharpAnalytics.Protocols
         /// </summary>
         /// <param name="parameterDefinition">Parameter to write out.</param>
         /// <param name="rawValue">Raw value of the parameter to format before writing.</param>
-        private void WriteParameter(ParameterDefinition parameterDefinition, string rawValue)
+        private void WriteParameter(ParameterDefinition parameterDefinition, string label, string rawValue)
         {
             var formattedValue = parameterDefinition.Formatter(rawValue);
             if (!String.IsNullOrWhiteSpace(formattedValue))
-                writer(parameterDefinition.Label.PadRight(24) + ": " + formattedValue);
+                writer(label.PadRight(24) + ": " + formattedValue);
         }
     }
 }

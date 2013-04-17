@@ -17,6 +17,7 @@ namespace CSharpAnalytics.Protocols
         private readonly Func<string, string> formatter;
         private readonly string label;
         private readonly string name;
+        private readonly bool isRegexMatch;
 
         /// <summary>
         /// Creates a new parameter with a given name, label and optional formatter.
@@ -24,11 +25,13 @@ namespace CSharpAnalytics.Protocols
         /// <param name="name">Name of this parameter as set in the url.</param>
         /// <param name="label">Human-readable label for this parameter.</param>
         /// <param name="formatter">Optional formatter to decode and format the value from the url to a human-readable format.</param>
-        public ParameterDefinition(string name, string label, Func<string, string> formatter = null)
+        /// <param name="isRegexMatch">Whether this parameter is matched against parameter keys using a regex or not.</param>
+        public ParameterDefinition(string name, string label, Func<string, string> formatter = null, bool isRegexMatch = false)
         {
             this.name = name;
             this.label = label;
             this.formatter = formatter ?? defaultFormatter;
+            this.isRegexMatch = isRegexMatch;
         }
 
         /// <summary>
@@ -45,5 +48,10 @@ namespace CSharpAnalytics.Protocols
         /// Name of this parameter when found in an analytics URI request.
         /// </summary>
         public string Name { get { return name; } }
+
+        /// <summary>
+        /// Whether this parameter is matched against URI request using a regex.
+        /// </summary>
+        public bool IsRegexMatch { get { return isRegexMatch; } }
     }
 }
