@@ -47,10 +47,12 @@ namespace CSharpAnalytics.Protocols.Measurement
         /// Build an Measurement Protocol URI from an activity and custom variables.
         /// </summary>
         /// <param name="activity">Activity to create a URI for.</param>
+        /// <param name="customDimensions">Custom dimensions to send with this request.</param>
+        /// <param name="customMetrics">Custom values to send with this request.</param>
         /// <returns>URI that when requested will track this activity.</returns>
-        public Uri BuildUri(IMeasurementActivity activity)
+        public Uri BuildUri(IMeasurementActivity activity, IDictionary<int, string> customDimensions, IDictionary<int, long?> customMetrics)
         {
-            var parameters = BuildParameterList(activity);
+            var parameters = BuildParameterList(activity, customDimensions, customMetrics);
             CarryForwardParameters(activity, parameters);
             var uriBuilder = new UriBuilder(configuration.UseSsl ? secureTrackingEndpoint : trackingEndpoint) { Query = CreateQueryString(parameters) };
             return uriBuilder.Uri;
@@ -74,14 +76,18 @@ namespace CSharpAnalytics.Protocols.Measurement
         /// Build a list of the parameters required based on configuration, environment, activity, session, custom variables and state.
         /// </summary>
         /// <param name="activity">Activity to include in the parameter list.</param>
+        /// <param name="customDimensions">Custom dimensions to send with this request.</param>
+        /// <param name="customMetrics">Custom values to send with this request.</param>
         /// <returns>Enumeration of key/value pairs containing the parameters necessary for this request.</returns>
-        private ICollection<KeyValuePair<string, string>> BuildParameterList(IMeasurementActivity activity)
+        private ICollection<KeyValuePair<string, string>> BuildParameterList(IMeasurementActivity activity, IDictionary<int, string> customDimensions, IDictionary<int, long?> customMetrics)
         {
             return GetParameters()
                 .Concat(GetParameters(environment))
                 .Concat(GetParameters(configuration))
                 .Concat(GetParameters(sessionManager))
                 .Concat(activityTracker.GetActivityParameters(activity))
+                .Concat(GetAndRemoveParameters(customDimensions))
+                .Concat(GetAndRemoveParameters(customMetrics))
                 .ToList();
         }
 
@@ -164,6 +170,34 @@ namespace CSharpAnalytics.Protocols.Measurement
             var sessionControlValue = GetSessionControlValue(sessionManager.SessionStatus);
             if (!String.IsNullOrEmpty(sessionControlValue))
                 yield return KeyValuePair.Create("sc", sessionControlValue);
+        }
+
+        /// <summary>
+        /// Get parameters for all custom dimensions.
+        /// </summary>
+        /// <param name="customDimensions">Enumerable of key/value pairs containing custom dimension indexes and values.</param>
+        /// <returns>Enumerable of key/value pairs of custom dimensions.</returns>
+        internal static IEnumerable<KeyValuePair<string, string>> GetAndRemoveParameters(IDictionary<int, string> customDimensions)
+        {
+            var snapshot = customDimensions.ToArray();
+            customDimensions.Clear();
+            return snapshot
+                .Where(cd => cd.Value != null)
+                .Select(cd => KeyValuePair.Create("cd" + cd.Key, cd.Value));
+        }
+
+        /// <summary>
+        /// Get parameters for all custom metrics.
+        /// </summary>
+        /// <param name="customMetrics">Enumerable of key/value pairs containing custom metric indexes and values.</param>
+        /// <returns>Enumerable of key/value pairs of custom metrics.</returns>
+        internal static IEnumerable<KeyValuePair<string, string>> GetAndRemoveParameters(IDictionary<int, long?> customMetrics)
+        {
+            var snapshot = customMetrics.ToArray();
+            customMetrics.Clear();
+            return snapshot
+                .Where(cm => cm.Value != null)
+                .Select(cd => KeyValuePair.Create("cm" + cd.Key, cd.Value.Value.ToString("0", CultureInfo.InvariantCulture)));
         }
 
         /// <summary>

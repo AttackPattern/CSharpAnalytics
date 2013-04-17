@@ -3,6 +3,7 @@
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
 using System;
+using System.Collections.Generic;
 using CSharpAnalytics.Activities;
 using CSharpAnalytics.Sessions;
 
@@ -45,8 +46,37 @@ namespace CSharpAnalytics.Protocols.Measurement
             sessionManager.Hit();
             if (endSession)
                 sessionManager.End();
-            var trackingUri = tracker.BuildUri(activity);
+            var trackingUri = tracker.BuildUri(activity, customDimensions, customMetrics);
             sender(trackingUri);
+        }
+
+        private readonly Dictionary<int, string> customDimensions = new Dictionary<int, string>();
+        private readonly Dictionary<int, long?> customMetrics = new Dictionary<int, long?>(); 
+
+        /// <summary>
+        /// Set the value of a custom dimension to be set with the next activity.
+        /// </summary>
+        /// <remarks>
+        /// These need to be configured first in Google Analytics.
+        /// </remarks>
+        /// <param name="index">Index of the custom dimension the value is for.</param>
+        /// <param name="value">Value for the custom dimension specified by the index.</param>
+        public void SetCustomDimension(int index, string value)
+        {
+            customDimensions[index] = value;
+        }
+
+        /// <summary>
+        /// Set the value of a custom metric to be set with the next activity.
+        /// </summary>
+        /// <remarks>
+        /// These need to be configured first in Google Analytics.
+        /// </remarks>
+        /// <param name="index">Index of the custom metric the value is for.</param>
+        /// <param name="value">Value for the custom metric specified by the index.</param>
+        public void SetCustomMetric(int index, long? value)
+        {
+            customMetrics[index] = value;
         }
     }
 }
