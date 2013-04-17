@@ -2,10 +2,12 @@
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
-using System;
-using System.Collections.Generic;
 using CSharpAnalytics.Activities;
 using CSharpAnalytics.Sessions;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 
 namespace CSharpAnalytics.Protocols.Measurement
 {
@@ -14,23 +16,17 @@ namespace CSharpAnalytics.Protocols.Measurement
     /// </summary>
     public class MeasurementAnalyticsClient
     {
-        private readonly SessionManager sessionManager;
-        private readonly Action<Uri> sender;
-        private readonly MeasurementUriBuilder tracker;
+        private readonly Dictionary<int, string> customDimensions = new Dictionary<int, string>();
+        private readonly Dictionary<int, long?> customMetrics = new Dictionary<int, long?>();
+        private readonly Queue<MeasurementActivityEntry> queue = new Queue<MeasurementActivityEntry>();
+
+        private MeasurementTracker tracker;
 
         /// <summary>
-        /// Create a new AnalyticsClient with a given configuration, session, environment and URI sender.
+        /// Create a new MeasurementAnalyticsClient with buffering until configured.
         /// </summary>
-        /// <param name="configuration">Configuration of this Google Analytics Measurement Protocol client.</param>
-        /// <param name="sessionManager">Session manager with visitor and session information.</param>
-        /// <param name="environment">Provider of environmental information such as screen resolution.</param>
-        /// <param name="sender">Action to take prepared URIs for Google Analytics and send them on.</param>
-        public MeasurementAnalyticsClient(MeasurementConfiguration configuration, SessionManager sessionManager, IEnvironment environment, Action<Uri> sender)
+        public MeasurementAnalyticsClient()
         {
-            this.sessionManager = sessionManager;
-            this.sender = sender;
-
-            tracker = new MeasurementUriBuilder(configuration, sessionManager, environment);
         }
 
         /// <summary>
@@ -43,15 +39,31 @@ namespace CSharpAnalytics.Protocols.Measurement
             if (activity is AutoTimedEventActivity)
                 ((AutoTimedEventActivity)activity).End();
 
-            sessionManager.Hit();
-            if (endSession)
-                sessionManager.End();
-            var trackingUri = tracker.BuildUri(activity, customDimensions, customMetrics);
-            sender(trackingUri);
+            var entry = new MeasurementActivityEntry
+            {
+                Activity = activity,
+                CustomDimensions = customDimensions.ToArray(),
+                CustomMetrics = customMetrics.ToArray(),
+                EndSession = endSession
+            };
+
+            customDimensions.Clear();
+            customMetrics.Clear();
+
+            if (tracker == null)
+                queue.Enqueue(entry);
+            else
+                tracker.Track(entry);
         }
 
-        private readonly Dictionary<int, string> customDimensions = new Dictionary<int, string>();
-        private readonly Dictionary<int, long?> customMetrics = new Dictionary<int, long?>(); 
+        public void Configure(MeasurementConfiguration configuration, SessionManager sessionManager, IEnvironment environment, Action<Uri> sender)
+        {
+            Debug.Assert(tracker == null);
+            var newTracker = new MeasurementTracker(configuration, sessionManager, environment, sender);
+            while (queue.Count > 0)
+                newTracker.Track(queue.Dequeue());
+            tracker = newTracker;
+        }
 
         /// <summary>
         /// Set the value of a custom dimension to be set with the next activity.
@@ -109,6 +121,11 @@ namespace CSharpAnalytics.Protocols.Measurement
             SetCustomMetric(Convert.ToInt32(index), value);
         }
 
+        /// <summary>
+        /// Validate an enum to ensure it is defined and has an underlying int type throwing
+        /// an exception if it does not.
+        /// </summary>
+        /// <param name="index">Enum to check.</param>
         private void ValidateEnum(Enum index)
         {
             if (Enum.GetUnderlyingType(index.GetType()) != typeof(int))

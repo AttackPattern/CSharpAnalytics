@@ -2,12 +2,12 @@
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
-using System.Linq;
+using CSharpAnalytics.Activities;
+using CSharpAnalytics.Sessions;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using CSharpAnalytics.Sessions;
-using CSharpAnalytics.Activities;
+using System.Linq;
 
 namespace CSharpAnalytics.Protocols.Measurement
 {
@@ -50,10 +50,10 @@ namespace CSharpAnalytics.Protocols.Measurement
         /// <param name="customDimensions">Custom dimensions to send with this request.</param>
         /// <param name="customMetrics">Custom values to send with this request.</param>
         /// <returns>URI that when requested will track this activity.</returns>
-        public Uri BuildUri(IMeasurementActivity activity, IDictionary<int, string> customDimensions, IDictionary<int, long?> customMetrics)
+        public Uri BuildUri(MeasurementActivityEntry entry)
         {
-            var parameters = BuildParameterList(activity, customDimensions, customMetrics);
-            CarryForwardParameters(activity, parameters);
+            var parameters = BuildParameterList(entry);
+            CarryForwardParameters(entry.Activity, parameters);
             var uriBuilder = new UriBuilder(configuration.UseSsl ? secureTrackingEndpoint : trackingEndpoint) { Query = CreateQueryString(parameters) };
             return uriBuilder.Uri;
         }
@@ -76,18 +76,16 @@ namespace CSharpAnalytics.Protocols.Measurement
         /// Build a list of the parameters required based on configuration, environment, activity, session, custom variables and state.
         /// </summary>
         /// <param name="activity">Activity to include in the parameter list.</param>
-        /// <param name="customDimensions">Custom dimensions to send with this request.</param>
-        /// <param name="customMetrics">Custom values to send with this request.</param>
         /// <returns>Enumeration of key/value pairs containing the parameters necessary for this request.</returns>
-        private ICollection<KeyValuePair<string, string>> BuildParameterList(IMeasurementActivity activity, IDictionary<int, string> customDimensions, IDictionary<int, long?> customMetrics)
+        private ICollection<KeyValuePair<string, string>> BuildParameterList(MeasurementActivityEntry entry)
         {
             return GetParameters()
                 .Concat(GetParameters(environment))
                 .Concat(GetParameters(configuration))
                 .Concat(GetParameters(sessionManager))
-                .Concat(activityTracker.GetActivityParameters(activity))
-                .Concat(GetAndRemoveParameters(customDimensions))
-                .Concat(GetAndRemoveParameters(customMetrics))
+                .Concat(activityTracker.GetActivityParameters(entry.Activity))
+                .Concat(GetParameters(entry.CustomDimensions))
+                .Concat(GetParameters(entry.CustomMetrics))
                 .ToList();
         }
 
@@ -177,11 +175,9 @@ namespace CSharpAnalytics.Protocols.Measurement
         /// </summary>
         /// <param name="customDimensions">Enumerable of key/value pairs containing custom dimension indexes and values.</param>
         /// <returns>Enumerable of key/value pairs of custom dimensions.</returns>
-        internal static IEnumerable<KeyValuePair<string, string>> GetAndRemoveParameters(IDictionary<int, string> customDimensions)
+        internal static IEnumerable<KeyValuePair<string, string>> GetParameters(IEnumerable<KeyValuePair<int, string>> customDimensions)
         {
-            var snapshot = customDimensions.ToArray();
-            customDimensions.Clear();
-            return snapshot
+            return customDimensions
                 .Where(cd => cd.Value != null)
                 .Select(cd => KeyValuePair.Create("cd" + cd.Key, cd.Value));
         }
@@ -191,11 +187,9 @@ namespace CSharpAnalytics.Protocols.Measurement
         /// </summary>
         /// <param name="customMetrics">Enumerable of key/value pairs containing custom metric indexes and values.</param>
         /// <returns>Enumerable of key/value pairs of custom metrics.</returns>
-        internal static IEnumerable<KeyValuePair<string, string>> GetAndRemoveParameters(IDictionary<int, long?> customMetrics)
+        internal static IEnumerable<KeyValuePair<string, string>> GetParameters(IEnumerable<KeyValuePair<int, long?>> customMetrics)
         {
-            var snapshot = customMetrics.ToArray();
-            customMetrics.Clear();
-            return snapshot
+            return customMetrics
                 .Where(cm => cm.Value != null)
                 .Select(cd => KeyValuePair.Create("cm" + cd.Key, cd.Value.Value.ToString("0", CultureInfo.InvariantCulture)));
         }

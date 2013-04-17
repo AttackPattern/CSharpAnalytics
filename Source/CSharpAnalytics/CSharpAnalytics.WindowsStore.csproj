@@ -121,10 +121,12 @@
     <Compile Include="Activities\TransactionItemActivity.cs" />
     <Compile Include="CustomVariables\ScopedCustomVariable.cs" />
     <Compile Include="Protocols\Measurement\IMeasurementActivity.cs" />
+    <Compile Include="Protocols\Measurement\MeasurementActivityEntry.cs" />
     <Compile Include="Protocols\Measurement\MeasurementActivityParameterBuilder.cs" />
     <Compile Include="Protocols\Measurement\MeasurementAnalyticsClient.cs" />
     <Compile Include="Protocols\Measurement\MeasurementConfiguration.cs" />
     <Compile Include="Protocols\Measurement\MeasurementParameterDefinitions.cs" />
+    <Compile Include="Protocols\Measurement\MeasurementTracker.cs" />
     <Compile Include="Protocols\Measurement\MeasurementUriBuilder.cs" />
     <Compile Include="Protocols\Urchin\IUrchinActivity.cs" />
     <Compile Include="Protocols\Urchin\UrchinActivityParameterBuilder.cs" />

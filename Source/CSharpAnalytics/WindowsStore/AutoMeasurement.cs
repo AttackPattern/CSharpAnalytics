@@ -47,6 +47,11 @@ namespace CSharpAnalytics.WindowsStore
 
         public static MeasurementAnalyticsClient Client { get; private set; }
 
+        static AutoMeasurement()
+        {
+            Client = new MeasurementAnalyticsClient();
+        }
+
         /// <summary>
         /// Initialize CSharpAnalytics by restoring the session state and starting the background sender and tracking
         /// the application lifecycle start event.
@@ -55,25 +60,22 @@ namespace CSharpAnalytics.WindowsStore
         /// <param name="uploadInterval">How often to upload to the server. Lower times = more traffic but realtime. Defaults to 5 seconds.</param>
         /// <returns>A Task that will complete once CSharpAnalytics is available.</returns>
         /// <example>await AutoAnalytics.InitializeAsync(new MeasurementConfiguration("UA-123123123-1", "myapp.someco.com"));</example>
-        public static async Task InitializeAsync(MeasurementConfiguration configuration, TimeSpan? uploadInterval = null)
+        public static async Task StartAsync(MeasurementConfiguration configuration, TimeSpan? uploadInterval = null)
         {
-            Debug.Assert(Client == null);
-            if (Client != null) return;
-
             await StartRequesterAsync(uploadInterval ?? TimeSpan.FromSeconds(5));
             await RestoreSessionAsync(TimeSpan.FromMinutes(20));
 
-            Client = new MeasurementAnalyticsClient(configuration, sessionManager, new WindowsStoreEnvironment(), requester.Add);
+            Client.Configure(configuration, sessionManager, new WindowsStoreEnvironment(), requester.Add);
             Client.TrackEvent("Start", "ApplicationLifecycle");
 
             HookEvents();
         }
 
         /// <summary>
-        /// Start hooking up events to track and recording the initial home page.
+        /// Attach to the root frame, hook into the navigation event and track initial page appview.
         /// Call this just before Window.Current.Activate() in your App.OnLaunched method.
         /// </summary>
-        public static void Start(Frame frame)
+        public static void Attach(Frame frame)
         {
             if (frame == null)
                 throw new ArgumentNullException("frame");
@@ -201,12 +203,12 @@ namespace CSharpAnalytics.WindowsStore
         /// Figure out the user agent and add it to the header collection.
         /// </summary>
         /// <param name="userAgent">User agent header collection.</param>
-        private static void AddUserAgent(ICollection<ProductInfoHeaderValue> userAgent)
+        private static async void AddUserAgent(ICollection<ProductInfoHeaderValue> userAgent)
         {
             userAgent.Add(new ProductInfoHeaderValue("CSharpAnalytics", "0.1"));
 
             agentParts = agentParts ?? new[] {
-                "Windows NT " + SystemInformation.GetWindowsVersionAsync().Result,
+                "Windows NT " + await SystemInformation.GetWindowsVersionAsync(),
                 GetProcessorArchitectureAsync().Result
             };
 

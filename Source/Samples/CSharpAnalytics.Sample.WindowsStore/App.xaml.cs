@@ -1,10 +1,9 @@
-﻿using System.Threading.Tasks;
-using CSharpAnalytics.Activities;
-using CSharpAnalytics.Protocols.Measurement;
+﻿using CSharpAnalytics.Protocols.Measurement;
 using CSharpAnalytics.Protocols.Urchin;
 using CSharpAnalytics.Sample.WindowsStore.Common;
-using System;
 using CSharpAnalytics.WindowsStore;
+using System;
+using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.UI.Xaml;
@@ -36,7 +35,7 @@ namespace CSharpAnalytics.Sample.WindowsStore
         protected override async void OnLaunched(LaunchActivatedEventArgs args)
         {
             // AutoMeasurement uses the Measurement Protocol API that Google's Native SDKs for iOS and Android use
-            await AutoMeasurement.InitializeAsync(new MeasurementConfiguration("UA-319000-8"));
+            await AutoMeasurement.StartAsync(new MeasurementConfiguration("UA-319000-8"));
 
             var rootFrame = Window.Current.Content as Frame;
 
@@ -81,7 +80,7 @@ namespace CSharpAnalytics.Sample.WindowsStore
             // AutoAnalytics currently uses Urchin API originally designed for web sites
             await AutoAnalytics.StartAsync(new UrchinConfiguration("UA-319000-10", "sample.csharpanalytics.com"));
 
-            AutoMeasurement.Start(rootFrame);
+            AutoMeasurement.Attach(rootFrame);
 
             // Ensure the current window is active
             Window.Current.Activate();

@@ -179,13 +179,13 @@ namespace CSharpAnalytics.WindowsStore
         /// </summary>
         /// <param name="userAgent">User agent header collection.</param>
         /// <param name="packageId">PackageId to extract application name and version from.</param>
-        private static void AddUserAgent(ICollection<ProductInfoHeaderValue> userAgent, PackageId packageId)
+        private static async void AddUserAgent(ICollection<ProductInfoHeaderValue> userAgent, PackageId packageId)
         {
             userAgent.Add(new ProductInfoHeaderValue(packageId.Name, FormatVersion(packageId.Version)));
 
             agentParts = agentParts ?? new[] {
-                "Windows NT " + SystemInformation.GetWindowsVersionAsync().Result,
-                GetProcessorArchitectureAsync().Result
+                "Windows NT " + await SystemInformation.GetWindowsVersionAsync(),
+                await GetProcessorArchitectureAsync()
             };
 
             userAgent.Add(new ProductInfoHeaderValue("(" + String.Join("; ", agentParts) + ")"));
