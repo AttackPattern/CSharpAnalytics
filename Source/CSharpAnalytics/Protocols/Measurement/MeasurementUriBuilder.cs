@@ -44,11 +44,9 @@ namespace CSharpAnalytics.Protocols.Measurement
         }
 
         /// <summary>
-        /// Build an Measurement Protocol URI from an activity and custom variables.
+        /// Build an Measurement Protocol URI from an entry containing activity and custom variables.
         /// </summary>
-        /// <param name="activity">Activity to create a URI for.</param>
-        /// <param name="customDimensions">Custom dimensions to send with this request.</param>
-        /// <param name="customMetrics">Custom values to send with this request.</param>
+        /// <param name="entry">Entry to build the URI for.</param>
         /// <returns>URI that when requested will track this activity.</returns>
         public Uri BuildUri(MeasurementActivityEntry entry)
         {
@@ -75,7 +73,7 @@ namespace CSharpAnalytics.Protocols.Measurement
         /// <summary>
         /// Build a list of the parameters required based on configuration, environment, activity, session, custom variables and state.
         /// </summary>
-        /// <param name="activity">Activity to include in the parameter list.</param>
+        /// <param name="entry">Entry to build the parameter list for.</param>
         /// <returns>Enumeration of key/value pairs containing the parameters necessary for this request.</returns>
         private ICollection<KeyValuePair<string, string>> BuildParameterList(MeasurementActivityEntry entry)
         {

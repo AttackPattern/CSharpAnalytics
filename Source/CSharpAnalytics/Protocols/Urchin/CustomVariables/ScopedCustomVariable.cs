@@ -4,7 +4,7 @@
 
 using System.Diagnostics;
 
-namespace CSharpAnalytics.CustomVariables
+namespace CSharpAnalytics.Protocols.Urchin.CustomVariables
 {
     [DebuggerDisplay("Scope={Scope}, Variable={Variable}")]
     internal class ScopedCustomVariable

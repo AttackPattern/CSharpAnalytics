@@ -23,13 +23,6 @@ namespace CSharpAnalytics.Protocols.Measurement
         private MeasurementTracker tracker;
 
         /// <summary>
-        /// Create a new MeasurementAnalyticsClient with buffering until configured.
-        /// </summary>
-        public MeasurementAnalyticsClient()
-        {
-        }
-
-        /// <summary>
         /// Track a activity in analytics.
         /// </summary>
         /// <param name="activity">Activity to track in analytics.</param>
@@ -126,7 +119,7 @@ namespace CSharpAnalytics.Protocols.Measurement
         /// an exception if it does not.
         /// </summary>
         /// <param name="index">Enum to check.</param>
-        private void ValidateEnum(Enum index)
+        private static void ValidateEnum(Enum index)
         {
             if (Enum.GetUnderlyingType(index.GetType()) != typeof(int))
                 throw new ArgumentOutOfRangeException("index", "Enum must be of type int");

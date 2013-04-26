@@ -5,7 +5,7 @@
 using System;
 using System.Diagnostics;
 
-namespace CSharpAnalytics.CustomVariables
+namespace CSharpAnalytics.Protocols.Urchin.CustomVariables
 {
     /// <summary>
     /// Captures the name and a function that when called will provide the value.

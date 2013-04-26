@@ -8,7 +8,7 @@ using System;
 namespace CSharpAnalytics.Protocols.Measurement
 {
     /// <summary>
-    /// MeasurementTracker co-ordinates the Tracking of IMeasurementActivity with the environment, session and sender.
+    /// MeasurementTracker coordinates the tracking of IMeasurementActivity with the environment, session and sender.
     /// </summary>
     internal class MeasurementTracker
     {

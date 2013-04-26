@@ -1,4 +1,4 @@
-﻿using CSharpAnalytics.CustomVariables;
+﻿using CSharpAnalytics.Protocols.Urchin.CustomVariables;
 using System.Globalization;
 #if WINDOWS_STORE
 using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;

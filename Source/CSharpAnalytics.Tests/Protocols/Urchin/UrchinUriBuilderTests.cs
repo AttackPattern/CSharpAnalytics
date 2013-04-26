@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using CSharpAnalytics.Activities;
-using CSharpAnalytics.CustomVariables;
+using CSharpAnalytics.Protocols.Urchin.CustomVariables;
 using CSharpAnalytics.Protocols.Urchin;
 using CSharpAnalytics.Sessions;
 #if WINDOWS_STORE

@@ -4,7 +4,7 @@
 
 using System.Diagnostics;
 
-namespace CSharpAnalytics.CustomVariables
+namespace CSharpAnalytics.Protocols.Urchin.CustomVariables
 {
     /// <summary>
     /// Captures the details of a basic custom variable.

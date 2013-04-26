@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace CSharpAnalytics.CustomVariables
+namespace CSharpAnalytics.Protocols.Urchin.CustomVariables
 {
     /// <summary>
     /// Captures a set of custom variables in slots numbered 1-5 with an associated scope.

@@ -1,11 +1,11 @@
-﻿using CSharpAnalytics.CustomVariables;
+﻿using CSharpAnalytics.Protocols.Urchin.CustomVariables;
 #if WINDOWS_STORE
 using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
 #else
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 #endif
 
-namespace CSharpAnalytics.Test.CustomVariables
+namespace CSharpAnalytics.Test.Protocols.Urchin.CustomVariables
 {
     [TestClass]
     public class CustomVariableTests
