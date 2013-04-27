@@ -63,11 +63,12 @@
     <Compile Include="Protocols\Measurement\MeasurementActivityEntry.cs" />
     <Compile Include="Protocols\Urchin\CustomVariables\CustomVariable.cs" />
     <Compile Include="Protocols\Urchin\CustomVariables\CustomVariableScope.cs" />
+    <Compile Include="Protocols\Urchin\CustomVariables\CustomVariableSlots.cs" />
     <Compile Include="Protocols\Urchin\CustomVariables\EvaluatedCustomVariable.cs" />
     <Compile Include="Protocols\Urchin\CustomVariables\ICustomVariable.cs" />
-    <Compile Include="Protocols\Urchin\CustomVariables\ScopedCustomVariable.cs" />
-    <Compile Include="Protocols\Urchin\CustomVariables\ScopedCustomVariableSlots.cs" />
+    <Compile Include="Protocols\Urchin\CustomVariables\ScopedCustomVariableSlot.cs" />
     <Compile Include="Protocols\Urchin\IUrchinActivity.cs" />
+    <Compile Include="Protocols\Urchin\UrchinActivityEntry.cs" />
     <Compile Include="Protocols\Urchin\UrchinActivityParameterBuilder.cs" />
     <Compile Include="Protocols\Urchin\UrchinAnalyticsClient.cs" />
     <Compile Include="Protocols\Urchin\UrchinConfiguration.cs" />
@@ -82,6 +83,7 @@
     <Compile Include="Protocols\ParameterDefinition.cs" />
     <Compile Include="Protocols\ProtocolDebugger.cs" />
     <Compile Include="Protocols\Urchin\UrchinParameterDefinitions.cs" />
+    <Compile Include="Protocols\Urchin\UrchinTracker.cs" />
     <Compile Include="Protocols\Urchin\UrchinUriBuilder.cs" />
     <Compile Include="Protocols\Urchin\UtmeDecoder.cs" />
     <Compile Include="Protocols\Urchin\UtmeEncoder.cs" />

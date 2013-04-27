@@ -38,6 +38,7 @@ namespace CSharpAnalytics.WindowsStore
         private static readonly ProtocolDebugger protocolDebugger = new ProtocolDebugger(s => Debug.WriteLine(s), MeasurementParameterDefinitions.All);
         private static readonly EventHandler<object> applicationResume = (sender, e) => Client.TrackEvent("Resume", "ApplicationLifecycle");
         private static readonly TypedEventHandler<DataTransferManager, TargetApplicationChosenEventArgs> socialShare = (sender, e) => Client.TrackSocial("ShareCharm", e.ApplicationName);
+        private static readonly MeasurementAnalyticsClient client = new MeasurementAnalyticsClient();
 
         private static string[] agentParts;
         private static BackgroundHttpRequester requester;
@@ -45,12 +46,10 @@ namespace CSharpAnalytics.WindowsStore
         private static Frame attachedFrame;
         private static DataTransferManager attachedDataTransferManager;
 
-        public static MeasurementAnalyticsClient Client { get; private set; }
-
-        static AutoMeasurement()
-        {
-            Client = new MeasurementAnalyticsClient();
-        }
+        /// <summary>
+        /// Access to the MeasurementAnalyticsClient necessary to send additional events.
+        /// </summary>
+        public static MeasurementAnalyticsClient Client { get { return client; } }
 
         /// <summary>
         /// Initialize CSharpAnalytics by restoring the session state and starting the background sender and tracking
@@ -58,9 +57,8 @@ namespace CSharpAnalytics.WindowsStore
         /// </summary>
         /// <param name="configuration">Configuration to use, must at a minimum specify your Google Analytics ID and app name.</param>
         /// <param name="uploadInterval">How often to upload to the server. Lower times = more traffic but realtime. Defaults to 5 seconds.</param>
-        /// <returns>A Task that will complete once CSharpAnalytics is available.</returns>
-        /// <example>await AutoAnalytics.InitializeAsync(new MeasurementConfiguration("UA-123123123-1", "myapp.someco.com"));</example>
-        public static async Task StartAsync(MeasurementConfiguration configuration, TimeSpan? uploadInterval = null)
+        /// <example>await AutoAnalytics.StartAsync(new MeasurementConfiguration("UA-123123123-1", "myapp.someco.com"));</example>
+        public static async void StartAsync(MeasurementConfiguration configuration, TimeSpan? uploadInterval = null)
         {
             await StartRequesterAsync(uploadInterval ?? TimeSpan.FromSeconds(5));
             await RestoreSessionAsync(TimeSpan.FromMinutes(20));
@@ -88,7 +86,7 @@ namespace CSharpAnalytics.WindowsStore
             }
 
             if (frame.Content != null)
-                TrackAppView(frame.Content.GetType().Name);
+                TrackFrameNavigate(frame.Content.GetType().Name);
         }
 
         /// <summary>
@@ -157,15 +155,15 @@ namespace CSharpAnalytics.WindowsStore
         /// <param name="e">NavigationEventArgs for the event.</param>
         private static void FrameNavigated(object sender, NavigationEventArgs e)
         {
-            if (e.Content is ITrackPageView) return;
-            TrackAppView(e.SourcePageType.Name);
+            if (e.Content is ITrackOwnView) return;
+            TrackFrameNavigate(e.SourcePageType.Name);
         }
 
         /// <summary>
         /// Track an app view stripping the Page suffix from the end of the name.
         /// </summary>
         /// <param name="name">Name of the page to track.</param>
-        private static void TrackAppView(string name)
+        private static void TrackFrameNavigate(string name)
         {
             if (name.EndsWith("Page"))
                 name = name.Substring(0, name.Length - 4);

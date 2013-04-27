@@ -2,10 +2,13 @@
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
+using System.Linq;
 using CSharpAnalytics.Activities;
 using CSharpAnalytics.Protocols.Urchin.CustomVariables;
 using CSharpAnalytics.Sessions;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace CSharpAnalytics.Protocols.Urchin
 {
@@ -14,10 +17,9 @@ namespace CSharpAnalytics.Protocols.Urchin
     /// </summary>
     public class UrchinAnalyticsClient
     {
-        private readonly SessionManager sessionManager;
-        private readonly Action<Uri> sender;
-        private readonly string hostName;
-        private readonly UrchinUriBuilder tracker;
+        private readonly Queue<UrchinActivityEntry> queue = new Queue<UrchinActivityEntry>();
+
+        private UrchinTracker tracker;
 
         /// <summary>
         /// Create a new AnalyticsClient with a given configuration, session, environment and URI sender.
@@ -26,44 +28,67 @@ namespace CSharpAnalytics.Protocols.Urchin
         /// <param name="sessionManager">Session manager with visitor and session information.</param>
         /// <param name="environment">Provider of environmental information such as screen resolution.</param>
         /// <param name="sender">Action to take prepared URIs for Google Analytics and send them on.</param>
-        public UrchinAnalyticsClient(UrchinConfiguration configuration, SessionManager sessionManager, IEnvironment environment, Action<Uri> sender)
+        public void Configure(UrchinConfiguration configuration, SessionManager sessionManager, IEnvironment environment, Action<Uri> sender)
         {
-            this.sessionManager = sessionManager;
-            this.sender = sender;
-
-            tracker = new UrchinUriBuilder(configuration, sessionManager, environment);
-            hostName = configuration.HostName;
+            Debug.Assert(tracker == null);
+            var newTracker = new UrchinTracker(configuration, sessionManager, environment, sender);
+            while (queue.Count > 0)
+                newTracker.Track(queue.Dequeue());
+            tracker = newTracker;
         }
-
-        /// <summary>
-        /// Custom variables currently declared for this visitor.
-        /// </summary>
-        public ScopedCustomVariableSlots VisitorCustomVariables = new ScopedCustomVariableSlots(CustomVariableScope.Visitor);
-
-        /// <summary>
-        /// Custom variables currently declared for this session.
-        /// </summary>
-        public ScopedCustomVariableSlots SessionCustomVariables = new ScopedCustomVariableSlots(CustomVariableScope.Session);
 
         /// <summary>
         /// Track this activity in analytics.
         /// </summary>
         /// <param name="activity">Activity to track in analytics.</param>
         /// <param name="activityCustomVariables">Activity scoped custom variable slots to record for this activity.</param>
-        public void Track(IUrchinActivity activity, ScopedCustomVariableSlots activityCustomVariables = null)
+        public void Track(IUrchinActivity activity, CustomVariableSlots activityCustomVariables = null)
         {
-            if (activityCustomVariables != null && activityCustomVariables.Scope != CustomVariableScope.Activity)
-                throw new ArgumentException("Custom variable slots must be scoped to activity", "activityCustomVariables");
-
             if (activity is AutoTimedEventActivity)
                 ((AutoTimedEventActivity)activity).End();
 
-            sessionManager.Hit();
-            var trackingUri = tracker.CreateUri(activity, new[] { VisitorCustomVariables, SessionCustomVariables, activityCustomVariables });
-            sender(trackingUri);
+            var entry = new UrchinActivityEntry
+            {
+                Activity = activity,
+                CustomVariables = GetFinalCustomVariables(activityCustomVariables)
+            };
 
-            if (activity is PageViewActivity)
-                sessionManager.Referrer = new Uri("http://" + hostName + ((PageViewActivity)activity).Page);
+            if (tracker == null)
+                queue.Enqueue(entry);
+            else
+                tracker.Track(entry);
         }
+
+        /// <summary>
+        /// Expands a set of scoped custom variable slots into a final array containing the custom variables and their scope.
+        /// </summary>
+        /// <param name="activityCustomVariables">Set of scoped custom variable slots to expand.</param>
+        /// <returns>An array of custom variables with their scope indexed by slot.</returns>
+        internal ScopedCustomVariableSlot[] GetFinalCustomVariables(CustomVariableSlots activityCustomVariables)
+        {
+            var finalSlots = new Dictionary<int, ScopedCustomVariableSlot>();
+
+            if (activityCustomVariables != null)
+                foreach (var slot in activityCustomVariables.AllSlots)
+                    finalSlots[slot.Key] = new ScopedCustomVariableSlot(CustomVariableScope.Activity, slot.Value, slot.Key);
+
+            foreach (var slot in SessionCustomVariables.AllSlots)
+                finalSlots[slot.Key] = new ScopedCustomVariableSlot(CustomVariableScope.Session, slot.Value, slot.Key);
+
+            foreach (var slot in VisitorCustomVariables.AllSlots)
+                finalSlots[slot.Key] = new ScopedCustomVariableSlot(CustomVariableScope.Visitor, slot.Value, slot.Key);
+
+            return finalSlots.Values.ToArray();
+        }
+
+        /// <summary>
+        /// Custom variables currently declared for this visitor.
+        /// </summary>
+        public CustomVariableSlots VisitorCustomVariables = new CustomVariableSlots();
+
+        /// <summary>
+        /// Custom variables currently declared for this session.
+        /// </summary>
+        public CustomVariableSlots SessionCustomVariables = new CustomVariableSlots();
     }
 }

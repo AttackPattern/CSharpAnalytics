@@ -2,37 +2,16 @@
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace CSharpAnalytics.Protocols.Urchin.CustomVariables
 {
     /// <summary>
-    /// Captures a set of custom variables in slots numbered 1-5 with an associated scope.
+    /// Captures a set of custom variables in slots numbered 1-5 for a given scope.
     /// </summary>
-    [DebuggerDisplay("Scope={Scope}")]
-    public class ScopedCustomVariableSlots
+    public class CustomVariableSlots
     {
-        private readonly CustomVariableScope scope;
         private readonly Dictionary<int, ICustomVariable> slots = new Dictionary<int, ICustomVariable>();
-
-        /// <summary>
-        /// Create a ScopedCustomVariableSlots to contain a number of slots for a given scope.
-        /// </summary>
-        /// <param name="scope">Scope of the custom variables held in the slots.</param>
-        internal ScopedCustomVariableSlots(CustomVariableScope scope)
-        {
-            if (!Enum.IsDefined(typeof(CustomVariableScope), scope) || scope == CustomVariableScope.None)
-                throw new ArgumentOutOfRangeException("scope");
-
-            this.scope = scope;
-        }
-
-        /// <summary>
-        /// Scope of the custom variables for these slots.
-        /// </summary>
-        public CustomVariableScope Scope { get { return scope; } }
 
         /// <summary>
         /// Custom variables indexed by their slot number.

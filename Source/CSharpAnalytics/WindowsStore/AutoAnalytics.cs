@@ -35,9 +35,10 @@ namespace CSharpAnalytics.WindowsStore
         private const int MaximumRequestsToPersist = 50;
 
         private static readonly ProtocolDebugger protocolDebugger = new ProtocolDebugger(s => Debug.WriteLine(s), UrchinParameterDefinitions.All);
-        private static readonly EventHandler<object> applicationResume = (sender, e) => Client.TrackEvent( "Resume", "ApplicationLifecycle");
+        private static readonly EventHandler<object> applicationResume = (sender, e) => Client.TrackEvent("Resume", "ApplicationLifecycle");
         private static readonly SuspendingEventHandler applicationSuspend = (sender, e) => Client.TrackEvent("Suspend", "ApplicationLifecycle");
         private static readonly TypedEventHandler<DataTransferManager, TargetApplicationChosenEventArgs> socialShare = (sender, e) => Client.TrackSocial("ShareCharm", e.ApplicationName);
+        private static readonly UrchinAnalyticsClient client = new UrchinAnalyticsClient();
 
         private static string[] agentParts;
         private static BackgroundHttpRequester requester;
@@ -48,30 +49,44 @@ namespace CSharpAnalytics.WindowsStore
         /// <summary>
         /// Access to the UrchinAnalyticsClient necessary to send additional events.
         /// </summary>
-        public static UrchinAnalyticsClient Client { get; private set; }
+        public static UrchinAnalyticsClient Client { get { return client; } }
 
         /// <summary>
-        /// Start CSharpAnalytics by restoring the session state, starting the background sender,
-        /// hooking up events to track and firing the application start event and home page view to analytics.
-        /// Call this just before Window.Current.Activate() in your App.OnLaunched method.
+        /// Initialize CSharpAnalytics by restoring the session state and starting the background sender and tracking
+        /// the application lifecycle start event.
         /// </summary>
         /// <param name="configuration">Configuration to use, must at a minimum specify your Google Analytics ID and app name.</param>
         /// <param name="uploadInterval">How often to upload to the server. Lower times = more traffic but realtime. Defaults to 5 seconds.</param>
-        /// <returns>A Task that will complete once CSharpAnalytics is available.</returns>
         /// <example>await AutoAnalytics.StartAsync(new UrchinConfiguration("UA-123123123-1", "myapp.someco.com"));</example>
-        public static async Task StartAsync(UrchinConfiguration configuration, TimeSpan? uploadInterval = null)
+        public static async void StartAsync(UrchinConfiguration configuration, TimeSpan? uploadInterval = null)
         {
-            Debug.Assert(Client == null);
-            if (Client != null) return;
-
             await StartRequesterAsync(uploadInterval ?? TimeSpan.FromSeconds(5));
             await RestoreSessionAsync(TimeSpan.FromMinutes(20));
 
-            Client = new UrchinAnalyticsClient(configuration, sessionManager, new WindowsStoreEnvironment(), requester.Add);
+            Client.Configure(configuration, sessionManager, new WindowsStoreEnvironment(), requester.Add);
             Client.TrackEvent("Start", "ApplicationLifecycle");
-            Client.TrackPageView("Home", "/");
 
             HookEvents();
+        }
+
+        /// <summary>
+        /// Attach to the root frame, hook into the navigation event and track initial page appview.
+        /// Call this just before Window.Current.Activate() in your App.OnLaunched method.
+        /// </summary>
+        public static void Attach(Frame frame)
+        {
+            if (frame == null)
+                throw new ArgumentNullException("frame");
+
+            if (frame != attachedFrame)
+            {
+                if (attachedFrame != null) attachedFrame.Navigated -= FrameNavigated;
+                frame.Navigated += FrameNavigated;
+                attachedFrame = frame;
+            }
+
+            if (frame.Content != null)
+                TrackFrameNavigate(frame.Content.GetType().Name);
         }
 
         /// <summary>
@@ -103,10 +118,6 @@ namespace CSharpAnalytics.WindowsStore
             application.Resuming += applicationResume;
             application.Suspending += applicationSuspend;
 
-            attachedFrame = Window.Current.Content as Frame;
-            if (attachedFrame != null)
-                attachedFrame.Navigated += FrameNavigated;
-
             attachedDataTransferManager = DataTransferManager.GetForCurrentView();
             attachedDataTransferManager.TargetApplicationChosen += socialShare;
         }
@@ -122,6 +133,7 @@ namespace CSharpAnalytics.WindowsStore
 
             if (attachedFrame != null)
                 attachedFrame.Navigated -= FrameNavigated;
+            attachedFrame = null;
 
             attachedDataTransferManager.TargetApplicationChosen -= socialShare;
         }
@@ -137,8 +149,19 @@ namespace CSharpAnalytics.WindowsStore
         /// <param name="e">NavigationEventArgs for the event.</param>
         private static void FrameNavigated(object sender, NavigationEventArgs e)
         {
-            if (e.Content is ITrackPageView) return;
+            if (e.Content is ITrackOwnView) return;
             Client.TrackPageView(e.SourcePageType.Name, "/" + e.SourcePageType.Name);
+        }
+
+        /// <summary>
+        /// Track an page view stripping the Page suffix from the end of the name.
+        /// </summary>
+        /// <param name="name">Name of the page to track.</param>
+        private static void TrackFrameNavigate(string name)
+        {
+            if (name.EndsWith("Page"))
+                name = name.Substring(0, name.Length - 4);
+            Client.TrackPageView(name, "/" + name);
         }
 
         /// <summary>
@@ -270,7 +293,7 @@ namespace CSharpAnalytics.WindowsStore
         /// <returns>Task that completes when the session has been saved.</returns>
         private static async Task SaveSessionAsync()
         {
-            await LocalFolderContractSerializer<SessionState>.SaveAsync(sessionManager.GetState(), SessionStateFileName);            
+            await LocalFolderContractSerializer<SessionState>.SaveAsync(sessionManager.GetState(), SessionStateFileName);
         }
     }
 
@@ -283,7 +306,7 @@ namespace CSharpAnalytics.WindowsStore
     /// This is especially useful for a page that obtains its content from a data source to
     /// track it as seperate virtual pages.
     /// </remarks>
-    public interface ITrackPageView
+    public interface ITrackOwnView
     {
     }
 }

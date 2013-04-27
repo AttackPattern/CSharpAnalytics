@@ -13,11 +13,11 @@ namespace CSharpAnalytics.Sample.WindowsStore
     /// A page that displays details for a single item within a group while allowing gestures to
     /// flip through other items belonging to the same group.
     /// </summary>
-    public sealed partial class ItemDetailPage : ITrackPageView
+    public sealed partial class ItemDetailOwn : ITrackOwnView
     {
         private SampleDataItem item;
 
-        public ItemDetailPage()
+        public ItemDetailOwn()
         {
             InitializeComponent();
         }

@@ -70,12 +70,12 @@
     <Compile Include="Protocols\Measurement\MeasurementConfigurationTests.cs" />
     <Compile Include="Protocols\Measurement\MeasurementActivityParameterBuilderTrackerTests.cs" />
     <Compile Include="Protocols\Measurement\MeasurementUriBuilderTests.cs" />
+    <Compile Include="Protocols\Urchin\CustomVariables\CustomVariableSlotsTests.cs" />
     <Compile Include="Protocols\Urchin\CustomVariables\CustomVariableTests.cs" />
     <Compile Include="Protocols\Urchin\CustomVariables\EvaluatedCustomVariableTests.cs" />
-    <Compile Include="Protocols\Urchin\CustomVariables\FinalCustomVariablesTests.cs" />
     <Compile Include="Protocols\Urchin\CustomVariables\ScopedCustomVariableTests.cs" />
+    <Compile Include="Protocols\Urchin\UrchinAnalyticsTests.cs" />
     <Compile Include="Protocols\Urchin\UrchinConfigurationTests.cs" />
-    <Compile Include="CustomVariableTests.cs" />
     <Compile Include="EnvironmentTests.cs" />
     <Compile Include="Protocols\EpochTimeTests.cs" />
     <Compile Include="Protocols\ParameterDefinition.cs" />

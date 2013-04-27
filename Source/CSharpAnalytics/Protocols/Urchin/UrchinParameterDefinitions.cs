@@ -8,7 +8,7 @@ using System.Linq;
 namespace CSharpAnalytics.Protocols.Urchin
 {
     /// <summary>
-    /// List of all known parameters that may be found in a Google Analytics Urchin style URI.
+    /// Lists all known parameters found in a Google Analytics Urchin style URI.
     /// </summary>
     /// <remarks>
     /// Used to facilitate the debugging of such requests.

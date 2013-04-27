@@ -45,13 +45,12 @@ namespace CSharpAnalytics.Protocols.Urchin
         /// <summary>
         /// Build an Urchin style URI from an activity and custom variables.
         /// </summary>
-        /// <param name="activity">Activity to create a URI for.</param>
-        /// <param name="customVariables">Custom variables to include in the URI.</param>
+        /// <param name="entry">UrchinActivityEntry to create a URI for.</param>
         /// <returns>Uri that when requested will track this activity.</returns>
-        public Uri CreateUri(IUrchinActivity activity, ScopedCustomVariableSlots[] customVariables)
+        public Uri BuildUri(UrchinActivityEntry entry)
         {
-            var parameters = BuildParameterList(activity, customVariables);
-            CarryForwardParameters(activity, parameters);
+            var parameters = BuildParameterList(entry);
+            CarryForwardParameters(entry.Activity, parameters);
             var uriBuilder = new UriBuilder(configuration.UseSsl ? secureTrackingEndpoint : trackingEndpoint) { Query = CreateQueryString(parameters) };
             return uriBuilder.Uri;
         }
@@ -73,40 +72,17 @@ namespace CSharpAnalytics.Protocols.Urchin
         /// <summary>
         /// Build a list of the parameters required based on configuration, environment, activity, session, custom variables and state.
         /// </summary>
-        /// <param name="activity">Activity to include in the parameter list.</param>
-        /// <param name="customVariables">Custom variables to include in the parameter list.</param>
+        /// <param name="entry">UrchinActivityEntry to include in the parameter list.</param>
         /// <returns>List of key/value pairs containing the parameters necessary for this request.</returns>
-        private List<KeyValuePair<string, string>> BuildParameterList(IUrchinActivity activity, ScopedCustomVariableSlots[] customVariables)
+        private List<KeyValuePair<string, string>> BuildParameterList(UrchinActivityEntry entry)
         {
-            var finalCustomVariables = GetFinalCustomVariables(customVariables);
-
             return GetParameters()
                 .Concat(GetParameters(environment))
                 .Concat(GetParameters(configuration))
                 .Concat(GetParameters(sessionManager, configuration.GetHostNameHash()))
-                .Concat(GetParameters(finalCustomVariables))
-                .Concat(UrchinActivityParameterBuilder.GetParameters(activity))
+                .Concat(GetParameters(entry.CustomVariables))
+                .Concat(UrchinActivityParameterBuilder.GetParameters(entry.Activity))
                 .ToList();
-        }
-
-        /// <summary>
-        /// Expands a set of scoped custom variable slots into a final array containing the custom variables and their scope.
-        /// </summary>
-        /// <param name="scopedCustomVariableSlots">Set of scoped custom variable slots to expand.</param>
-        /// <returns>An array of custom variables with their scope indexed by slot.</returns>
-        internal static ScopedCustomVariable[] GetFinalCustomVariables(params ScopedCustomVariableSlots[] scopedCustomVariableSlots)
-        {
-            var goodSlots = scopedCustomVariableSlots.Where(c => c != null).ToArray();
-
-            var allSlots = goodSlots.SelectMany(s => s.AllSlots).ToList();
-            var highestSlotIndex = allSlots.Any() ? allSlots.Max(s => s.Key) : 0;
-            var finalCustomVariables = new ScopedCustomVariable[highestSlotIndex + 1];
-
-            foreach (var scopedSlots in goodSlots.OrderByDescending(s => s.Scope))
-                foreach (var slot in scopedSlots.AllSlots)
-                    finalCustomVariables[slot.Key] = new ScopedCustomVariable(scopedSlots.Scope, slot.Value);
-
-            return finalCustomVariables;
         }
 
         /// <summary>
@@ -140,7 +116,7 @@ namespace CSharpAnalytics.Protocols.Urchin
         /// </summary>
         /// <param name="customVariables">Custom variables to obtain parameters from.</param>
         /// <returns>Enumerable of key/value pairs containing parameters for these custom variables.</returns>
-        private static IEnumerable<KeyValuePair<string, string>> GetParameters(ScopedCustomVariable[] customVariables)
+        private static IEnumerable<KeyValuePair<string, string>> GetParameters(ScopedCustomVariableSlot[] customVariables)
         {
             yield return KeyValuePair.Create("utme", EncodeCustomVariables(customVariables));
         }
@@ -237,7 +213,7 @@ namespace CSharpAnalytics.Protocols.Urchin
         /// </summary>
         /// <param name="customVariables">Custom variables to encode.</param>
         /// <returns>Encoded custom variables.</returns>
-        internal static string EncodeCustomVariables(ScopedCustomVariable[] customVariables)
+        internal static string EncodeCustomVariables(ScopedCustomVariableSlot[] customVariables)
         {
             return UtmeEncoder.Encode("8", customVariables.Select(c => c == null ? null : c.Variable.Name).ToArray())
                  + UtmeEncoder.Encode("9", customVariables.Select(c => c == null ? null : c.Variable.Value).ToArray())

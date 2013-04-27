@@ -65,7 +65,7 @@ namespace CSharpAnalytics.Sample.WindowsStore
             // Navigate to the appropriate destination page, configuring the new page
             // by passing required information as a navigation parameter
             var itemId = ((SampleDataItem)e.ClickedItem).UniqueId;
-            Frame.Navigate(typeof(ItemDetailPage), itemId);
+            Frame.Navigate(typeof(ItemDetailOwn), itemId);
         }
     }
 }

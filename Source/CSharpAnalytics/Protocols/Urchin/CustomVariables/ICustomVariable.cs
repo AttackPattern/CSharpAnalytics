@@ -5,12 +5,12 @@
 namespace CSharpAnalytics.Protocols.Urchin.CustomVariables
 {
     /// <summary>
-    /// Interface for classes that can provide a name and value for custom variables.
+    /// Interface for classes capable of acting as a custom variable by providing name and value.
     /// </summary>
     public interface ICustomVariable
     {
         /// <summary>
-        /// name of a custom variable.
+        /// Name of a custom variable.
         /// </summary>
         string Name { get; }
 

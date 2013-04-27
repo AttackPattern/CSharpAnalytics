@@ -34,8 +34,11 @@ namespace CSharpAnalytics.Sample.WindowsStore
         /// <param name="args">Details about the launch request and process.</param>
         protected override async void OnLaunched(LaunchActivatedEventArgs args)
         {
+            // AutoAnalytics currently uses Urchin API originally designed for web sites
+            AutoAnalytics.StartAsync(new UrchinConfiguration("UA-319000-10", "sample.csharpanalytics.com"));
+
             // AutoMeasurement uses the Measurement Protocol API that Google's Native SDKs for iOS and Android use
-            await AutoMeasurement.StartAsync(new MeasurementConfiguration("UA-319000-8"));
+            AutoMeasurement.StartAsync(new MeasurementConfiguration("UA-319000-8"));
 
             var rootFrame = Window.Current.Content as Frame;
 
@@ -77,10 +80,9 @@ namespace CSharpAnalytics.Sample.WindowsStore
                 }
             }
 
-            // AutoAnalytics currently uses Urchin API originally designed for web sites
-            await AutoAnalytics.StartAsync(new UrchinConfiguration("UA-319000-10", "sample.csharpanalytics.com"));
-
-            AutoMeasurement.Attach(rootFrame);
+            // Only use one of these depending on what you set up in Google Analaytics.
+            AutoAnalytics.Attach(rootFrame); // Older web site style (sometimes called Urchin)
+            AutoMeasurement.Attach(rootFrame); // New app style (often called Universal or Measurement Protocol)
 
             // Ensure the current window is active
             Window.Current.Activate();

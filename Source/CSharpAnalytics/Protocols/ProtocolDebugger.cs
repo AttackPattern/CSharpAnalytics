@@ -84,6 +84,7 @@ namespace CSharpAnalytics.Protocols
         /// Format and write a parameter to the current writer.
         /// </summary>
         /// <param name="parameterDefinition">Parameter to write out.</param>
+        /// <param name="label">Human-readable label to prefix before the value.</param>
         /// <param name="rawValue">Raw value of the parameter to format before writing.</param>
         private void WriteParameter(ParameterDefinition parameterDefinition, string label, string rawValue)
         {

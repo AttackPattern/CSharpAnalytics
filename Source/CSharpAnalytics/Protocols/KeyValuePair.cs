@@ -7,8 +7,7 @@ using System.Collections.Generic;
 namespace CSharpAnalytics.Protocols
 {
     /// <summary>
-    /// Simple static class to provide a static constructor on KeyValuePair to allow
-    /// type inference.
+    /// Simple static class to provide a static constructor on KeyValuePair to allow type inference.
     /// </summary>
     internal static class KeyValuePair
     {

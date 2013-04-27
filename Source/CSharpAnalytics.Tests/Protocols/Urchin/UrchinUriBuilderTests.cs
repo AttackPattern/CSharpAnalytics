@@ -101,36 +101,5 @@ namespace CSharpAnalytics.Test.Protocols.Urchin
 
             Assert.AreEqual("__utma=1.1159017511.1349874855.1355145255.1355490855.5;", cookieSubstitute);
         }
-
-        [TestMethod]
-        public void UrchinUriBuilder_GetFinalCustomVariables_Selects_Correct_Final_Variables()
-        {
-            var sessionScopedVariables = new ScopedCustomVariableSlots(CustomVariableScope.Session);
-            sessionScopedVariables[0] = new CustomVariable("session-one-name", "session-one-value");
-            sessionScopedVariables[2] = new CustomVariable("session-three-name", "session-three-value");
-
-            var visitorScopedVariables = new ScopedCustomVariableSlots(CustomVariableScope.Visitor);
-            visitorScopedVariables[0] = new CustomVariable("Visitor-one-name", "Visitor-one-value");
-            visitorScopedVariables[1] = new CustomVariable("Visitor-two-name", "Visitor-two-value");
-
-            var activityScopedVariables = new ScopedCustomVariableSlots(CustomVariableScope.Activity);
-            activityScopedVariables[0] = new CustomVariable("activity-one-name", "activity-one-value");
-            activityScopedVariables[1] = new CustomVariable("activity-two-name", "activity-two-value");
-            activityScopedVariables[3] = new CustomVariable("activity-four-name", "activity-four-value");
-
-            var final = UrchinUriBuilder.GetFinalCustomVariables(sessionScopedVariables, visitorScopedVariables, activityScopedVariables);
-
-            Assert.AreEqual(CustomVariableScope.Visitor, final[0].Scope);
-            Assert.AreEqual(CustomVariableScope.Visitor, final[1].Scope);
-            Assert.AreEqual(CustomVariableScope.Session, final[2].Scope);
-            Assert.AreEqual(CustomVariableScope.Activity, final[3].Scope);
-
-            Assert.AreEqual("Visitor-one-name", final[0].Variable.Name);
-            Assert.AreEqual("Visitor-two-name", final[1].Variable.Name);
-            Assert.AreEqual("session-three-name", final[2].Variable.Name);
-            Assert.AreEqual("activity-four-name", final[3].Variable.Name);
-
-            Assert.AreEqual(3, final.GetUpperBound(0));
-        }
     }
 }

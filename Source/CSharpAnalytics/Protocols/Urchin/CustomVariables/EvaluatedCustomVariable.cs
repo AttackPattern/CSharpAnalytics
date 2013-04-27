@@ -18,7 +18,7 @@ namespace CSharpAnalytics.Protocols.Urchin.CustomVariables
         private readonly Func<string> valueEvaluator;
 
         /// <summary>
-        /// name of this custom variable.
+        /// Name of this custom variable.
         /// </summary>
         public string Name { get { return name; } }
 
@@ -28,7 +28,7 @@ namespace CSharpAnalytics.Protocols.Urchin.CustomVariables
         public string Value { get { return valueEvaluator(); } }
 
         /// <summary>
-        /// Creates a new evaluated custom variable with a given name and value evaluator.
+        /// Create a new evaluated custom variable with a given name and value evaluator.
         /// </summary>
         /// <param name="name">name of this custom variable to be assigned to the name property.</param>
         /// <param name="valueEvaluator">Value evaluator function to be assigned to the Value property.</param>

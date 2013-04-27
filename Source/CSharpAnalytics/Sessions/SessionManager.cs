@@ -107,10 +107,15 @@ namespace CSharpAnalytics.Sessions
         {
             var now = DateTimeOffset.Now;
 
-            if (SessionStatus == SessionStatus.Ending)
-                SessionStatus = SessionStatus.Starting;
-            else if (SessionStatus == SessionStatus.Starting)
-                SessionStatus = SessionStatus.Active;
+            switch (SessionStatus)
+            {
+                case SessionStatus.Ending:
+                    SessionStatus = SessionStatus.Starting;
+                    break;
+                case SessionStatus.Starting:
+                    SessionStatus = SessionStatus.Active;
+                    break;
+            }
 
             StartNewSessionIfTimedOut(now);
 

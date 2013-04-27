@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 namespace CSharpAnalytics.Protocols.Urchin
 {
     /// <summary>
-    /// Configuration settings for Urchin style analytics.
+    /// Configuration settings for analytics tracked with the UrchinAnalyticsClient.
     /// </summary>
     public class UrchinConfiguration
     {

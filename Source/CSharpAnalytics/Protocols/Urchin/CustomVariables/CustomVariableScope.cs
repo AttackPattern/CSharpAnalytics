@@ -5,15 +5,10 @@
 namespace CSharpAnalytics.Protocols.Urchin.CustomVariables
 {
     /// <summary>
-    /// Defines the various levels of scope that can be given to a set of custom variables.
+    /// Defines the level of scope assigned to a custom variable.
     /// </summary>
-    public enum CustomVariableScope
+    internal enum CustomVariableScope
     {
-        /// <summary>
-        /// The custom variable is not scoped.
-        /// </summary>
-        None = 0,
-
         /// <summary>
         /// The custom variable is scoped to the Visitor.
         /// </summary>

@@ -22,6 +22,15 @@ namespace CSharpAnalytics.Protocols.Measurement
 
         private MeasurementTracker tracker;
 
+        public void Configure(MeasurementConfiguration configuration, SessionManager sessionManager, IEnvironment environment, Action<Uri> sender)
+        {
+            Debug.Assert(tracker == null);
+            var newTracker = new MeasurementTracker(configuration, sessionManager, environment, sender);
+            while (queue.Count > 0)
+                newTracker.Track(queue.Dequeue());
+            tracker = newTracker;
+        }
+
         /// <summary>
         /// Track a activity in analytics.
         /// </summary>
@@ -47,15 +56,6 @@ namespace CSharpAnalytics.Protocols.Measurement
                 queue.Enqueue(entry);
             else
                 tracker.Track(entry);
-        }
-
-        public void Configure(MeasurementConfiguration configuration, SessionManager sessionManager, IEnvironment environment, Action<Uri> sender)
-        {
-            Debug.Assert(tracker == null);
-            var newTracker = new MeasurementTracker(configuration, sessionManager, environment, sender);
-            while (queue.Count > 0)
-                newTracker.Track(queue.Dequeue());
-            tracker = newTracker;
         }
 
         /// <summary>

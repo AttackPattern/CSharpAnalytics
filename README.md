@@ -18,7 +18,7 @@ Google Analytics is capable, well-supported, easy to use and free. While origina
 
 This is the best solution for C# apps wanting to talk to Google Analytics. Why?
 
-1. Ease of use - add *two lines* to your Windows 8 Store app
+1. Ease of use - add *three lines* to your Windows 8 Store app
 1. Pure C# - easy to debug, extend or port (no JavaScript, web views or DLLs)
 1. Feature rich - offline, configurable, OS stats
 
@@ -52,48 +52,59 @@ Getting started
 You will need:
 
 * Google Analytics account - Head to http://analytics.google.com and sign-up if you don't have one
-* Analytics property set-up as a **web site**
-
-If you want to set-up your Analytics property as an App then try out our **experimental** AutoMeasurement and MeasurementAnalyticsClient classes.
+* An analytics property
 
 Download or clone the source and add a reference to CSharpAnalytics.WindowsStore from your application.
 
-AutoAnalytics for Windows 8
----------------------------
-The easiest way to start is to use the AutoAnalytics class. It hooks into a few events and will automatically give you:
+Automatic analytics for Windows 8
+---------------------------------
+The easiest way to start is to use one of the automatic helper classes. They hook into a few events and will automatically give you:
 
 * Application launch/suspend events
 * Visitor, session counts, time-spent
 * Social sharing events
 * Basic page navigation activity
-* Unhandled exception details
 
-To use it simply add two lines to your App.xaml.cs:
+You must choose between the two classes:
 
-**Start analytics** with this line in App.OnLaunched directly before Window.Current.Activate() - replace the configuration values with your own.
+* AutoAnalytics - if you set-up your analytics property as a web site
+* AutoMeasurement - if you set-up your analytics property as an app (recommended)
 
-`await AutoAnalytics.StartAsync(new UrchinConfiguration("UA-319000-10", "sample.csharpanalytics.com"));`
+To use simply add three lines to your App.xaml.cs:
 
-**Stop analytics** with this line in App.OnSuspending directly before deferral.Complete()
+**Start analytics** by putting either of these lines at the start of the App.OnLaunched method (replace the UA-319000-10 with your own Analytics property ID)
 
+`AutoMeasurement.StartAsync(new MeasurementConfiguration("UA-319000-10"));`
+`AutoAnalytics.StartAsync(new UrchinConfiguration("UA-319000-10", "sample.csharpanalytics.com"));`
+
+Then add one of the following two lines at the end of App.OnLaunched:
+
+`AutoMeasurement.Attach(rootFrame);`
+`AutoAnalytics.Attach(rootFrame);`
+
+**Stop analytics** with one of these two lines in App.OnSuspending directly before deferral.Complete()
+
+`await AutoMeasurement.StopAsync();`
 `await AutoAnalytics.StopAsync();`
 
 Check out the CSharpAnalytics.Sample.WindowsStore application if still unsure of usage.
 
 Going further
 -------------
-AutoAnalytics is a start but you'll certainly want to go further.
+AutoAnalytics & AutoMeasurement are a start but you'll certainly want to go further.
 
 **For pages that display content from a data source**
 
-Add ITrackPageView to your page to stop AutoAnalytics from tracking it and instead track it yourself once the content is loaded - we recommend the end of the LoadState method with something like:
+Add ITrackOwnView to your page class to stop AutoAnalytics from tracking it and instead track it yourself once the content is loaded - we recommend the end of the LoadState method with either of:
 
+`AutoMeasurement.Client.TrackAppView(item.Title);`
 `AutoAnalytics.Client.TrackPageView(item.Title, "/news/" + item.Id);`
 
 **For additional user events**
 
 Say you want to track when the video "Today's News" is played back:
 
+`AutoMeasurement.Client.TrackEvent("Play", "Video", "Today's News");`
 `AutoAnalytics.Client.TrackEvent("Play", "Video", "Today's News");`
 
 **For timing**
@@ -103,6 +114,7 @@ If you want to track how long something takes:
 ```
 var timedActivity = new AutoTimedEventActivity("Loading", "Pictures");
 // do something that takes time
+AutoMeasurement.Client.Track(timedActivity);
 AutoAnalytics.Client.Track(timedActivity);
 ```
 
