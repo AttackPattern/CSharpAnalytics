@@ -67,6 +67,7 @@
     <Compile Include="Activities\TransactionActivityTests.cs" />
     <Compile Include="AnalyticsClientTests.cs" />
     <Compile Include="Network\BackgroundHttpRequesterTests.cs" />
+    <Compile Include="Protocols\Measurement\MeasurementActivityExtensionTests.cs" />
     <Compile Include="Protocols\Measurement\MeasurementConfigurationTests.cs" />
     <Compile Include="Protocols\Measurement\MeasurementActivityParameterBuilderTrackerTests.cs" />
     <Compile Include="Protocols\Measurement\MeasurementUriBuilderTests.cs" />
@@ -88,6 +89,7 @@
     <Compile Include="Sessions\SessionManagerTests.cs" />
     <Compile Include="Sessions\SessionTests.cs" />
     <Compile Include="Sessions\VisitorTests.cs" />
+    <Compile Include="TestHelpers.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CSharpAnalytics\CSharpAnalytics.Net45.csproj">

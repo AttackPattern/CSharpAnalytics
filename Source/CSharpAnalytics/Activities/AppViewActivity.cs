@@ -44,6 +44,7 @@ namespace CSharpAnalytics
         public static void TrackAppView(this MeasurementAnalyticsClient analyticsClient, string screenName)
         {
             if (analyticsClient == null) throw new ArgumentNullException("analyticsClient");
+            if (String.IsNullOrWhiteSpace(screenName)) throw new ArgumentException("Screen name must not be null or blank", "screenName");
             analyticsClient.Track(new AppViewActivity(screenName));
         }
     }
