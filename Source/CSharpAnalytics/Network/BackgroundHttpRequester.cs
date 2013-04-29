@@ -57,12 +57,12 @@ namespace CSharpAnalytics.Network
         /// </summary>
         /// <param name="uploadInterval">How often to send the contents of the queue.</param>
         /// <param name="previouslyUnrequested">List of previously unrequested URIs obtained last time the requester was stopped.</param>
-        public void Start(TimeSpan uploadInterval, List<Uri> previouslyUnrequested = null)
+        public void Start(TimeSpan uploadInterval, IEnumerable<Uri> previouslyUnrequested = null)
         {
             if (IsStarted)
                 throw new InvalidOperationException(String.Format("Cannot start a {0} when already started", typeof(BackgroundHttpRequester).Name));
 
-            if (previouslyUnrequested != null && previouslyUnrequested.Count > 0)
+            if (previouslyUnrequested != null)
                 priorRequests = new Queue<Uri>(previouslyUnrequested);
 
             cancellationTokenSource = new CancellationTokenSource();
@@ -174,6 +174,14 @@ namespace CSharpAnalytics.Network
 
             var uriWithoutQuery = new Uri(uri.GetComponents(UriComponents.SchemeAndServer | UriComponents.Path, UriFormat.Unescaped));
             return new HttpRequestMessage(HttpMethod.Post, uriWithoutQuery) { Content = new StringContent(uri.GetComponents(UriComponents.Query, UriFormat.UriEscaped)) };
+        }
+
+        /// <summary>
+        /// Total count of all remaining items in the queue to aid tests.
+        /// </summary>
+        internal int QueueCount
+        {
+            get { return priorRequests.Count + currentRequests.Count; }
         }
 
         /// <summary>
