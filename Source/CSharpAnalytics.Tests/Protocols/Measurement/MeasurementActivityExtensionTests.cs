@@ -12,17 +12,12 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
     [TestClass]
     public class MeasurementActivityExtensionTests
     {
-        private List<Uri> SimpleCatchingClient()
+        [TestMethod]
+        public void AppViewExtension_Tracks_AppView()
         {
             var list = new List<Uri>();
             var client = new MeasurementAnalyticsClient();
             client.Configure(TestHelpers.MeasurementConfiguration, TestHelpers.CreateSessionManager(), new Environment("en-us"), list.Add);
-            return list;
-        }
-
-        [TestMethod]
-        public void AppViewExtension_Tracks_AppView()
-        {
 
             client.TrackAppView("SomeScreenName");
 
