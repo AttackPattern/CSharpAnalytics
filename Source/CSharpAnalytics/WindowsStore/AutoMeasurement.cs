@@ -2,7 +2,6 @@
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
-using System.Linq;
 using CSharpAnalytics.Activities;
 using CSharpAnalytics.Network;
 using CSharpAnalytics.Protocols;
@@ -11,6 +10,7 @@ using CSharpAnalytics.Sessions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -26,7 +26,7 @@ namespace CSharpAnalytics.WindowsStore
 {
     /// <summary>
     /// Helper class to get up and running with CSharpAnalytics in WindowsStore applications.
-    /// Either use as-is by calling StartAsync and StopAsync from your App.xaml.cs or use as a
+    /// Either use as-is by calling StartAsync, Attach and StopAsync from your App.xaml.cs or use as a
     /// starting point to wire up your own way.
     /// </summary>
     public static class AutoMeasurement
@@ -57,7 +57,7 @@ namespace CSharpAnalytics.WindowsStore
         /// </summary>
         /// <param name="configuration">Configuration to use, must at a minimum specify your Google Analytics ID and app name.</param>
         /// <param name="uploadInterval">How often to upload to the server. Lower times = more traffic but realtime. Defaults to 5 seconds.</param>
-        /// <example>await AutoAnalytics.StartAsync(new MeasurementConfiguration("UA-123123123-1", "myapp.someco.com"));</example>
+        /// <example>await AutoMeasurement.StartAsync(new MeasurementConfiguration("UA-123123123-1", "MyApp", "1.0.0.0"));</example>
         public static async void StartAsync(MeasurementConfiguration configuration, TimeSpan? uploadInterval = null)
         {
             await StartRequesterAsync(uploadInterval ?? TimeSpan.FromSeconds(5));
@@ -95,7 +95,7 @@ namespace CSharpAnalytics.WindowsStore
         /// Call this in your App.OnSuspending just before deferral.Complete(); 
         /// </summary>
         /// <returns>A Task that will complete once CSharpAnalytics is available.</returns>
-        /// <remarks>await AutoAnalytics.StopAsync();</remarks>
+        /// <remarks>await AutoMeasurement.StopAsync();</remarks>
         public static async Task StopAsync()
         {
             Debug.Assert(Client != null);

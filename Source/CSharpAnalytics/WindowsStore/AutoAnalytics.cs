@@ -2,7 +2,6 @@
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
-using System.Linq;
 using CSharpAnalytics.Network;
 using CSharpAnalytics.Protocols;
 using CSharpAnalytics.Protocols.Urchin;
@@ -10,6 +9,7 @@ using CSharpAnalytics.Sessions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -25,7 +25,7 @@ namespace CSharpAnalytics.WindowsStore
 {
     /// <summary>
     /// Helper class to get up and running with CSharpAnalytics in WindowsStore applications.
-    /// Either use as-is by calling StartAsync and StopAsync from your App.xaml.cs or use as a
+    /// Either use as-is by calling StartAsync, Attach and StopAsync from your App.xaml.cs or use as a
     /// starting point to wire up your own way.
     /// </summary>
     public static class AutoAnalytics
