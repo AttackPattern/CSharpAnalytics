@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
+using CSharpAnalytics.Activities;
 using CSharpAnalytics.Network;
 using CSharpAnalytics.Protocols;
 using CSharpAnalytics.Protocols.Urchin;
@@ -35,8 +36,6 @@ namespace CSharpAnalytics.WindowsStore
         private const int MaximumRequestsToPersist = 50;
 
         private static readonly ProtocolDebugger protocolDebugger = new ProtocolDebugger(s => Debug.WriteLine(s), UrchinParameterDefinitions.All);
-        private static readonly EventHandler<object> applicationResume = (sender, e) => Client.TrackEvent("Resume", "ApplicationLifecycle");
-        private static readonly SuspendingEventHandler applicationSuspend = (sender, e) => Client.TrackEvent("Suspend", "ApplicationLifecycle");
         private static readonly TypedEventHandler<DataTransferManager, TargetApplicationChosenEventArgs> socialShare = (sender, e) => Client.TrackSocial("ShareCharm", e.ApplicationName);
         private static readonly UrchinAnalyticsClient client = new UrchinAnalyticsClient();
 
@@ -45,6 +44,7 @@ namespace CSharpAnalytics.WindowsStore
         private static SessionManager sessionManager;
         private static Frame attachedFrame;
         private static DataTransferManager attachedDataTransferManager;
+        private static TimeSpan lastUploadInterval;
 
         /// <summary>
         /// Access to the UrchinAnalyticsClient necessary to send additional events.
@@ -60,7 +60,8 @@ namespace CSharpAnalytics.WindowsStore
         /// <example>await AutoAnalytics.StartAsync(new UrchinConfiguration("UA-123123123-1", "myapp.someco.com"));</example>
         public static async void StartAsync(UrchinConfiguration configuration, TimeSpan? uploadInterval = null)
         {
-            await StartRequesterAsync(uploadInterval ?? TimeSpan.FromSeconds(5));
+            lastUploadInterval = uploadInterval ?? TimeSpan.FromSeconds(5);
+            await StartRequesterAsync();
             await RestoreSessionAsync(TimeSpan.FromMinutes(20));
 
             Client.Configure(configuration, sessionManager, new WindowsStoreEnvironment(), requester.Add);
@@ -115,21 +116,49 @@ namespace CSharpAnalytics.WindowsStore
         private static void HookEvents()
         {
             var application = Application.Current;
-            application.Resuming += applicationResume;
-            application.Suspending += applicationSuspend;
+            application.Resuming += ApplicationOnResuming;
+            application.Suspending += ApplicationOnSuspending;
 
             attachedDataTransferManager = DataTransferManager.GetForCurrentView();
             attachedDataTransferManager.TargetApplicationChosen += socialShare;
         }
 
         /// <summary>
+        /// Handle application resuming from suspend without shutdown.
+        /// </summary>
+        /// <param name="sender">Sender of the event.</param>
+        /// <param name="o">Undocumented event parameter that is null.</param>
+        private static async void ApplicationOnResuming(object sender, object o)
+        {
+            await StartRequesterAsync();
+            Client.Track(new EventActivity("Resume", "ApplicationLifecycle"));
+        }
+
+        /// <summary>
+        /// Handle application suspending.
+        /// </summary>
+        /// <param name="sender">Sender of the event.</param>
+        /// <param name="suspendingEventArgs">Details about the suspending event.</param>
+        private static async void ApplicationOnSuspending(object sender, SuspendingEventArgs suspendingEventArgs)
+        {
+            var deferral = suspendingEventArgs.SuspendingOperation.GetDeferral();
+            Client.Track(new EventActivity("Suspend", "ApplicationLifecycle"));
+            await SuspendRequesterAsync();
+            await SaveSessionAsync();
+            deferral.Complete();
+        }
+
+        /// <summary>
         /// Unhook events that were wired up in HookEvents.
         /// </summary>
+        /// <remarks>
+        /// Not actually used in AutoMeasurement but here to show you what to do if you wanted to.
+        /// </remarks>
         private static void UnhookEvents()
         {
             var application = Application.Current;
-            application.Resuming -= applicationResume;
-            application.Suspending -= applicationSuspend;
+            application.Resuming -= ApplicationOnResuming;
+            application.Suspending -= ApplicationOnSuspending;
 
             if (attachedFrame != null)
                 attachedFrame.Navigated -= FrameNavigated;
@@ -167,13 +196,12 @@ namespace CSharpAnalytics.WindowsStore
         /// <summary>
         /// Start the requester with any unsent URIs from the last application run.
         /// </summary>
-        /// <param name="uploadInterval">How often to send URIs to analytics.</param>
         /// <returns>Task that completes when the requester is ready.</returns>
-        private static async Task StartRequesterAsync(TimeSpan uploadInterval)
+        private static async Task StartRequesterAsync()
         {
             requester = new BackgroundHttpRequester(PreprocessHttpRequest);
             var previousRequests = await LocalFolderContractSerializer<List<Uri>>.RestoreAsync(RequestQueueFileName);
-            requester.Start(uploadInterval, previousRequests);
+            requester.Start(lastUploadInterval, previousRequests);
         }
 
         /// <summary>

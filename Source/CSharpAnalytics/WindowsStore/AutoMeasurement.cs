@@ -36,7 +36,6 @@ namespace CSharpAnalytics.WindowsStore
         private const int MaximumRequestsToPersist = 50;
 
         private static readonly ProtocolDebugger protocolDebugger = new ProtocolDebugger(s => Debug.WriteLine(s), MeasurementParameterDefinitions.All);
-        private static readonly EventHandler<object> applicationResume = (sender, e) => Client.TrackEvent("Resume", "ApplicationLifecycle");
         private static readonly TypedEventHandler<DataTransferManager, TargetApplicationChosenEventArgs> socialShare = (sender, e) => Client.TrackSocial("ShareCharm", e.ApplicationName);
         private static readonly MeasurementAnalyticsClient client = new MeasurementAnalyticsClient();
 
@@ -45,6 +44,7 @@ namespace CSharpAnalytics.WindowsStore
         private static SessionManager sessionManager;
         private static Frame attachedFrame;
         private static DataTransferManager attachedDataTransferManager;
+        private static TimeSpan lastUploadInterval;
 
         /// <summary>
         /// Access to the MeasurementAnalyticsClient necessary to send additional events.
@@ -60,7 +60,8 @@ namespace CSharpAnalytics.WindowsStore
         /// <example>await AutoMeasurement.StartAsync(new MeasurementConfiguration("UA-123123123-1", "MyApp", "1.0.0.0"));</example>
         public static async void StartAsync(MeasurementConfiguration configuration, TimeSpan? uploadInterval = null)
         {
-            await StartRequesterAsync(uploadInterval ?? TimeSpan.FromSeconds(5));
+            lastUploadInterval = uploadInterval ?? TimeSpan.FromSeconds(5);
+            await StartRequesterAsync();
             await RestoreSessionAsync(TimeSpan.FromMinutes(20));
 
             Client.Configure(configuration, sessionManager, new WindowsStoreEnvironment(), requester.Add);
@@ -90,51 +91,54 @@ namespace CSharpAnalytics.WindowsStore
         }
 
         /// <summary>
-        /// Stop CSharpAnalytics by firing the analytics event, unhooking events and saving the session
-        /// state and pending queue.
-        /// Call this in your App.OnSuspending just before deferral.Complete(); 
-        /// </summary>
-        /// <returns>A Task that will complete once CSharpAnalytics is available.</returns>
-        /// <remarks>await AutoMeasurement.StopAsync();</remarks>
-        public static async Task StopAsync()
-        {
-            Debug.Assert(Client != null);
-            if (Client == null) return;
-
-            Client.TrackEvent("Stop", "ApplicationLifecycle");
-            UnhookEvents();
-
-            await SuspendRequesterAsync();
-            await SaveSessionAsync();
-        }
-
-        /// <summary>
         /// Hook into various events to automatically track suspend, resume, page navigation,
         /// social sharing etc.
         /// </summary>
         private static void HookEvents()
         {
             var application = Application.Current;
-            application.Resuming += applicationResume;
+            application.Resuming += ApplicationOnResuming;
             application.Suspending += ApplicationOnSuspending;
 
             attachedDataTransferManager = DataTransferManager.GetForCurrentView();
             attachedDataTransferManager.TargetApplicationChosen += socialShare;
         }
 
-        private static void ApplicationOnSuspending(object sender, SuspendingEventArgs suspendingEventArgs)
+        /// <summary>
+        /// Handle application resuming from suspend without shutdown.
+        /// </summary>
+        /// <param name="sender">Sender of the event.</param>
+        /// <param name="o">Undocumented event parameter that is null.</param>
+        private static async void ApplicationOnResuming(object sender, object o)
         {
-            var suspendEvent = new EventActivity("Suspend", "ApplicationLifecycle");
-            Client.Track(suspendEvent, true);
+            await StartRequesterAsync();
+            Client.TrackEvent("Resume", "ApplicationLifecycle");
+        }
+
+        /// <summary>
+        /// Handle application suspending.
+        /// </summary>
+        /// <param name="sender">Sender of the event.</param>
+        /// <param name="suspendingEventArgs">Details about the suspending event.</param>
+        private static async void ApplicationOnSuspending(object sender, SuspendingEventArgs suspendingEventArgs)
+        {
+            var deferral = suspendingEventArgs.SuspendingOperation.GetDeferral();
+            Client.Track(new EventActivity("Suspend", "ApplicationLifecycle"), true); // Stop the session
+            await SuspendRequesterAsync();
+            await SaveSessionAsync();
+            deferral.Complete();
         }
 
         /// <summary>
         /// Unhook events that were wired up in HookEvents.
         /// </summary>
+        /// <remarks>
+        /// Not actually used in AutoMeasurement but here to show you what to do if you wanted to.
+        /// </remarks>
         private static void UnhookEvents()
         {
             var application = Application.Current;
-            application.Resuming -= applicationResume;
+            application.Resuming -= ApplicationOnResuming;
             application.Suspending -= ApplicationOnSuspending;
 
             if (attachedFrame != null)
@@ -173,13 +177,12 @@ namespace CSharpAnalytics.WindowsStore
         /// <summary>
         /// Start the requester with any unsent URIs from the last application run.
         /// </summary>
-        /// <param name="uploadInterval">How often to send URIs to analytics.</param>
         /// <returns>Task that completes when the requester is ready.</returns>
-        private static async Task StartRequesterAsync(TimeSpan uploadInterval)
+        private static async Task StartRequesterAsync()
         {
             requester = new BackgroundHttpRequester(PreprocessHttpRequest);
             var previousRequests = await LocalFolderContractSerializer<List<Uri>>.RestoreAsync(RequestQueueFileName);
-            requester.Start(uploadInterval, previousRequests);
+            requester.Start(lastUploadInterval, previousRequests);
         }
 
         /// <summary>

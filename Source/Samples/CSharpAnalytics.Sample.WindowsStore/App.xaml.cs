@@ -3,7 +3,6 @@ using CSharpAnalytics.Protocols.Urchin;
 using CSharpAnalytics.Sample.WindowsStore.Common;
 using CSharpAnalytics.WindowsStore;
 using System;
-using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.UI.Xaml;
@@ -95,11 +94,8 @@ namespace CSharpAnalytics.Sample.WindowsStore
         /// </summary>
         /// <param name="sender">The source of the suspend request.</param>
         /// <param name="e">Details about the suspend request.</param>
-        private static async void OnSuspending(object sender, SuspendingEventArgs e)
+        private static void OnSuspending(object sender, SuspendingEventArgs e)
         {
-            var deferral = e.SuspendingOperation.GetDeferral();
-            await Task.WhenAll(SuspensionManager.SaveAsync(), AutoAnalytics.StopAsync(), AutoMeasurement.StopAsync());
-            deferral.Complete();
         }
     }
 }

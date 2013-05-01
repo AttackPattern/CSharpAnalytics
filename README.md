@@ -18,7 +18,7 @@ Google Analytics is capable, well-supported, easy to use and free. While origina
 
 This is the best solution for C# apps wanting to talk to Google Analytics. Why?
 
-1. Ease of use - add *three lines* to your Windows 8 Store app
+1. Ease of use - add *two lines* to your Windows 8 Store app
 1. Pure C# - easy to debug, extend or port (no JavaScript, web views or DLLs)
 1. Feature rich - offline, configurable, OS stats
 
@@ -70,7 +70,7 @@ You must choose between the two classes:
 * AutoAnalytics - if you set-up your analytics property as a web site
 * AutoMeasurement - if you set-up your analytics property as an app (recommended)
 
-To use simply add three lines to your App.xaml.cs:
+To use simply add two lines to your App.xaml.cs:
 
 **Start analytics** by putting either of these lines at the start of the App.OnLaunched method (replace the UA-319000-10 with your own Analytics property ID)
 
@@ -82,10 +82,7 @@ Then add one of the following two lines at the end of App.OnLaunched:
 `AutoMeasurement.Attach(rootFrame);`
 `AutoAnalytics.Attach(rootFrame);`
 
-**Stop analytics** with one of these two lines in App.OnSuspending directly before deferral.Complete()
-
-`await AutoMeasurement.StopAsync();`
-`await AutoAnalytics.StopAsync();`
+Stopping analytics is now automatic. 
 
 Check out the CSharpAnalytics.Sample.WindowsStore application if still unsure of usage.
 
