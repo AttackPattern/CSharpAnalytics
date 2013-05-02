@@ -16,7 +16,7 @@ namespace CSharpAnalytics.Network
         private readonly Action<HttpRequestMessage> preprocessor;
 
         /// <summary>
-        /// Create a new BackgroundHttpRequester.
+        /// Create a new BackgroundHttpClientRequester.
         /// </summary>
         /// <param name="preprocessor">Optional preprocessor for setting user agents, debugging etc.</param>
         public BackgroundHttpClientRequester(Action<HttpRequestMessage> preprocessor = null)
@@ -27,8 +27,8 @@ namespace CSharpAnalytics.Network
         /// <summary>
         /// Request the URI with retry logic using HttpClient.
         /// </summary>
-        /// <param name="uri">URI to request.</param>
-        protected override void RequestWithFailureRetry(Uri uri)
+        /// <param name="requestUri">URI to request.</param>
+        protected override void RequestWithFailureRetry(Uri requestUri)
         {
             var retryDelay = TimeSpan.Zero;
             var successfullySent = false;
@@ -37,7 +37,7 @@ namespace CSharpAnalytics.Network
             {
                 do
                 {
-                    var message = CreateRequestMessage(uri);
+                    var message = CreateRequestMessage(requestUri);
                     if (preprocessor != null)
                         preprocessor(message);
 

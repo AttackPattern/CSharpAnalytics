@@ -120,8 +120,8 @@ namespace CSharpAnalytics.Network
         /// <summary>
         /// Request the URI retrying as appropriate if a failure occurs.
         /// </summary>
-        /// <param name="uri">URI to requqest.</param>
-        protected abstract void RequestWithFailureRetry(Uri uri);
+        /// <param name="requestUri">URI to requqest.</param>
+        protected abstract void RequestWithFailureRetry(Uri requestUri);
 
         /// <summary>
         /// Total count of all remaining items in the queue.
