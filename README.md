@@ -67,24 +67,18 @@ The easiest way to start is to use one of the automatic helper classes. They hoo
 
 You must choose between the two classes:
 
-* AutoAnalytics - if you set-up your analytics property as a web site
 * AutoMeasurement - if you set-up your analytics property as an app (recommended)
+* AutoAnalytics - if you set-up your analytics property as a web site
 
-To use simply add two lines to your App.xaml.cs:
-
-**Start analytics** by putting either of these lines at the start of the App.OnLaunched method (replace the UA-319000-10 with your own Analytics property ID)
+Simply add two lines to your App.xaml.cs OnLaunched method. At the start of the method add:
 
 `AutoMeasurement.StartAsync(new MeasurementConfiguration("UA-319000-10"));`
-`AutoAnalytics.StartAsync(new UrchinConfiguration("UA-319000-10", "sample.csharpanalytics.com"));`
 
-Then add one of the following two lines at the end of App.OnLaunched:
+Replacing UA-319000-10 with your own Analytics property ID. At the end of the method add:
 
 `AutoMeasurement.Attach(rootFrame);`
-`AutoAnalytics.Attach(rootFrame);`
 
-Stopping analytics is now automatic. 
-
-Check out the CSharpAnalytics.Sample.WindowsStore application if still unsure of usage.
+Check out the CSharpAnalytics.Sample.WindowsStore application if still unsure of usage or to see the equivalent AutoAnalytics methods for web site style tracking.
 
 Going further
 -------------
@@ -95,14 +89,12 @@ AutoAnalytics & AutoMeasurement are a start but you'll certainly want to go furt
 Add ITrackOwnView to your page class to stop AutoAnalytics from tracking it and instead track it yourself once the content is loaded - we recommend the end of the LoadState method with either of:
 
 `AutoMeasurement.Client.TrackAppView(item.Title);`
-`AutoAnalytics.Client.TrackPageView(item.Title, "/news/" + item.Id);`
 
 **For additional user events**
 
 Say you want to track when the video "Today's News" is played back:
 
 `AutoMeasurement.Client.TrackEvent("Play", "Video", "Today's News");`
-`AutoAnalytics.Client.TrackEvent("Play", "Video", "Today's News");`
 
 **For timing**
 
@@ -112,7 +104,6 @@ If you want to track how long something takes:
 var timedActivity = new AutoTimedEventActivity("Loading", "Pictures");
 // do something that takes time
 AutoMeasurement.Client.Track(timedActivity);
-AutoAnalytics.Client.Track(timedActivity);
 ```
 
 Privacy
