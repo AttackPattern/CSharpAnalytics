@@ -123,13 +123,13 @@
     <Compile Include="Activities\SocialActivityTests.cs" />
     <Compile Include="Activities\TransactionItemActivityTests.cs" />
     <Compile Include="AnalyticsClientTests.cs" />
+    <Compile Include="Network\BackgroundHttpClientRequesterTests.cs" />
     <Compile Include="Protocols\Measurement\MeasurementActivityExtensionTests.cs" />
     <Compile Include="Protocols\Urchin\CustomVariables\CustomVariableSlotsTests.cs" />
     <Compile Include="Protocols\Urchin\CustomVariables\EvaluatedCustomVariableTests.cs" />
     <Compile Include="Protocols\Urchin\CustomVariables\CustomVariableTests.cs" />
     <Compile Include="Protocols\Urchin\CustomVariables\ScopedCustomVariableTests.cs" />
     <Compile Include="EnvironmentTests.cs" />
-    <Compile Include="Network\BackgroundHttpRequesterTests.cs" />
     <Compile Include="Protocols\EpochTimeTests.cs" />
     <Compile Include="Protocols\Measurement\MeasurementActivityParameterBuilderTrackerTests.cs" />
     <Compile Include="Protocols\Measurement\MeasurementConfigurationTests.cs" />

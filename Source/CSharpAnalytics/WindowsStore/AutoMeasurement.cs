@@ -180,7 +180,7 @@ namespace CSharpAnalytics.WindowsStore
         /// <returns>Task that completes when the requester is ready.</returns>
         private static async Task StartRequesterAsync()
         {
-            requester = new BackgroundHttpRequester(PreprocessHttpRequest);
+            requester = new BackgroundHttpClientRequester(PreprocessHttpRequest);
             var previousRequests = await LocalFolderContractSerializer<List<Uri>>.RestoreAsync(RequestQueueFileName);
             requester.Start(lastUploadInterval, previousRequests);
         }
