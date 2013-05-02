@@ -124,39 +124,42 @@ namespace CSharpAnalytics.Network
             var retryDelay = TimeSpan.Zero;
             var successfullySent = false;
 
-            using (var requestFailureWait = new ManualResetEventSlim())
+            using (var httpClient = new HttpClient())
             {
-                do
+                using (var requestFailureWait = new ManualResetEventSlim())
                 {
-                    var message = CreateRequestMessage(uri);
-                    if (preprocessor != null)
-                        preprocessor(message);
+                    do
+                    {
+                        var message = CreateRequestMessage(uri);
+                        if (preprocessor != null)
+                            preprocessor(message);
 
-                    HttpResponseMessage response = null;
-                    try
-                    {
-                        response = new HttpClient().SendAsync(message).Result;
-                    }
-                    catch (AggregateException e)
-                    {
-                        System.Diagnostics.Debug.WriteLine("BackgroundHttp failing with {0}", GetInnermostException(e).Message);
-                    }
-                    finally
-                    {
-                        if (response == null || !response.IsSuccessStatusCode)
+                        HttpResponseMessage response = null;
+                        try
                         {
-                            retryDelay = retryDelay + networkRetryWaitStep;
-                            if (retryDelay > networkRetryWaitMax)
-                                retryDelay = networkRetryWaitMax;
+                            response = httpClient.SendAsync(message).Result;
+                        }
+                        catch (AggregateException e)
+                        {
+                            System.Diagnostics.Debug.WriteLine("BackgroundHttp failing with {0}", GetInnermostException(e).Message);
+                        }
+                        finally
+                        {
+                            if (response == null || !response.IsSuccessStatusCode)
+                            {
+                                retryDelay = retryDelay + networkRetryWaitStep;
+                                if (retryDelay > networkRetryWaitMax)
+                                    retryDelay = networkRetryWaitMax;
 
-                            requestFailureWait.Wait(retryDelay, cancellationTokenSource.Token);
+                                requestFailureWait.Wait(retryDelay, cancellationTokenSource.Token);
+                            }
+                            else
+                            {
+                                successfullySent = true;
+                            }
                         }
-                        else
-                        {
-                            successfullySent = true;
-                        }
-                    }
-                } while (!successfullySent);
+                    } while (!successfullySent);
+                }
             }
         }
 
