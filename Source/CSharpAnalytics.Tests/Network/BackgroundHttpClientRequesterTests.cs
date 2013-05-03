@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using CSharpAnalytics.Network;
 #if WINDOWS_STORE
@@ -27,52 +25,6 @@ namespace CSharpAnalytics.Test.Network
             
             TestHelpers.WaitForQueueToEmpty(requester);
             Assert.AreEqual(expected, actual);
-        }
-
-        [TestMethod]
-        public void BackgroundHttpClientRequester_Start_Uses_Previous_List()
-        {
-            var expectedList = TestHelpers.CreateRequestList(4);
-            var actualList = new List<Uri>();
-            Action<HttpRequestMessage> preprocessor = m => actualList.Add(m.RequestUri);
-
-            var requester = new BackgroundHttpClientRequester(preprocessor);
-            requester.Start(TimeSpan.FromMilliseconds(10), expectedList);
-
-            TestHelpers.WaitForQueueToEmpty(requester);
-            CollectionAssert.AreEqual(expectedList, actualList);
-        }
-
-        [TestMethod]
-        public void BackgroundHttpClientRequester_Start_Uses_Previous_List_First()
-        {
-            var expectedList = TestHelpers.CreateRequestList(10);
-            var actualList = new List<Uri>();
-            Action<HttpRequestMessage> preprocessor = m => actualList.Add(m.RequestUri);
-
-            var requester = new BackgroundHttpClientRequester(preprocessor);
-            requester.Start(TimeSpan.FromMilliseconds(10), expectedList.Take(5));
-            foreach (var uri in expectedList.Skip(5))
-                requester.Add(uri);
-
-            TestHelpers.WaitForQueueToEmpty(requester);
-            CollectionAssert.AreEqual(expectedList, actualList);
-        }
-
-        [TestMethod]
-        public void BackgroundHttpClientRequester_StopAsync_Stops_Requesting()
-        {
-            var preprocessorCalled = false;
-            Action<HttpRequestMessage> preprocessor = m => preprocessorCalled = true;
-
-            var requester = new BackgroundHttpClientRequester(preprocessor);
-            requester.Start(TimeSpan.FromMilliseconds(10));
-            requester.StopAsync().Wait();
-            foreach (var uri in TestHelpers.CreateRequestList(3))
-                requester.Add(uri);
-
-            Assert.IsFalse(preprocessorCalled);
-            Assert.AreEqual(3, requester.QueueCount);
         }
 
         [TestMethod]

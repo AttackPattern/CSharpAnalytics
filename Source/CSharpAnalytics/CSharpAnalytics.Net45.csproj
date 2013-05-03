@@ -58,6 +58,7 @@
     <Compile Include="Network\BackgroundHttpRequester.cs" />
     <Compile Include="Network\BackgroundHttpClientRequester.cs" />
     <Compile Include="Network\BackgroundHttpWebRequester.cs" />
+    <Compile Include="Network\BackgroundHttpFuncRequester.cs" />
     <Compile Include="Protocols\Measurement\MeasurementTracker.cs" />
     <Compile Include="Protocols\Measurement\IMeasurementActivity.cs" />
     <Compile Include="Protocols\Measurement\MeasurementActivityParameterBuilder.cs" />
