@@ -24,6 +24,7 @@ namespace CSharpAnalytics.Test.Network
             requester.Start(TimeSpan.FromMilliseconds(10), expectedList);
 
             TestHelpers.WaitForQueueToEmpty(requester);
+            Assert.AreEqual(expectedList.Count, actualList.Count);
             CollectionAssert.AreEqual(expectedList, actualList);
         }
 
@@ -40,6 +41,7 @@ namespace CSharpAnalytics.Test.Network
                 requester.Add(uri);
 
             TestHelpers.WaitForQueueToEmpty(requester);
+            Assert.AreEqual(expectedList.Count, actualList.Count);
             CollectionAssert.AreEqual(expectedList, actualList);
         }
 

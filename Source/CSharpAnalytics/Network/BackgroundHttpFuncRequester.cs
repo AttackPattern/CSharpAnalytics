@@ -44,7 +44,8 @@ namespace CSharpAnalytics.Network
                 }
                 finally
                 {
-                    WaitBetweenFailedRequests(ref retryDelay);
+                    if (!successfullySent)
+                        WaitBetweenFailedRequests(ref retryDelay);
                 }
             } while (!successfullySent);
         }

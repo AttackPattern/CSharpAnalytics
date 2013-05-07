@@ -98,7 +98,7 @@ namespace CSharpAnalytics.Network
         {
             var uriWithoutQuery = new Uri(requestUri.GetComponents(UriComponents.SchemeAndServer | UriComponents.Path, UriFormat.Unescaped));
             var bodyWithQuery = requestUri.GetComponents(UriComponents.Query, UriFormat.UriEscaped);
-            var bodyBytes = Encoding.ASCII.GetBytes(bodyWithQuery);
+            var bodyBytes = Encoding.UTF8.GetBytes(bodyWithQuery);
 
             var postRequest = WebRequest.CreateHttp(uriWithoutQuery);
             postRequest.Method = "POST";

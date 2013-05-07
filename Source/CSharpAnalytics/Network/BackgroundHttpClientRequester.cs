@@ -37,7 +37,7 @@ namespace CSharpAnalytics.Network
             {
                 do
                 {
-                    var message = CreateRequestMessage(requestUri);
+                    var message = CreateRequest(requestUri);
                     if (preprocessor != null)
                         preprocessor(message);
 
@@ -72,7 +72,7 @@ namespace CSharpAnalytics.Network
         /// </summary>
         /// <param name="uri">URI to request.</param>
         /// <returns>HttpRequestMessage for this URI.</returns>
-        internal static HttpRequestMessage CreateRequestMessage(Uri uri)
+        internal static HttpRequestMessage CreateRequest(Uri uri)
         {
             if (uri.AbsoluteUri.Length <= MaxUriLength)
                 return new HttpRequestMessage(HttpMethod.Get, uri);

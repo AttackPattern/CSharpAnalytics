@@ -124,6 +124,7 @@
     <Compile Include="Activities\TransactionItemActivityTests.cs" />
     <Compile Include="AnalyticsClientTests.cs" />
     <Compile Include="Network\BackgroundHttpClientRequesterTests.cs" />
+    <Compile Include="Network\BackgroundHttpRequesterTests.cs" />
     <Compile Include="Protocols\Measurement\MeasurementActivityExtensionTests.cs" />
     <Compile Include="Protocols\Urchin\CustomVariables\CustomVariableSlotsTests.cs" />
     <Compile Include="Protocols\Urchin\CustomVariables\EvaluatedCustomVariableTests.cs" />

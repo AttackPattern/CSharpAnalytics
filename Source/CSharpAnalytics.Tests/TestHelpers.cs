@@ -11,10 +11,8 @@ namespace CSharpAnalytics.Test
 {
     public static class TestHelpers
     {
-        private const int AsciiLow = 32;
-        private const int AsciiHigh = 127;
         private static readonly Random random = new Random();
-        private static readonly TimeSpan timeout = TimeSpan.FromSeconds(5);
+        private static readonly TimeSpan timeout = TimeSpan.FromSeconds(50);
 
         public static readonly MeasurementConfiguration MeasurementConfiguration = new MeasurementConfiguration("UA-319000-10", "AppName", "1.2.3.4");
         public static readonly Func<SessionManager> CreateSessionManager = () => new SessionManager(TimeSpan.FromSeconds(20), new SessionState());
@@ -24,7 +22,7 @@ namespace CSharpAnalytics.Test
         {
             var chars = new char[length];
             for (var i = 0; i < length; i++)
-                chars[i] = (char)random.Next(AsciiLow, AsciiHigh);
+                chars[i] = (char)random.Next('A', 'Z');
 
             return new string(chars);
         }
