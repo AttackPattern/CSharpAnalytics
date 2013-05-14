@@ -33,7 +33,7 @@ namespace CSharpAnalytics.Test
             time.Start();
 
             while (requester.QueueCount != 0 && time.Elapsed < timeout)
-                Task.Delay(TimeSpan.FromMilliseconds(100)).Wait();
+                Task.Delay(TimeSpan.FromSeconds(5)).Wait();
         }
 
         public static List<Uri> CreateRequestList(int count)
