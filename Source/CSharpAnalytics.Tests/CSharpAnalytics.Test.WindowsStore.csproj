@@ -14,8 +14,8 @@
     <DefaultLanguage>en-US</DefaultLanguage>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{BC8A1FFA-BEE3-4634-8014-F334798102B3};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <PackageCertificateThumbprint>71B3B7D1B51F06E1CA10F177BBA3AF1D0C9BA586</PackageCertificateThumbprint>
     <PackageCertificateKeyFile>Packaging\CSharpAnalytics.Test.WindowsStore_TemporaryKey.pfx</PackageCertificateKeyFile>
+    <PackageCertificateThumbprint>71B3B7D1B51F06E1CA10F177BBA3AF1D0C9BA586</PackageCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -25,7 +25,7 @@
     <DefineConstants>TRACE;DEBUG;NETFX_CORE;WINDOWS_STORE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -37,8 +37,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\ARM\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;NETFX_CORE</DefineConstants>
+    <OutputPath>bin\ARM\Debug\WindowsStore\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;NETFX_CORE;WINDOWS_STORE</DefineConstants>
     <NoWarn>;2008</NoWarn>
     <DebugType>full</DebugType>
     <PlatformTarget>ARM</PlatformTarget>
@@ -47,8 +47,8 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM'">
-    <OutputPath>bin\ARM\Release\</OutputPath>
-    <DefineConstants>TRACE;NETFX_CORE</DefineConstants>
+    <OutputPath>bin\ARM\Release\WindowsStore\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_STORE</DefineConstants>
     <Optimize>true</Optimize>
     <NoWarn>;2008</NoWarn>
     <DebugType>pdbonly</DebugType>
@@ -59,8 +59,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x64\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;NETFX_CORE</DefineConstants>
+    <OutputPath>bin\x64\Debug\WindowsStore\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;NETFX_CORE;WINDOWS_STORE</DefineConstants>
     <NoWarn>;2008</NoWarn>
     <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
@@ -69,8 +69,8 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <OutputPath>bin\x64\Release\</OutputPath>
-    <DefineConstants>TRACE;NETFX_CORE</DefineConstants>
+    <OutputPath>bin\x64\Release\WindowsStore\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_STORE</DefineConstants>
     <Optimize>true</Optimize>
     <NoWarn>;2008</NoWarn>
     <DebugType>pdbonly</DebugType>
@@ -81,8 +81,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x86\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;NETFX_CORE</DefineConstants>
+    <OutputPath>bin\x86\Debug\WindowsStore\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;NETFX_CORE;WINDOWS_STORE</DefineConstants>
     <NoWarn>;2008</NoWarn>
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
@@ -91,8 +91,8 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <OutputPath>bin\x86\Release\</OutputPath>
-    <DefineConstants>TRACE;NETFX_CORE</DefineConstants>
+    <OutputPath>bin\x86\Release\WindowsStore\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_STORE</DefineConstants>
     <Optimize>true</Optimize>
     <NoWarn>;2008</NoWarn>
     <DebugType>pdbonly</DebugType>
@@ -111,31 +111,31 @@
     <SDKReference Include="TestPlatform, Version=11.0" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Activities\AppViewActivityTests.cs" />
     <Compile Include="Activities\AutoTimedEventActivityTests.cs" />
     <Compile Include="Activities\CampaignActivityTests.cs" />
-    <Compile Include="Activities\AppViewActivityTests.cs" />
     <Compile Include="Activities\ContentViewActivityTests.cs" />
-    <Compile Include="Activities\ExceptionActivityTests.cs" />
-    <Compile Include="Activities\TimedEventActivityTests.cs" />
-    <Compile Include="Activities\PageViewActivityTests.cs" />
     <Compile Include="Activities\EventActivityTests.cs" />
-    <Compile Include="Activities\TransactionActivityTests.cs" />
+    <Compile Include="Activities\ExceptionActivityTests.cs" />
+    <Compile Include="Activities\PageViewActivityTests.cs" />
     <Compile Include="Activities\SocialActivityTests.cs" />
+    <Compile Include="Activities\TimedEventActivityTests.cs" />
+    <Compile Include="Activities\TransactionActivityTests.cs" />
     <Compile Include="Activities\TransactionItemActivityTests.cs" />
     <Compile Include="AnalyticsClientTests.cs" />
+    <Compile Include="EnvironmentTests.cs" />
     <Compile Include="Network\BackgroundHttpClientRequesterTests.cs" />
     <Compile Include="Network\BackgroundHttpRequesterTests.cs" />
-    <Compile Include="Protocols\Measurement\MeasurementActivityExtensionTests.cs" />
-    <Compile Include="Protocols\Urchin\CustomVariables\CustomVariableSlotsTests.cs" />
-    <Compile Include="Protocols\Urchin\CustomVariables\EvaluatedCustomVariableTests.cs" />
-    <Compile Include="Protocols\Urchin\CustomVariables\CustomVariableTests.cs" />
-    <Compile Include="Protocols\Urchin\CustomVariables\ScopedCustomVariableTests.cs" />
-    <Compile Include="EnvironmentTests.cs" />
     <Compile Include="Protocols\EpochTimeTests.cs" />
+    <Compile Include="Protocols\Measurement\MeasurementActivityExtensionTests.cs" />
     <Compile Include="Protocols\Measurement\MeasurementActivityParameterBuilderTrackerTests.cs" />
     <Compile Include="Protocols\Measurement\MeasurementConfigurationTests.cs" />
     <Compile Include="Protocols\Measurement\MeasurementUriBuilderTests.cs" />
     <Compile Include="Protocols\ParameterDefinition.cs" />
+    <Compile Include="Protocols\Urchin\CustomVariables\CustomVariableSlotsTests.cs" />
+    <Compile Include="Protocols\Urchin\CustomVariables\CustomVariableTests.cs" />
+    <Compile Include="Protocols\Urchin\CustomVariables\EvaluatedCustomVariableTests.cs" />
+    <Compile Include="Protocols\Urchin\CustomVariables\ScopedCustomVariableTests.cs" />
     <Compile Include="Protocols\Urchin\UrchinActivityParameterBuilderTests.cs" />
     <Compile Include="Protocols\Urchin\UrchinAnalyticsTests.cs" />
     <Compile Include="Protocols\Urchin\UrchinConfigurationTests.cs" />
@@ -144,10 +144,29 @@
     <Compile Include="Protocols\Urchin\UtmeEncoderTests.cs" />
     <Compile Include="Sessions\SessionManagerTests.cs" />
     <Compile Include="Sessions\SessionStateTests.cs" />
-    <Compile Include="Sessions\VisitorTests.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sessions\SessionTests.cs" />
+    <Compile Include="Sessions\VisitorTests.cs" />
     <Compile Include="TestHelpers.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <AppxManifest Include="Packaging\Package.appxmanifest">
+      <SubType>Designer</SubType>
+    </AppxManifest>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Packaging\Images\UnitTestLogo.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Packaging\Images\UnitTestSmallLogo.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Packaging\Images\UnitTestSplashScreen.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Packaging\Images\UnitTestStoreLogo.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CSharpAnalytics\CSharpAnalytics.WindowsStore.csproj">
@@ -156,18 +175,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <AppxManifest Include="Packaging\Package.appxmanifest">
-      <SubType>Designer</SubType>
-    </AppxManifest>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Packaging\CSharpAnalytics.Test.WindowsStore_TemporaryKey.pfx" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Packaging\Images\UnitTestLogo.png" />
-    <Content Include="Packaging\Images\UnitTestSmallLogo.png" />
-    <Content Include="Packaging\Images\UnitTestSplashScreen.png" />
-    <Content Include="Packaging\Images\UnitTestStoreLogo.png" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '11.0' ">
     <VisualStudioVersion>11.0</VisualStudioVersion>
