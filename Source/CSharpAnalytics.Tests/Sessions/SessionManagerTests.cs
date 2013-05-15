@@ -1,4 +1,5 @@
-﻿using CSharpAnalytics.Sessions;
+﻿using System.Globalization;
+using CSharpAnalytics.Sessions;
 using System;
 using System.Threading.Tasks;
 #if WINDOWS_STORE
@@ -149,7 +150,7 @@ namespace CSharpAnalytics.Test.Sessions
                 LastActivityAt = DateTime.Now.Subtract(new TimeSpan(0, 0, 0, 1)),
                 PreviousSessionStartedAt = DateTime.Now.Subtract(new TimeSpan(0, 1, 10, 15)),
                 SessionStartedAt = DateTime.Now.Subtract(new TimeSpan(0, 0, 0, 15)),
-                Referrer = new Uri("http://damieng.com" + random.Next().ToString())
+                Referrer = new Uri("http://damieng.com/" + random.Next().ToString(CultureInfo.InvariantCulture))
             };
         }
     }

@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
+using System.Globalization;
 using CSharpAnalytics.Activities;
 using CSharpAnalytics.Sessions;
 using System;
@@ -83,7 +84,7 @@ namespace CSharpAnalytics.Protocols.Measurement
         public void SetCustomDimension(Enum index, string value)
         {
             ValidateEnum(index);
-            SetCustomDimension(Convert.ToInt32(index), value);
+            SetCustomDimension(Convert.ToInt32(index, CultureInfo.InvariantCulture), value);
         }
 
         /// <summary>
@@ -111,7 +112,7 @@ namespace CSharpAnalytics.Protocols.Measurement
         public void SetCustomMetric(Enum index, long? value)
         {
             ValidateEnum(index);
-            SetCustomMetric(Convert.ToInt32(index), value);
+            SetCustomMetric(Convert.ToInt32(index, CultureInfo.InvariantCulture), value);
         }
 
         /// <summary>

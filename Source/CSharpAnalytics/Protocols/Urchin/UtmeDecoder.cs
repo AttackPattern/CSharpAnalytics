@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 namespace CSharpAnalytics.Protocols.Urchin
@@ -28,7 +29,7 @@ namespace CSharpAnalytics.Protocols.Urchin
             var foundPart = originalUtme.Split(')')
                 .Select(p => new { Value = p, OpenIndex = p.IndexOf('(') })
                 .Where(p => p.OpenIndex > 0)
-                .Select(p => new { Value = p.Value.Substring(p.OpenIndex + 1), Id = int.Parse(p.Value.Substring(0, p.OpenIndex)) })
+                .Select(p => new { Value = p.Value.Substring(p.OpenIndex + 1), Id = int.Parse(p.Value.Substring(0, p.OpenIndex), CultureInfo.InvariantCulture) })
                 .FirstOrDefault(p => p.Id == part);
 
             if (foundPart == null)
@@ -69,7 +70,7 @@ namespace CSharpAnalytics.Protocols.Urchin
                 var bangIndex = value.IndexOf("!", StringComparison.Ordinal);
                 if (bangIndex > 0)
                 {
-                    var decompressedIndex = int.Parse(value.Substring(0, bangIndex)) - 1;
+                    var decompressedIndex = int.Parse(value.Substring(0, bangIndex), CultureInfo.InvariantCulture) - 1;
                     value = value.Substring(bangIndex + 1);
                     while (decompressedIndex-- > i)
                         decompressed.Add(null);
