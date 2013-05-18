@@ -22,6 +22,8 @@ This is the best solution for C# apps wanting to talk to Google Analytics. Why?
 1. Pure C# - easy to debug, extend or port (no JavaScript, web views or DLLs)
 1. Feature rich - offline, configurable, OS stats
 
+Still not convinced? Check out [how we compare to the alternatives](https://github.com/AttackPattern/CSharpAnalytics/wiki/Comparison)
+
 Platforms
 ---------
 Our goal is to support all major C# platforms. Right now we have project files for:
@@ -51,7 +53,7 @@ Getting started
 ---------------
 You will need:
 
-* Google Analytics account - Head to http://analytics.google.com and sign-up if you don't have one
+* Google Analytics account - [Sign up](http://analytics.google.com) if you don't have one
 * An analytics property
 
 Download or clone the source and add a reference to CSharpAnalytics.WindowsStore from your application.
