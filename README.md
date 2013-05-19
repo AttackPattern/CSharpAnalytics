@@ -12,7 +12,7 @@ Metrics let you see what's actually happening with your app in the real world. C
 
 **Why use Google Analytics?**
 
-Google Analytics is capable, well-supported, easy to use and free. While originally designed for web analytics it is gaining more and more app-specific metrics. The forthcoming Measurement Protocol adds even more with screen views, device breakout and crash data.
+Google Analytics is capable, well-supported, easy to use and free. While originally designed for web analytics the new Measurement Protocol expands into more app-specific metrics and features incluing screen views, device breakout and crash data.
 
 **Why the CSharpAnalytics project?**
 
