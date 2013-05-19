@@ -136,6 +136,44 @@ namespace CSharpAnalytics.Test.Sessions
             Assert.AreEqual(1500, sessionManager.Session.HitCount);
         }
 
+        [TestMethod]
+        public void SessionManager_SessionStatus_Is_Starting_For_New_Session()
+        {
+            var sessionManager = new SessionManager(TimeSpan.FromSeconds(5), null);
+
+            Assert.AreEqual(SessionStatus.Starting, sessionManager.SessionStatus);
+        }
+
+        [TestMethod]
+        public void SessionManager_SessionStatus_Is_Active_After_First_Hit()
+        {
+            var sessionManager = new SessionManager(TimeSpan.FromSeconds(5), null);
+            sessionManager.Hit();
+
+            Assert.AreEqual(SessionStatus.Active, sessionManager.SessionStatus);
+        }
+
+        [TestMethod]
+        public void SessionManager_SessionStatus_Is_Ending_After_End()
+        {
+            var sessionManager = new SessionManager(TimeSpan.FromSeconds(5), null);
+            sessionManager.Hit();
+            sessionManager.End();
+
+            Assert.AreEqual(SessionStatus.Ending, sessionManager.SessionStatus);
+        }
+
+        [TestMethod]
+        public void SessionManager_SessionStatus_Is_Starting_After_Hit_After_End()
+        {
+            var sessionManager = new SessionManager(TimeSpan.FromSeconds(5), null);
+            sessionManager.Hit();
+            sessionManager.End();
+            sessionManager.Hit();
+
+            Assert.AreEqual(SessionStatus.Starting, sessionManager.SessionStatus);
+        }
+
         private static readonly Random random = new Random();
 
         private static SessionState CreateSampleState()

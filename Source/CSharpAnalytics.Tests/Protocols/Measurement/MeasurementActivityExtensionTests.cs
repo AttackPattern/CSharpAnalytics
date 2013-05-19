@@ -17,7 +17,7 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
         {
             var list = new List<Uri>();
             var client = new MeasurementAnalyticsClient();
-            client.Configure(TestHelpers.MeasurementConfiguration, TestHelpers.CreateSessionManager(), new Environment("en-us"), list.Add);
+            MeasurementTestHelpers.ConfigureForTest(client, list.Add);
 
             client.TrackAppView("SomeScreenName");
 

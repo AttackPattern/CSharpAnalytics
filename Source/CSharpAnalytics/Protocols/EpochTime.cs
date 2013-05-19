@@ -67,7 +67,7 @@ namespace CSharpAnalytics.Protocols
         }
 
         /// <summary>
-        /// Format a date as UTC format.
+        /// Format number of seconsd since 1970 as formatted UTC date.
         /// </summary>
         /// <param name="secondsSince1970">Number of seconds since 01-Jan-1970.</param>
         /// <returns>Formatted UTC date.</returns>

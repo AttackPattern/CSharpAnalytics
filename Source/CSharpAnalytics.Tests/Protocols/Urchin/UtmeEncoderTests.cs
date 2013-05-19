@@ -1,4 +1,5 @@
 ﻿using System;
+using CSharpAnalytics.Activities;
 using CSharpAnalytics.Protocols.Urchin;
 #if WINDOWS_STORE
 using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
@@ -12,11 +13,25 @@ namespace CSharpAnalytics.Test.Protocols.Urchin
     public class UtmeEncoderTests
     {
         [TestMethod]
-        public void UtmeEncoder_EncodeValue_Encodes_Correctly()
+        public void UtmeEncoder_EscapeValue_Encodes_Correctly()
         {
             var encoded = UtmeEncoder.EscapeValue("a*b)c!d'2*(!*");
 
             Assert.AreEqual("a'2b'1c'3d'02'2('3'2", encoded);
+        }
+
+        [TestMethod]
+        public void UtmeEncoder_EscapeValue_With_Empty_String_Returns_Empty_String()
+        {
+            var escaped = UtmeEncoder.EscapeValue("");
+            Assert.AreEqual("", escaped);
+        }
+
+        [TestMethod]
+        public void UtmeEncoder_Encode_With_Empty_Strings_Returns_Empty_String()
+        {
+            var encoded = UtmeEncoder.Encode("", "", "");
+            Assert.AreEqual("", encoded);
         }
 
         [TestMethod]
@@ -59,13 +74,6 @@ namespace CSharpAnalytics.Test.Protocols.Urchin
             var compressed = UtmeEncoder.Compress(new[] { "", null, " " });
 
             CollectionAssert.AreEqual(new string[] { }, compressed);
-        }
-
-        [TestMethod]
-        public void UtmeEncoder_EscapeValue_With_Empty_String_Returns_Empty_String()
-        {
-            var escaped = UtmeEncoder.EscapeValue("");
-            Assert.AreEqual("", escaped);
         }
 
 #if WINDOWS_STORE

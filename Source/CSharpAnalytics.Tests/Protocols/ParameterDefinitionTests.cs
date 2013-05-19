@@ -12,13 +12,21 @@ namespace CSharpAnalytics.Test.Protocols
     public class ParameterDefinitionTests
     {
         [TestMethod]
-        public void ParameterDefinition_Constructor_Sets_All_Properties()
+        public void ParameterDefinition_Constructor_Sets_Required_Properties()
         {
-            Func<string, string> formatter = s => s + "great";
-            var parameterDefinition = new ParameterDefinition("name", "label", formatter);
+            var parameterDefinition = new ParameterDefinition("name", "label");
 
             Assert.AreEqual("name", parameterDefinition.Name);
             Assert.AreEqual("label", parameterDefinition.Label);
+        }
+
+        [TestMethod]
+        public void ParameterDefinition_Constructor_Sets_Optional_Properties()
+        {
+            Func<string, string> formatter = s => s + "great";
+            var parameterDefinition = new ParameterDefinition("name", "label", formatter, true);
+
+            Assert.AreEqual(true, parameterDefinition.IsRegexMatch);
             Assert.AreEqual(formatter, parameterDefinition.Formatter);
             Assert.AreEqual("so great", parameterDefinition.Formatter("so "));
         }

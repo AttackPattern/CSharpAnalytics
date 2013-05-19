@@ -2,12 +2,12 @@
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
-using System.Globalization;
 using CSharpAnalytics.Activities;
 using CSharpAnalytics.Sessions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 
 namespace CSharpAnalytics.Protocols.Measurement
@@ -123,7 +123,7 @@ namespace CSharpAnalytics.Protocols.Measurement
         private static void ValidateEnum(Enum index)
         {
             if (Enum.GetUnderlyingType(index.GetType()) != typeof(int))
-                throw new ArgumentOutOfRangeException("index", "Enum must be of type int");
+                throw new ArgumentException("index", "Enum must be of type int");
 
             if (!Enum.IsDefined(index.GetType(), index))
                 throw new ArgumentOutOfRangeException("index", "Enum value is not defined");

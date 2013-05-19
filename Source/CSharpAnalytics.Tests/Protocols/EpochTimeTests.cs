@@ -54,5 +54,33 @@ namespace CSharpAnalytics.Test.Protocols
 
             Assert.AreEqual("Tue, 25 Dec 2012 23:36:45 GMT", epochTime.ToUtcString());
         }
+
+        [TestMethod]
+        public void EpochTime_FormatDate_Returns_Correct_Value_Given_Valid_Number_Of_Seconds()
+        {
+            var formattedDate = EpochTime.FormatDate("1356479712");
+            Assert.AreEqual("Tue, 25 Dec 2012 23:55:12 GMT", formattedDate);
+        }
+
+        [TestMethod]
+        public void EpochTime_FormatDate_Returns_Empty_String_Given_Decimal_Number_Of_Seconds()
+        {
+            var decimalSeconds = EpochTime.FormatDate("123.45");
+            Assert.AreEqual("", decimalSeconds);
+        }
+
+        [TestMethod]
+        public void EpochTime_FormatDate_Returns_Empty_String_Given_Empty_String()
+        {
+            var emptyString = EpochTime.FormatDate("");
+            Assert.AreEqual("", emptyString);
+        }
+
+        [TestMethod]
+        public void EpochTime_FormatDate_Returns_Empty_String_Given_Text()
+        {
+            var notSeconds = EpochTime.FormatDate("Shiny");
+            Assert.AreEqual("", notSeconds);
+        }
     }
 }

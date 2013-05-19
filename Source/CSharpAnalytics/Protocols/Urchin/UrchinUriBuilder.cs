@@ -92,7 +92,6 @@ namespace CSharpAnalytics.Protocols.Urchin
         /// <returns>Encoded query string of parameters.</returns>
         private static string CreateQueryString(IEnumerable<KeyValuePair<string, string>> parameters)
         {
-            if (parameters == null) throw new ArgumentNullException("parameters");
             var normalized = parameters
                 .GroupBy(p => p.Key)
                 .Select(p => new { p.Key, Value = String.Join("", p.Select(r => r.Value)) })

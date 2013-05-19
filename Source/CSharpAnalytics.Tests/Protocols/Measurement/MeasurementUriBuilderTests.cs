@@ -1,4 +1,7 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using CSharpAnalytics.Activities;
 using CSharpAnalytics.Protocols.Measurement;
 using CSharpAnalytics.Sessions;
 #if WINDOWS_STORE
@@ -66,6 +69,82 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
             var jeValue = MeasurementUriBuilder.GetParameters(environment).First(f => f.Key == "je").Value;
 
             Assert.AreEqual("0", jeValue);
+        }
+
+        [TestMethod]
+        public void MeasurementUriBuilderTests_BuildUri_Is_http_And_www_When_Not_Using_SSL()
+        {
+            var config = MeasurementTestHelpers.MeasurementConfiguration;
+            config.UseSsl = false;
+            var builder = new MeasurementUriBuilder(config, MeasurementTestHelpers.CreateSessionManager(), MeasurementTestHelpers.CreateEnvironment());
+
+            var actual = builder.BuildUri(new MeasurementActivityEntry { Activity = new AppViewActivity("Home") });
+
+            Assert.AreEqual("http", actual.Scheme);
+            Assert.AreEqual("www.google-analytics.com", actual.Host);
+        }
+
+        [TestMethod]
+        public void MeasurementUriBuilderTests_BuildUri_Is_https_And_ssl_When_Using_SSL()
+        {
+            var config = MeasurementTestHelpers.MeasurementConfiguration;
+            config.UseSsl = true;
+            var builder = new MeasurementUriBuilder(config, MeasurementTestHelpers.CreateSessionManager(), MeasurementTestHelpers.CreateEnvironment());
+
+            var actual = builder.BuildUri(new MeasurementActivityEntry { Activity = new AppViewActivity("Home") });
+
+            Assert.AreEqual("https", actual.Scheme);
+            Assert.AreEqual("ssl.google-analytics.com", actual.Host);
+        }
+
+        [TestMethod]
+        public void MeasurementUriBuilderTests_BuildUri_Carries_Forward_Cd_Parameter()
+        {
+            var config = MeasurementTestHelpers.MeasurementConfiguration;
+            var builder = new MeasurementUriBuilder(config, MeasurementTestHelpers.CreateSessionManager(), MeasurementTestHelpers.CreateEnvironment());
+
+            builder.BuildUri(new MeasurementActivityEntry { Activity = new AppViewActivity("CarriedForward") });
+            var actual = builder.BuildUri(new MeasurementActivityEntry { Activity = new EventActivity("Action", "Category") });
+
+            StringAssert.Contains(actual.Query, "cd=CarriedForward");
+        }
+
+        [TestMethod]
+        public void MeasurementUriBuilderTests_BuildUri_Emits_SessionControl_start_At_Start()
+        {
+            var config = MeasurementTestHelpers.MeasurementConfiguration;
+            var builder = new MeasurementUriBuilder(config, MeasurementTestHelpers.CreateSessionManager(), MeasurementTestHelpers.CreateEnvironment());
+
+            var actual = builder.BuildUri(new MeasurementActivityEntry { Activity = new AppViewActivity("Home") });
+
+            StringAssert.Contains(actual.Query, "sc=start");
+        }
+
+        [TestMethod]
+        public void MeasurementUriBuilderTests_BuildUri_Emits_No_SessionControl_After_Start()
+        {
+            var config = MeasurementTestHelpers.MeasurementConfiguration;
+            var sessionManager = MeasurementTestHelpers.CreateSessionManager();
+            var builder = new MeasurementUriBuilder(config, sessionManager, MeasurementTestHelpers.CreateEnvironment());
+
+            sessionManager.Hit();
+            var actual = builder.BuildUri(new MeasurementActivityEntry { Activity = new AppViewActivity("Page2") });
+
+            var parameters = actual.Query.Split('&').Select(p => p.Split('=')).ToDictionary(k => k[0], v => v.Length == 0 ? null : v[1]);
+            CollectionAssert.DoesNotContain(parameters.Keys, "sc");
+        }
+
+        [TestMethod]
+        public void MeasurementUriBuilderTests_BuildUri_Emits_SessionControl_end_At_End()
+        {
+            var config = MeasurementTestHelpers.MeasurementConfiguration;
+            var sessionManager = MeasurementTestHelpers.CreateSessionManager();
+            var builder = new MeasurementUriBuilder(config, sessionManager, MeasurementTestHelpers.CreateEnvironment());
+
+            sessionManager.End();
+            var actual = builder.BuildUri(new MeasurementActivityEntry { Activity = new EventActivity("Action", "Category") });
+
+            StringAssert.Contains(actual.Query, "sc=end");
         }
     }
 }

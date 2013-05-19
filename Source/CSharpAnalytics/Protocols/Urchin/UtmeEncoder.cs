@@ -39,15 +39,10 @@ namespace CSharpAnalytics.Protocols.Urchin
         /// <returns>Encoded set of values marked with prefix.</returns>
         public static string Encode(TimedEventActivity timedEventActivity)
         {
-            var roundedTime = timedEventActivity.Time.TotalMilliseconds/10*10;
+            var roundedTime = timedEventActivity.Time.TotalMilliseconds / 10 * 10;
             var result = String.Join("*", new[] { timedEventActivity.Variable, timedEventActivity.Category, roundedTime.ToString(CultureInfo.InvariantCulture), timedEventActivity.Label });
-
-            if (String.IsNullOrWhiteSpace(result))
-                return String.Empty;
-
             return "14(90!" + result + ")(90!" + timedEventActivity.Time.TotalMilliseconds.ToString(CultureInfo.InvariantCulture) + ")";
         }
-
 
         /// <summary>
         /// Escaped a value by replacing single quote, close brace, asterisk and exclamation with their encoded counterparts.

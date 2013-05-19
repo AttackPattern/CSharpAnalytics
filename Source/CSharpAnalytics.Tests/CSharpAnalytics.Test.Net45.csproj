@@ -70,8 +70,10 @@
     <Compile Include="Network\BackgroundHttpRequesterTests.cs" />
     <Compile Include="Network\BackgroundHttpWebRequesterTests.cs" />
     <Compile Include="Protocols\Measurement\MeasurementActivityExtensionTests.cs" />
+    <Compile Include="Protocols\Measurement\MeasurementAnalyticsClientTests.cs" />
     <Compile Include="Protocols\Measurement\MeasurementConfigurationTests.cs" />
     <Compile Include="Protocols\Measurement\MeasurementActivityParameterBuilderTrackerTests.cs" />
+    <Compile Include="Protocols\Measurement\MeasurementTestHelpers.cs" />
     <Compile Include="Protocols\Measurement\MeasurementUriBuilderTests.cs" />
     <Compile Include="Protocols\Urchin\CustomVariables\CustomVariableSlotsTests.cs" />
     <Compile Include="Protocols\Urchin\CustomVariables\CustomVariableTests.cs" />
@@ -81,7 +83,7 @@
     <Compile Include="Protocols\Urchin\UrchinConfigurationTests.cs" />
     <Compile Include="EnvironmentTests.cs" />
     <Compile Include="Protocols\EpochTimeTests.cs" />
-    <Compile Include="Protocols\ParameterDefinition.cs" />
+    <Compile Include="Protocols\ParameterDefinitionTests.cs" />
     <Compile Include="Protocols\Urchin\UrchinActivityParameterBuilderTests.cs" />
     <Compile Include="Protocols\Urchin\UrchinUriBuilderTests.cs" />
     <Compile Include="Protocols\Urchin\UtmeDecoderTests.cs" />

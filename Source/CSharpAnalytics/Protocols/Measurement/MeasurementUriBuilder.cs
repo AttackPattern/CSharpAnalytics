@@ -94,7 +94,6 @@ namespace CSharpAnalytics.Protocols.Measurement
         /// <returns>Encoded query string of parameters.</returns>
         private static string CreateQueryString(IEnumerable<KeyValuePair<string, string>> parameters)
         {
-            if (parameters == null) throw new ArgumentNullException("parameters");
             var normalized = parameters
                 .GroupBy(p => p.Key)
                 .Select(p => new { p.Key, Value = String.Join("", p.Select(r => r.Value)) })
@@ -175,6 +174,8 @@ namespace CSharpAnalytics.Protocols.Measurement
         /// <returns>Enumerable of key/value pairs of custom dimensions.</returns>
         internal static IEnumerable<KeyValuePair<string, string>> GetParameters(IEnumerable<KeyValuePair<int, string>> customDimensions)
         {
+            if (customDimensions == null) return Enumerable.Empty<KeyValuePair<string, string>>();
+
             return customDimensions
                 .Where(cd => cd.Value != null)
                 .Select(cd => KeyValuePair.Create("cd" + cd.Key, cd.Value));
@@ -187,6 +188,8 @@ namespace CSharpAnalytics.Protocols.Measurement
         /// <returns>Enumerable of key/value pairs of custom metrics.</returns>
         internal static IEnumerable<KeyValuePair<string, string>> GetParameters(IEnumerable<KeyValuePair<int, long?>> customMetrics)
         {
+            if (customMetrics == null) return Enumerable.Empty<KeyValuePair<string, string>>();
+
             return customMetrics
                 .Where(cm => cm.Value != null)
                 .Select(cd => KeyValuePair.Create("cm" + cd.Key, cd.Value.Value.ToString("0", CultureInfo.InvariantCulture)));
