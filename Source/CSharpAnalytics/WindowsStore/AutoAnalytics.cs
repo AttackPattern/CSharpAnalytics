@@ -29,6 +29,7 @@ namespace CSharpAnalytics.WindowsStore
     /// Either use as-is by calling StartAsync, Attach and StopAsync from your App.xaml.cs or use as a
     /// starting point to wire up your own way.
     /// </summary>
+    [Obsolete("Switch to using AutoMeasurement and Universal app properties")]
     public static class AutoAnalytics
     {
         private const string RequestQueueFileName = "CSharpAnalytics-RequestQueue";
@@ -323,18 +324,5 @@ namespace CSharpAnalytics.WindowsStore
         {
             await LocalFolderContractSerializer<SessionState>.SaveAsync(sessionManager.GetState(), SessionStateFileName);
         }
-    }
-
-    /// <summary>
-    /// Implement this interface on any Pages in your application where you want
-    /// to override the page titles or paths generated for that page by emitting them yourself at
-    /// the end of the page's LoadState method.
-    /// </summary>
-    /// <remarks>
-    /// This is especially useful for a page that obtains its content from a data source to
-    /// track it as seperate virtual pages.
-    /// </remarks>
-    public interface ITrackOwnView
-    {
     }
 }

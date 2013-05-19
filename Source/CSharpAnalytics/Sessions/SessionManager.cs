@@ -53,7 +53,7 @@ namespace CSharpAnalytics.Sessions
         /// </summary>
         public void StartNewSession()
         {
-            StartNewSession(DateTimeOffset.Now);   
+            StartNewSession(DateTimeOffset.Now);
         }
 
         /// <summary>
@@ -87,7 +87,8 @@ namespace CSharpAnalytics.Sessions
         /// <returns>SessionState representing the current state of the SessionManager.</returns>
         public SessionState GetState()
         {
-            return new SessionState {
+            return new SessionState
+            {
                 FirstVisitAt = Visitor.FirstVisitAt,
                 VisitorId = Visitor.ClientId,
                 SessionStartedAt = Session.StartedAt,
@@ -168,7 +169,8 @@ namespace CSharpAnalytics.Sessions
         /// <param name="startedAt">When this session started at.</param>
         private void StartNewSession(DateTimeOffset startedAt)
         {
-            lock (newSessionLock) {
+            lock (newSessionLock)
+            {
                 PreviousSessionStartedAt = Session.StartedAt;
                 Session = new Session(startedAt, Session.Number + 1);
                 SessionStatus = SessionStatus.Starting;
