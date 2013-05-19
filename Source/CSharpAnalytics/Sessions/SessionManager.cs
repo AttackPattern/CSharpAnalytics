@@ -108,6 +108,8 @@ namespace CSharpAnalytics.Sessions
         {
             var now = DateTimeOffset.Now;
 
+            StartNewSessionIfTimedOut(now);
+
             switch (SessionStatus)
             {
                 case SessionStatus.Ending:
@@ -117,8 +119,6 @@ namespace CSharpAnalytics.Sessions
                     SessionStatus = SessionStatus.Active;
                     break;
             }
-
-            StartNewSessionIfTimedOut(now);
 
             if (now > lastActivityAt)
                 lastActivityAt = now;
