@@ -31,7 +31,7 @@ Our goal is to support all major C# platforms. Right now we have project files f
 * Windows 8 Store applications (Visual Studio 2012)
 * .NET 4.5 applications (Visual Studio 2012)
 
-Windows 8 Store support also includes a sample app and AutoAnalytics to add basic analytics to your app with just two lines of code.
+Windows 8 Store support also includes a sample app and AutoMeasurement to add basic analytics to your app with just two lines of code.
 
 Features
 --------
@@ -54,23 +54,18 @@ Getting started
 You will need:
 
 * Google Analytics account - [Sign up](http://analytics.google.com) if you don't have one
-* An analytics property
+* An analytics property set-up as an app ("Track interactions within Android and iOS apps")
 
 Download or clone the source and add a reference to CSharpAnalytics.WindowsStore from your application.
 
 Automatic analytics for Windows 8
 ---------------------------------
-The easiest way to start is to use one of the automatic helper classes. They hook into a few events and will automatically give you:
+The easiest way to start is to use the AutoMeasurement helper class. It hooks into a few events and will automatically give you:
 
 * Application launch/suspend events
 * Visitor, session counts, time-spent
 * Social sharing events
 * Basic page navigation activity
-
-You must choose between the two classes:
-
-* AutoMeasurement - if you set-up your analytics property as an app (recommended)
-* AutoAnalytics - if you set-up your analytics property as a web site
 
 Simply add two lines to your App.xaml.cs OnLaunched method. At the start of the method add:
 
@@ -80,11 +75,11 @@ Replacing UA-319000-10 with your own Analytics property ID. At the end of the me
 
 `AutoMeasurement.Attach(rootFrame);`
 
-Check out the CSharpAnalytics.Sample.WindowsStore application if still unsure of usage or to see the equivalent AutoAnalytics methods for web site style tracking.
+Check out the CSharpAnalytics.Sample.WindowsStore application if still unsure of usage.
 
 Going further
 -------------
-AutoAnalytics & AutoMeasurement are a start but you'll certainly want to go further.
+AutoMeasurement is a start but you'll certainly want to go further.
 
 **For pages that display content from a data source**
 
