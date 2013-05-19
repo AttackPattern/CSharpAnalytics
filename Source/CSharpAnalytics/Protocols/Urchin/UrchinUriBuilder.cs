@@ -184,7 +184,7 @@ namespace CSharpAnalytics.Protocols.Urchin
         {
             return String.Format(CultureInfo.InvariantCulture, "__utma={0}.{1}.{2}.{3}.{4}.{5};",
                     hostNameHash,
-                    ReduceGuidToUint(sessionManager.Visitor.Id),
+                    ReduceGuidToUint(sessionManager.Visitor.ClientId),
                     new EpochTime(sessionManager.Visitor.FirstVisitAt),
                     new EpochTime(sessionManager.PreviousSessionStartedAt),
                     new EpochTime(sessionManager.Session.StartedAt),

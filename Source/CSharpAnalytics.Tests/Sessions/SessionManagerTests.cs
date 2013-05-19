@@ -26,7 +26,7 @@ namespace CSharpAnalytics.Test.Sessions
             Assert.AreEqual(state.Referrer, sessionManager.Referrer);
 
             Assert.AreEqual(state.FirstVisitAt, sessionManager.Visitor.FirstVisitAt);
-            Assert.AreEqual(state.VisitorId, sessionManager.Visitor.Id);
+            Assert.AreEqual(state.VisitorId, sessionManager.Visitor.ClientId);
             
             Assert.AreEqual(state.HitId, sessionManager.Session.HitId);
             Assert.AreEqual(state.SessionHitCount, sessionManager.Session.HitCount);

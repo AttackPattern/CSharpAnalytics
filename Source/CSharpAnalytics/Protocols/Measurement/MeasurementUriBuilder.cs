@@ -161,7 +161,7 @@ namespace CSharpAnalytics.Protocols.Measurement
         /// <returns>Enumerable of key/value pairs of session information.</returns>
         internal static IEnumerable<KeyValuePair<string, string>> GetParameters(SessionManager sessionManager)
         {
-            yield return KeyValuePair.Create("cid", sessionManager.Visitor.Id.ToString());
+            yield return KeyValuePair.Create("cid", sessionManager.Visitor.ClientId.ToString());
 
             var sessionControlValue = GetSessionControlValue(sessionManager.SessionStatus);
             if (!String.IsNullOrEmpty(sessionControlValue))

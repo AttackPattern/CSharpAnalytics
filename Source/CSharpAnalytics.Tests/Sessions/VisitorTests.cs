@@ -17,7 +17,7 @@ namespace CSharpAnalytics.Test.Sessions
         [TestMethod]
         public void New_Default_Visitor_Has_Random_Id()
         {
-            var ids = Enumerable.Range(1, 50).Select(_ => new Visitor().Id).ToArray();
+            var ids = Enumerable.Range(1, 50).Select(_ => new Visitor().ClientId).ToArray();
 
             CollectionAssert.AllItemsAreUnique(ids);
         }
@@ -41,7 +41,7 @@ namespace CSharpAnalytics.Test.Sessions
             
             var visitor = new Visitor(id, startedAt);
 
-            Assert.AreEqual(id, visitor.Id);
+            Assert.AreEqual(id, visitor.ClientId);
             Assert.AreEqual(startedAt, visitor.FirstVisitAt);
         }
     }

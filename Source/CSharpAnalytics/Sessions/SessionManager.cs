@@ -89,7 +89,7 @@ namespace CSharpAnalytics.Sessions
         {
             return new SessionState {
                 FirstVisitAt = Visitor.FirstVisitAt,
-                VisitorId = Visitor.Id,
+                VisitorId = Visitor.ClientId,
                 SessionStartedAt = Session.StartedAt,
                 SessionHitCount = Session.HitCount,
                 HitId = Session.HitId,

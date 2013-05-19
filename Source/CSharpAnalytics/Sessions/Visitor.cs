@@ -11,7 +11,7 @@ namespace CSharpAnalytics.Sessions
     /// </summary>
     public class Visitor
     {
-        private readonly Guid id;
+        private readonly Guid clientId;
         private readonly DateTimeOffset firstVisitAt;
 
         /// <summary>
@@ -25,18 +25,18 @@ namespace CSharpAnalytics.Sessions
         /// <summary>
         /// Create an existing Visitor.
         /// </summary>
-        /// <param name="id">Unique Id of the existing Visitor.</param>
+        /// <param name="clientId">Unique Id of the existing Visitor.</param>
         /// <param name="firstVisitAt">When the first visit occured.</param>
-        internal Visitor(Guid id, DateTimeOffset firstVisitAt)
+        internal Visitor(Guid clientId, DateTimeOffset firstVisitAt)
         {
-            this.id = id;
+            this.clientId = clientId;
             this.firstVisitAt = firstVisitAt;
         }
 
         /// <summary>
-        /// Unique Id of this user.
+        /// Unique Id of this client.
         /// </summary>
-        public Guid Id { get { return id; } }
+        public Guid ClientId { get { return clientId; } }
 
         /// <summary>
         /// Earliest recorded visit for this Visitor.
