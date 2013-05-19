@@ -12,7 +12,7 @@ namespace CSharpAnalytics.Test.Network
     [TestClass]
     public class BackgroundHttpWebRequesterTests
     {
-        private const string BaseUriString = "http://attackpattern.com/ut";
+        private const string BaseUriString = "http://localhost/csharpanalytics";
 
         [TestMethod]
         public void BackgroundHttpWebRequester_Calls_Preprocessor()

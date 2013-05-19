@@ -17,6 +17,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharpAnalytics.Sample.Wind
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DA1F96FF-05EC-45C8-BFF6-06089C739CA0}"
 	ProjectSection(SolutionItems) = preProject
+		DefaultTestSettings.testsettings = DefaultTestSettings.testsettings
 		LICENCE.txt = LICENCE.txt
 		..\README.md = ..\README.md
 	EndProjectSection
