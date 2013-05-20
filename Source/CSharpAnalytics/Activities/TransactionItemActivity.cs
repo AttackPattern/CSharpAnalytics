@@ -65,6 +65,14 @@ namespace CSharpAnalytics.Activities
         }
 
         /// <summary>
+        /// Transaction this item is associated with.
+        /// </summary>
+        /// <remarks>
+        /// This is automatically set by analytics to the previous transaction sent.
+        /// </remarks>
+        internal TransactionActivity Transaction { get; set; }
+
+        /// <summary>
         /// Create a new transaction item capturing necessary parameters.
         /// </summary>
         /// <param name="code">Product code or SKU.</param>

@@ -74,6 +74,7 @@
     <Compile Include="Protocols\Measurement\MeasurementConfigurationTests.cs" />
     <Compile Include="Protocols\Measurement\MeasurementActivityParameterBuilderTrackerTests.cs" />
     <Compile Include="Protocols\Measurement\MeasurementTestHelpers.cs" />
+    <Compile Include="Protocols\Measurement\MeasurementTrackerTests.cs" />
     <Compile Include="Protocols\Measurement\MeasurementUriBuilderTests.cs" />
     <Compile Include="Protocols\Urchin\CustomVariables\CustomVariableSlotsTests.cs" />
     <Compile Include="Protocols\Urchin\CustomVariables\CustomVariableTests.cs" />

@@ -14,17 +14,15 @@ namespace CSharpAnalytics.Protocols.Measurement
     /// <summary>
     /// Builds key/value pairs from MeasurementActivities that will form the generated Measurement Protocol URIs.
     /// </summary>
-    internal class MeasurementActivityParameterBuilder
+    internal static class MeasurementActivityParameterBuilder
     {
-        private TransactionActivity lastTransaction;
-
         /// <summary>
         /// Turn an IMeasurementActivity into the key/value pairs necessary for building
         /// the URI to track with Measurement Protocol.
         /// </summary>
         /// <param name="activity">Activity to turn into key/value pairs.</param>
         /// <returns>Enumerable of key/value pairs representing the activity.</returns>
-        internal IEnumerable<KeyValuePair<string, string>> GetActivityParameters(IMeasurementActivity activity)
+        internal static IEnumerable<KeyValuePair<string, string>> GetActivityParameters(IMeasurementActivity activity)
         {
             if (activity is AppViewActivity)
                 return GetParameters((AppViewActivity)activity);
@@ -43,7 +41,6 @@ namespace CSharpAnalytics.Protocols.Measurement
             if (activity is TransactionActivity)
             {
                 var transaction = (TransactionActivity) activity;
-                lastTransaction = transaction;
                 return GetParameters(transaction);
             }
             if (activity is TransactionItemActivity)
@@ -204,7 +201,7 @@ namespace CSharpAnalytics.Protocols.Measurement
         /// </summary>
         /// <param name="transaction">TransactionActivity to turn into key/value pairs.</param>
         /// <returns>Key/value pairs representing this TransactionActivity.</returns>
-        internal IEnumerable<KeyValuePair<string, string>> GetParameters(TransactionActivity transaction)
+        internal static IEnumerable<KeyValuePair<string, string>> GetParameters(TransactionActivity transaction)
         {
             yield return KeyValuePair.Create("t", "transaction");
             yield return KeyValuePair.Create("ti", transaction.OrderId);
@@ -230,11 +227,14 @@ namespace CSharpAnalytics.Protocols.Measurement
         /// </summary>
         /// <param name="item">TransactionItemActivity to turn into key/value pairs.</param>
         /// <returns>Key/value pairs representing this TransactionItemActivity.</returns>
-        internal IEnumerable<KeyValuePair<string, string>> GetParameters(TransactionItemActivity item)
+        internal static IEnumerable<KeyValuePair<string, string>> GetParameters(TransactionItemActivity item)
         {
+            if (item.Transaction == null)
+                yield break;
+
             yield return KeyValuePair.Create("t", "item");
 
-            yield return KeyValuePair.Create("ti", lastTransaction.OrderId);
+            yield return KeyValuePair.Create("ti", item.Transaction.OrderId);
 
             if (item.Price != Decimal.Zero)
                 yield return KeyValuePair.Create("ip", item.Price.ToString("0.00", CultureInfo.InvariantCulture));
@@ -251,8 +251,8 @@ namespace CSharpAnalytics.Protocols.Measurement
             if (!String.IsNullOrEmpty(item.Variation))
                 yield return KeyValuePair.Create("iv", item.Variation);
 
-            if (!String.IsNullOrWhiteSpace(lastTransaction.Currency))
-                yield return KeyValuePair.Create("cu", lastTransaction.Currency);
+            if (!String.IsNullOrWhiteSpace(item.Transaction.Currency))
+                yield return KeyValuePair.Create("cu", item.Transaction.Currency);
         }
     }
 }

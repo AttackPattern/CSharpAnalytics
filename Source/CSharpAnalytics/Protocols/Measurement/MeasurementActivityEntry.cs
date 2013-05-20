@@ -15,5 +15,10 @@ namespace CSharpAnalytics.Protocols.Measurement
         public IEnumerable<KeyValuePair<int, string>> CustomDimensions;
         public IEnumerable<KeyValuePair<int, long?>> CustomMetrics;
         public bool EndSession;
+
+        public MeasurementActivityEntry(IMeasurementActivity activity)
+        {
+            Activity = activity;
+        }
     }
 }

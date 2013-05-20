@@ -132,6 +132,7 @@
     <Compile Include="Protocols\Measurement\MeasurementAnalyticsClientTests.cs" />
     <Compile Include="Protocols\Measurement\MeasurementConfigurationTests.cs" />
     <Compile Include="Protocols\Measurement\MeasurementTestHelpers.cs" />
+    <Compile Include="Protocols\Measurement\MeasurementTrackerTests.cs" />
     <Compile Include="Protocols\Measurement\MeasurementUriBuilderTests.cs" />
     <Compile Include="Protocols\ParameterDefinitionTests.cs" />
     <Compile Include="Protocols\Urchin\CustomVariables\CustomVariableSlotsTests.cs" />

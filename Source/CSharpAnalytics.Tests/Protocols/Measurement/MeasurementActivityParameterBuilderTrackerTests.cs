@@ -122,8 +122,6 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
         [TestMethod]
         public void MeasurementActivityParameterBuilder_GetParameter_For_TransactionActivity_Returns_Correct_Values()
         {
-            var tracker = new MeasurementActivityParameterBuilder();
-
             var activity = new TransactionActivity
             {
                 OrderId = "12345",
@@ -134,7 +132,7 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
                 TaxCost = 8.18m
             };
 
-            var parameters = tracker.GetParameters(activity).ToDictionary(k => k.Key, v => v.Value);
+            var parameters = MeasurementActivityParameterBuilder.GetParameters(activity).ToDictionary(k => k.Key, v => v.Value);
 
             Assert.AreEqual(7, parameters.Keys.Count);
             Assert.AreEqual("transaction", parameters["t"]);
@@ -149,11 +147,9 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
         [TestMethod]
         public void MeasurementActivityParameterBuilder_GetParameter_For_TransactionItemActivity_Returns_Correct_Values()
         {
-            var tracker = new MeasurementActivityParameterBuilder();
             var transaction = new TransactionActivity { OrderId = "567", Currency = "GBP" };
-            tracker.GetActivityParameters(transaction);
-            var activity = new TransactionItemActivity("code", "name", 1.23m, 4096, "variation");
-            var parameters = tracker.GetParameters(activity).ToDictionary(k => k.Key, v => v.Value);
+            var activity = new TransactionItemActivity("code", "name", 1.23m, 4096, "variation") { Transaction = transaction };
+            var parameters = MeasurementActivityParameterBuilder.GetParameters(activity).ToDictionary(k => k.Key, v => v.Value);
 
             Assert.AreEqual(8, parameters.Keys.Count);
             Assert.AreEqual("item", parameters["t"]);
