@@ -42,9 +42,8 @@ namespace CSharpAnalytics.Protocols.Measurement
             if (activity is AutoTimedEventActivity)
                 ((AutoTimedEventActivity)activity).End();
 
-            var entry = new MeasurementActivityEntry
+            var entry = new MeasurementActivityEntry(activity)
             {
-                Activity = activity,
                 CustomDimensions = customDimensions.ToArray(),
                 CustomMetrics = customMetrics.ToArray(),
                 EndSession = endSession
@@ -123,7 +122,7 @@ namespace CSharpAnalytics.Protocols.Measurement
         private static void ValidateEnum(Enum index)
         {
             if (Enum.GetUnderlyingType(index.GetType()) != typeof(int))
-                throw new ArgumentException("index", "Enum must be of type int");
+                throw new ArgumentException("Enum must be of type int", "index");
 
             if (!Enum.IsDefined(index.GetType(), index))
                 throw new ArgumentOutOfRangeException("index", "Enum value is not defined");
