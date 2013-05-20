@@ -36,6 +36,8 @@ namespace CSharpAnalytics.Protocols.Urchin
                 return GetParameters((TimedEventActivity)activity);
             if (activity is TransactionActivity)
                 return GetParameters((TransactionActivity)activity);
+            if (activity is TransactionItemActivity)
+                return GetParameters((TransactionItemActivity)activity);
 
             Debug.Assert(false, "Unknown Activity type");
             return Enumerable.Empty<KeyValuePair<string, string>>();
