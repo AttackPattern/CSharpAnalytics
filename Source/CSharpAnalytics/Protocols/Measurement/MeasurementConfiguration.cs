@@ -70,9 +70,9 @@ namespace CSharpAnalytics.Protocols.Measurement
         {
         }
 
-        private static string FormatVersion(Windows.ApplicationModel.PackageVersion version)
+        internal static string FormatVersion(Windows.ApplicationModel.PackageVersion version)
         {
-            return String.Join(".", version.Major, version.Minor, version.Revision, version.Build);
+            return String.Join(".", version.Major, version.Minor, version.Build, version.Revision);
         }
 #endif
     }

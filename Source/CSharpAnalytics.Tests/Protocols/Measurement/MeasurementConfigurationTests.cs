@@ -2,6 +2,7 @@
 using CSharpAnalytics.Protocols.Measurement;
 #if WINDOWS_STORE
 using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
+using Windows.ApplicationModel;
 #else
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 #endif
@@ -43,6 +44,15 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
             Assert.ThrowsException<ArgumentException>(() => new MeasurementConfiguration("UA-1234", "ApplicationName", "1.2.3.4"));
         }
 
+        [TestMethod]
+        public void MeasurementConfiguration_FormatVersion_Formats_Version_Correctly()
+        {
+            var version = new PackageVersion { Major = 4, Minor = 3, Build = 2, Revision = 1 };
+
+            var actual = MeasurementConfiguration.FormatVersion(version);
+
+            Assert.AreEqual("4.3.2.1", actual);
+        }
 #endif
 
 #if NET45
