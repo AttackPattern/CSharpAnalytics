@@ -7,7 +7,7 @@ using System.Collections.Generic;
 namespace CSharpAnalytics.Protocols.Measurement
 {
     /// <summary>
-    /// Records a measurement activity and its associated data for tracking.
+    /// Captures a measurement activity and its associated data for later tracking.
     /// </summary>
     internal class MeasurementActivityEntry
     {
@@ -16,6 +16,10 @@ namespace CSharpAnalytics.Protocols.Measurement
         public IEnumerable<KeyValuePair<int, long?>> CustomMetrics;
         public bool EndSession;
 
+        /// <summary>
+        /// Create a new MeasurementActivityEntry given an activity to capture.
+        /// </summary>
+        /// <param name="activity">Measurement activity to capture.</param>
         public MeasurementActivityEntry(IMeasurementActivity activity)
         {
             Activity = activity;

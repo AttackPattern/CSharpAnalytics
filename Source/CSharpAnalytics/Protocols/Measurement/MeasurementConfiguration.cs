@@ -70,6 +70,11 @@ namespace CSharpAnalytics.Protocols.Measurement
         {
         }
 
+        /// <summary>
+        /// Format the application version number to be sent to analytics.
+        /// </summary>
+        /// <param name="version">Version of the application.</param>
+        /// <returns>Formatted string containing the version number.</returns>
         internal static string FormatVersion(Windows.ApplicationModel.PackageVersion version)
         {
             return String.Join(".", version.Major, version.Minor, version.Build, version.Revision);

@@ -11,7 +11,14 @@ namespace CSharpAnalytics.Protocols.Urchin
     /// </summary>
     internal class UrchinActivityEntry
     {
+        /// <summary>
+        /// Activity being captured.
+        /// </summary>
         public IUrchinActivity Activity;
+
+        /// <summary>
+        /// Custom variables captured for this activity.
+        /// </summary>
         public ScopedCustomVariableSlot[] CustomVariables;
     }
 }

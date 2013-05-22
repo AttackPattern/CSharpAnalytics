@@ -7,6 +7,9 @@ using System.Diagnostics;
 
 namespace CSharpAnalytics.Protocols.Urchin.CustomVariables
 {
+    /// <summary>
+    /// Represents a custom variable along with it's slot index and scope.
+    /// </summary>
     [DebuggerDisplay("Scope={Scope}, Variable={Variable}")]
     internal class ScopedCustomVariableSlot
     {
@@ -14,6 +17,12 @@ namespace CSharpAnalytics.Protocols.Urchin.CustomVariables
         private readonly CustomVariableScope scope;
         private readonly int slot;
 
+        /// <summary>
+        /// Create a new ScopedCustomVariableSlot with a given variable, scope and slot index.
+        /// </summary>
+        /// <param name="scope">Scope of this custom variable.</param>
+        /// <param name="variable">Custom variable.</param>
+        /// <param name="slot">Slot index for this custom variable.</param>
         public ScopedCustomVariableSlot(CustomVariableScope scope, ICustomVariable variable, int slot)
         {
             if (!Enum.IsDefined(typeof(CustomVariableScope), scope))
@@ -24,16 +33,28 @@ namespace CSharpAnalytics.Protocols.Urchin.CustomVariables
             this.slot = slot;
         }
 
+        /// <summary>
+        /// Scope that this custom variable.
+        /// </summary>
+        /// <example>
+        /// Session
+        /// </example>
         public CustomVariableScope Scope
         {
             get { return scope; }
         }
 
+        /// <summary>
+        /// Custom variable.
+        /// </summary>
         public ICustomVariable Variable
         {
             get { return variable; }
         }
 
+        /// <summary>
+        /// Slot index for this custom variable.
+        /// </summary>
         public int Slot
         {
             get { return slot; }

@@ -18,8 +18,6 @@ namespace CSharpAnalytics.Sessions
         private readonly Visitor visitor;
         private DateTimeOffset lastActivityAt = DateTimeOffset.Now;
 
-        public SessionStatus SessionStatus { get; private set; }
-
         /// <summary>
         /// Recreate a SessionManager from state.
         /// </summary>
@@ -55,6 +53,11 @@ namespace CSharpAnalytics.Sessions
         {
             StartNewSession(DateTimeOffset.Now);
         }
+
+        /// <summary>
+        /// Current status of this session.
+        /// </summary>
+        public SessionStatus SessionStatus { get; private set; }
 
         /// <summary>
         /// Current session.
