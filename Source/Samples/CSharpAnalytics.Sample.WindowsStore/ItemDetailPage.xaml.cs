@@ -44,7 +44,6 @@ namespace CSharpAnalytics.Sample.WindowsStore
             DefaultViewModel["Group"] = item.Group;
             DefaultViewModel["Items"] = item.Group.Items;
             flipView.SelectedItem = item;
-            AutoAnalytics.Client.TrackPageView(item.Title, "items/" + navigationParameter);
             AutoMeasurement.Client.TrackAppView(item.Title);
 
             DataTransferManager.GetForCurrentView().DataRequested += OnDataRequested;
