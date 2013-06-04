@@ -14,6 +14,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using System.Reflection;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
@@ -87,8 +88,9 @@ namespace CSharpAnalytics.WindowsStore
                 attachedFrame = frame;
             }
 
-            if (frame.Content != null)
-                TrackFrameNavigate(frame.Content.GetType().Name);
+            var content = frame.Content;
+            if (content != null)
+                TrackFrameNavigate(content.GetType());
         }
 
         /// <summary>
@@ -179,19 +181,31 @@ namespace CSharpAnalytics.WindowsStore
         /// <param name="e">NavigationEventArgs for the event.</param>
         private static void FrameNavigated(object sender, NavigationEventArgs e)
         {
-            if (e.Content is ITrackOwnView) return;
-            Client.TrackPageView(e.SourcePageType.Name, "/" + e.SourcePageType.Name);
+            TrackFrameNavigate(e.SourcePageType);
         }
 
         /// <summary>
-        /// Track an page view stripping the Page suffix from the end of the name.
+        /// Track an page view using a nice name for title and class name for path.
         /// </summary>
-        /// <param name="name">Name of the page to track.</param>
-        private static void TrackFrameNavigate(string name)
+        /// <param name="page">Page to track.</param>
+        private static void TrackFrameNavigate(Type page)
         {
-            if (name.EndsWith("Page"))
-                name = name.Substring(0, name.Length - 4);
-            Client.TrackPageView(name, "/" + name);
+            if (typeof(ITrackOwnView).GetTypeInfo().IsAssignableFrom(page.GetTypeInfo())) return;
+            var pageTitle = GetPageTitle(page);
+            Client.TrackPageView(pageTitle, "/" + page.Name);
+        }
+
+        /// <summary>
+        /// Determine the page title of a page to track.
+        /// </summary>
+        /// <param name="page">Page within the application to track.</param>
+        /// <returns>String for the screen name in analytics.</returns>
+        private static string GetPageTitle(Type page)
+        {
+            var pageTitle = page.Name;
+            if (pageTitle.EndsWith("Page"))
+                pageTitle = pageTitle.Substring(0, pageTitle.Length - 4);
+            return pageTitle;
         }
 
         /// <summary>

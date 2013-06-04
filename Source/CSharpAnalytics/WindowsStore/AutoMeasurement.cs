@@ -13,6 +13,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Reflection;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.DataTransfer;
@@ -86,8 +87,9 @@ namespace CSharpAnalytics.WindowsStore
                 attachedFrame = frame;
             }
 
-            if (frame.Content != null)
-                TrackFrameNavigate(frame.Content.GetType().Name);
+            var content = frame.Content;
+            if (content != null)
+                TrackFrameNavigate(content.GetType());
         }
 
         /// <summary>
@@ -159,19 +161,32 @@ namespace CSharpAnalytics.WindowsStore
         /// <param name="e">NavigationEventArgs for the event.</param>
         private static void FrameNavigated(object sender, NavigationEventArgs e)
         {
-            if (e.Content is ITrackOwnView) return;
-            TrackFrameNavigate(e.SourcePageType.Name);
+            TrackFrameNavigate(e.SourcePageType);
         }
 
         /// <summary>
-        /// Track an app view stripping the Page suffix from the end of the name.
+        /// Track an app view if it does not track itself.
         /// </summary>
-        /// <param name="name">Name of the page to track.</param>
-        private static void TrackFrameNavigate(string name)
+        /// <param name="page">Page to track in analytics.</param>
+        private static void TrackFrameNavigate(Type page)
         {
-            if (name.EndsWith("Page"))
-                name = name.Substring(0, name.Length - 4);
-            Client.TrackAppView(name);
+            if (typeof(ITrackOwnView).GetTypeInfo().IsAssignableFrom(page.GetTypeInfo())) return;
+
+            var screenName = GetScreenName(page);
+            Client.TrackAppView(screenName);
+        }
+
+        /// <summary>
+        /// Determine the screen name of a page to track.
+        /// </summary>
+        /// <param name="page">Page within the application to track.</param>
+        /// <returns>String for the screen name in analytics.</returns>
+        private static string GetScreenName(Type page)
+        {
+            var screenName = page.Name;
+            if (screenName.EndsWith("Page"))
+                screenName = screenName.Substring(0, screenName.Length - 4);
+            return screenName;
         }
 
         /// <summary>
