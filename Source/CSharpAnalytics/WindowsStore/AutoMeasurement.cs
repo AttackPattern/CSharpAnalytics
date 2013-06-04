@@ -183,6 +183,10 @@ namespace CSharpAnalytics.WindowsStore
         /// <returns>String for the screen name in analytics.</returns>
         private static string GetScreenName(Type page)
         {
+            var screenNameAttribute = page.GetTypeInfo().GetCustomAttribute(typeof(AnalyticsScreenNameAttribute)) as AnalyticsScreenNameAttribute;
+            if (screenNameAttribute != null)
+                return screenNameAttribute.ScreenName;
+
             var screenName = page.Name;
             if (screenName.EndsWith("Page"))
                 screenName = screenName.Substring(0, screenName.Length - 4);

@@ -191,7 +191,7 @@ namespace CSharpAnalytics.WindowsStore
         private static void TrackFrameNavigate(Type page)
         {
             if (typeof(ITrackOwnView).GetTypeInfo().IsAssignableFrom(page.GetTypeInfo())) return;
-            var pageTitle = GetPageTitle(page);
+            var pageTitle = GetScreenName(page);
             Client.TrackPageView(pageTitle, "/" + page.Name);
         }
 
@@ -200,12 +200,16 @@ namespace CSharpAnalytics.WindowsStore
         /// </summary>
         /// <param name="page">Page within the application to track.</param>
         /// <returns>String for the screen name in analytics.</returns>
-        private static string GetPageTitle(Type page)
+        private static string GetScreenName(Type page)
         {
-            var pageTitle = page.Name;
-            if (pageTitle.EndsWith("Page"))
-                pageTitle = pageTitle.Substring(0, pageTitle.Length - 4);
-            return pageTitle;
+            var screenNameAttribute = page.GetTypeInfo().GetCustomAttribute(typeof(AnalyticsScreenNameAttribute)) as AnalyticsScreenNameAttribute;
+            if (screenNameAttribute != null)
+                return screenNameAttribute.ScreenName;
+
+            var screenName = page.Name;
+            if (screenName.EndsWith("Page"))
+                screenName = screenName.Substring(0, screenName.Length - 4);
+            return screenName;
         }
 
         /// <summary>

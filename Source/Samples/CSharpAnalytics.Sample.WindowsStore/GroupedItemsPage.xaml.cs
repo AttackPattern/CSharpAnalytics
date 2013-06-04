@@ -9,6 +9,7 @@ namespace CSharpAnalytics.Sample.WindowsStore
     /// <summary>
     /// A page that displays a grouped collection of items.
     /// </summary>
+    [AnalyticsScreenName("Grouped Items")]
     public sealed partial class GroupedItemsPage
     {
         public GroupedItemsPage()
@@ -29,7 +30,7 @@ namespace CSharpAnalytics.Sample.WindowsStore
         {
             // TODO: Create an appropriate data model for your problem domain to replace the sample data
             var sampleDataGroups = SampleDataSource.GetGroups((String)navigationParameter);
-            this.DefaultViewModel["Groups"] = sampleDataGroups;
+            DefaultViewModel["Groups"] = sampleDataGroups;
         }
 
         /// <summary>
@@ -40,7 +41,7 @@ namespace CSharpAnalytics.Sample.WindowsStore
         void Header_Click(object sender, RoutedEventArgs e)
         {
             // Determine what group the Button instance represents
-            var group = (sender as FrameworkElement).DataContext;
+            var group = ((FrameworkElement)sender).DataContext;
 
             // Navigate to the appropriate destination page, configuring the new page
             // by passing required information as a navigation parameter
