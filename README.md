@@ -8,7 +8,7 @@ The pitch
 
 **Why add metrics to your app?**
 
-Metrics let you see what's actually happening with your app in the real world. Crash rates, performance data, feature usage content popularity let you find out what is important to your users and where to spend your effort.
+Metrics let you see what your app is actually doing in the real world. Crash rates, performance data and feature usage content popularity let you find out what is important to your users and where to spend your effort for the next version.
 
 **Why use Google Analytics?**
 
@@ -81,15 +81,23 @@ Going further
 -------------
 AutoMeasurement is a start but you'll certainly want to go further.
 
-**For pages that display content from a data source**
+**To give a page a different name in analytics**
+The default name for a page is the class name of the page with "Page" removed from the end. e.g. "TopNewsPage" would be tracked as "TopNews".
 
-Add ITrackOwnView to your page class to stop AutoAnalytics from tracking it and instead track it yourself once the content is loaded - we recommend the end of the LoadState method with either of:
+For a screen name that doesn't change based on data consider adding the AnalyticsScreenName attribute to the page class. e.g.
+
+```
+[AnalyticsScreenName("Top news")]
+ class TopNewsPage {
+```
+
+For screen names that change depending on the data the screen is displaying add ITrackOwnView to the Page class. This empty marker interface does not require you do anything but signals to AutoMeasurement that you will track the screen view yourself. To do that you would add a line of code to the LoadState method of your page once the data has been loaded, e.g.
 
 `AutoMeasurement.Client.TrackAppView(item.Title);`
 
 **For additional user events**
 
-Say you want to track when the video "Today's News" is played back:
+If you want to track when the video "Today's News" is played back:
 
 `AutoMeasurement.Client.TrackEvent("Play", "Video", "Today's News");`
 
@@ -123,7 +131,7 @@ Future enhancements
 -------------------
 1. Add support for Windows 8 network metering modes
 1. Additional platforms (Windows Phone 7/8, Silverlight, Mono)
-1. Opt-out support via null receiver
+1. Opt-out support
 1. Throttling of hits as per official SDKs
 
 If you want to contribute please consider the CSharpAnalytics.sln which will load all platforms and unit tests (if you get any project load failures you're probably missing an SDK)
