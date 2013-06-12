@@ -139,7 +139,6 @@
     <Compile Include="Protocols\Urchin\UrchinConfiguration.cs" />
     <Compile Include="Protocols\Urchin\UrchinTracker.cs" />
     <Compile Include="Protocols\Urchin\UrchinUriBuilder.cs" />
-    <Compile Include="WindowsStore\AutoAnalytics.cs" />
     <Compile Include="Network\BackgroundHttpRequester.cs" />
     <Compile Include="IEnvironment.cs" />
     <Compile Include="Protocols\Urchin\CustomVariables\CustomVariable.cs" />
