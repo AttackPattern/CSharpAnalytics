@@ -38,9 +38,12 @@ namespace CSharpAnalytics.Network
                 {
                     successfullySent = requester(requestUri);
                 }
-                catch (AggregateException e)
+                catch (Exception ex)
                 {
-                    Debug.WriteLine("{0} failing with {1}", GetType().Name, GetInnermostException(e).Message);
+                    if (ex is AggregateException)
+                        ex = GetInnermostException(ex);
+
+                    Debug.WriteLine("{0} failing with {1}", GetType().Name, ex.Message);
                 }
                 finally
                 {
