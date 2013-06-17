@@ -22,6 +22,7 @@ namespace CSharpAnalytics.Sessions
         [DataMember] public int SessionHitCount { get; set; }
         [DataMember] public int SessionNumber { get; set; }
         [DataMember] public long HitId { get; set; }
+        [DataMember] public SessionStatus SessionStatus { get; set; }
 
         // Internal
         [DataMember] public DateTimeOffset PreviousSessionStartedAt { get; set; }

@@ -27,7 +27,6 @@ namespace CSharpAnalytics.Sessions
         public SessionManager(TimeSpan timeout, SessionState sessionState)
         {
             this.timeout = timeout;
-            SessionStatus = SessionStatus.Starting;
 
             if (sessionState != null)
             {
@@ -36,12 +35,14 @@ namespace CSharpAnalytics.Sessions
                 Referrer = sessionState.Referrer;
                 PreviousSessionStartedAt = sessionState.PreviousSessionStartedAt;
                 lastActivityAt = sessionState.LastActivityAt;
+                SessionStatus = sessionState.SessionStatus;
             }
             else
             {
                 visitor = new Visitor();
                 Session = new Session();
                 PreviousSessionStartedAt = Session.StartedAt;
+                SessionStatus = SessionStatus.Starting;
             }
         }
 
@@ -100,7 +101,8 @@ namespace CSharpAnalytics.Sessions
                 SessionNumber = Session.Number,
                 PreviousSessionStartedAt = PreviousSessionStartedAt,
                 LastActivityAt = lastActivityAt,
-                Referrer = Referrer
+                Referrer = Referrer,
+                SessionStatus = SessionStatus
             };
         }
 
