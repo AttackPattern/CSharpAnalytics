@@ -185,13 +185,12 @@ namespace CSharpAnalytics.Protocols.Measurement
         /// </summary>
         /// <param name="customMetrics">Enumerable of key/value pairs containing custom metric indexes and values.</param>
         /// <returns>Enumerable of key/value pairs of custom metrics.</returns>
-        internal static IEnumerable<KeyValuePair<string, string>> GetParameters(IEnumerable<KeyValuePair<int, long?>> customMetrics)
+        internal static IEnumerable<KeyValuePair<string, string>> GetParameters(IEnumerable<KeyValuePair<int, long>> customMetrics)
         {
             if (customMetrics == null) return Enumerable.Empty<KeyValuePair<string, string>>();
 
             return customMetrics
-                .Where(cm => cm.Value != null)
-                .Select(cd => KeyValuePair.Create("cm" + cd.Key, cd.Value.Value.ToString("0", CultureInfo.InvariantCulture)));
+                .Select(cd => KeyValuePair.Create("cm" + cd.Key, cd.Value.ToString("0", CultureInfo.InvariantCulture)));
         }
 
         /// <summary>

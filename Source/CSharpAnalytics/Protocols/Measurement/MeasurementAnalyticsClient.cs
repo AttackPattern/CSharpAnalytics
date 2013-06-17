@@ -18,7 +18,7 @@ namespace CSharpAnalytics.Protocols.Measurement
     public class MeasurementAnalyticsClient
     {
         private readonly Dictionary<int, string> customDimensions = new Dictionary<int, string>();
-        private readonly Dictionary<int, long?> customMetrics = new Dictionary<int, long?>();
+        private readonly Dictionary<int, long> customMetrics = new Dictionary<int, long>();
         private readonly Queue<MeasurementActivityEntry> queue = new Queue<MeasurementActivityEntry>();
 
         private MeasurementTracker tracker;
@@ -94,24 +94,9 @@ namespace CSharpAnalytics.Protocols.Measurement
         /// </remarks>
         /// <param name="index">Index of the custom metric the value is for.</param>
         /// <param name="value">Value for the custom metric specified by the index.</param>
-        public void SetCustomMetric(int index, long? value)
+        public void SetCustomMetric(int index, long value)
         {
             customMetrics[index] = value;
-        }
-
-        /// <summary>
-        /// Set the value of a custom dimension to be set with the next activity.
-        /// </summary>
-        /// <remarks>
-        /// These need to be configured first in Google Analytics.
-        /// This overide allows you to use an enum instead of integers for the index.
-        /// </remarks>
-        /// <param name="index">Index of the custom dimension the value is for.</param>
-        /// <param name="value">Value for the custom dimension specified by the index.</param>
-        public void SetCustomMetric(Enum index, long? value)
-        {
-            ValidateEnum(index);
-            SetCustomMetric(Convert.ToInt32(index, CultureInfo.InvariantCulture), value);
         }
 
         /// <summary>

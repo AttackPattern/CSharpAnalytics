@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using CSharpAnalytics.Activities;
 using CSharpAnalytics.Protocols.Measurement;
-using CSharpAnalytics.Sessions;
 #if WINDOWS_STORE
 using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
 #else
@@ -87,25 +85,6 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
             StringAssert.Contains(actual[0].Query, "cm6=6060");
         }
 
-        private enum CustomMetrics
-        {
-            Eleven = 11
-        };
-
-        [TestMethod]
-        public void MeasurementAnalyticsClient_SetCustomMetric_By_Enum_Is_Sent()
-        {
-            var actual = new List<Uri>();
-            var client = new MeasurementAnalyticsClient();
-            MeasurementTestHelpers.ConfigureForTest(client, actual.Add);
-
-            client.SetCustomMetric(CustomMetrics.Eleven, 110110);
-            client.TrackAppView("Test View");
-
-            Assert.AreEqual(1, actual.Count);
-            StringAssert.Contains(actual[0].Query, "cm11=110110");
-        }
-
         private enum NotIntBacked : long
         {
             SomeValue
@@ -123,18 +102,6 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
         {
             Assert.ThrowsException<ArgumentOutOfRangeException>(() => new MeasurementAnalyticsClient().SetCustomDimension((CustomDimensions) 99, "Ninety-Nine"));
         }
-
-        [TestMethod]
-        public void MeasurementAnalyticsClient_SetCustomMetric_By_Enum_Throws_ArgumentException_If_Not_Underlying_Int_Type()
-        {
-            Assert.ThrowsException<ArgumentException>(() => new MeasurementAnalyticsClient().SetCustomMetric(NotIntBacked.SomeValue, 123));
-        }
-
-        [TestMethod]
-        public void MeasurementAnalyticsClient_SetCustomMetric_Throws_ArgumentOutOfRangeException_If_Enum_Not_Defined()
-        {
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new MeasurementAnalyticsClient().SetCustomMetric((CustomMetrics)99, 990990));
-        }
 #endif
 
 #if NET45
@@ -150,20 +117,6 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
         public void MeasurementAnalyticsClient_SetCustomDimension_Throws_ArgumentOutOfRangeException_If_Enum_Not_Defined()
         {
             new MeasurementAnalyticsClient().SetCustomDimension((CustomDimensions) 99, "Ninety-Nine");
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
-        public void MeasurementAnalyticsClient_SetCustomMetric_By_Enum_Throws_ArgumentException_If_Not_Underlying_Int_Type()
-        {
-            new MeasurementAnalyticsClient().SetCustomMetric(NotIntBacked.SomeValue, 123);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
-        public void MeasurementAnalyticsClient_SetCustomMetric_Throws_ArgumentOutOfRangeException_If_Enum_Not_Defined()
-        {
-            new MeasurementAnalyticsClient().SetCustomMetric((CustomMetrics)99, 990990);
         }
 #endif
     }
