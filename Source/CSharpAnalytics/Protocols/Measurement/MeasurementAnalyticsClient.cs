@@ -18,7 +18,7 @@ namespace CSharpAnalytics.Protocols.Measurement
     public class MeasurementAnalyticsClient
     {
         private readonly Dictionary<int, string> customDimensions = new Dictionary<int, string>();
-        private readonly Dictionary<int, long> customMetrics = new Dictionary<int, long>();
+        private readonly Dictionary<int, object> customMetrics = new Dictionary<int, object>();
         private readonly Queue<MeasurementActivityEntry> queue = new Queue<MeasurementActivityEntry>();
 
         private MeasurementTracker tracker;
@@ -87,14 +87,40 @@ namespace CSharpAnalytics.Protocols.Measurement
         }
 
         /// <summary>
-        /// Set the value of a custom metric to be set with the next activity.
+        /// Set the integer value of a custom metric to be sent with the next activity.
         /// </summary>
         /// <remarks>
         /// These need to be configured first in Google Analytics.
         /// </remarks>
         /// <param name="index">Index of the custom metric the value is for.</param>
-        /// <param name="value">Value for the custom metric specified by the index.</param>
+        /// <param name="value">Integer value for the custom metric specified by the index.</param>
         public void SetCustomMetric(int index, long value)
+        {
+            customMetrics[index] = value;
+        }
+
+        /// <summary>
+        /// Set the time value of a custom metric to be sent with the next activity.
+        /// </summary>
+        /// <remarks>
+        /// These need to be configured first in Google Analytics.
+        /// </remarks>
+        /// <param name="index">Index of the custom metric the value is for.</param>
+        /// <param name="value">Time value for the custom metric specified by the index.</param>
+        public void SetCustomMetric(int index, TimeSpan value)
+        {
+            customMetrics[index] = value;
+        }
+
+        /// <summary>
+        /// Set the financial value of a custom metric to be sent with the next activity.
+        /// </summary>
+        /// <remarks>
+        /// These need to be configured first in Google Analytics.
+        /// </remarks>
+        /// <param name="index">Index of the custom metric the value is for.</param>
+        /// <param name="value">Financial value for the custom metric specified by the index.</param>
+        public void SetCustomMetric(int index, decimal value)
         {
             customMetrics[index] = value;
         }

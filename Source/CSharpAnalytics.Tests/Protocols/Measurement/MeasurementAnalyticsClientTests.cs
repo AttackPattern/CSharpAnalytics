@@ -72,7 +72,7 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
         }
 
         [TestMethod]
-        public void MeasurementAnalyticsClient_SetCustomMetric_By_Int_Is_Sent()
+        public void MeasurementAnalyticsClient_SetCustomMetric_Int_Is_Sent()
         {
             var actual = new List<Uri>();
             var client = new MeasurementAnalyticsClient();
@@ -83,6 +83,35 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
 
             Assert.AreEqual(1, actual.Count);
             StringAssert.Contains(actual[0].Query, "cm6=6060");
+        }
+
+        [TestMethod]
+        public void MeasurementAnalyticsClient_SetCustomMetric_Timespan_Is_Sent()
+        {
+            var actual = new List<Uri>();
+            var actualTimespan = new TimeSpan(4, 1, 2, 3);
+            var client = new MeasurementAnalyticsClient();
+            MeasurementTestHelpers.ConfigureForTest(client, actual.Add);
+
+            client.SetCustomMetric(7, actualTimespan);
+            client.TrackAppView("Test View");
+
+            Assert.AreEqual(1, actual.Count);
+            StringAssert.Contains(actual[0].Query, "cm7=" + (int)actualTimespan.TotalSeconds);
+        }
+
+        [TestMethod]
+        public void MeasurementAnalyticsClient_SetCustomMetric_Decimal_Is_Sent()
+        {
+            var actual = new List<Uri>();
+            var client = new MeasurementAnalyticsClient();
+            MeasurementTestHelpers.ConfigureForTest(client, actual.Add);
+
+            client.SetCustomMetric(8, 123456.78m);
+            client.TrackAppView("Test View");
+
+            Assert.AreEqual(1, actual.Count);
+            StringAssert.Contains(actual[0].Query, "cm8=123456.78");
         }
 
         private enum NotIntBacked : long

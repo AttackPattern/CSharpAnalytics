@@ -13,7 +13,7 @@ namespace CSharpAnalytics.Protocols.Measurement
     {
         public IMeasurementActivity Activity;
         public IEnumerable<KeyValuePair<int, string>> CustomDimensions;
-        public IEnumerable<KeyValuePair<int, long>> CustomMetrics;
+        public IEnumerable<KeyValuePair<int, object>> CustomMetrics;
         public bool EndSession;
 
         /// <summary>

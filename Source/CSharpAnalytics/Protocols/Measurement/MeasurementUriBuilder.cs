@@ -185,12 +185,32 @@ namespace CSharpAnalytics.Protocols.Measurement
         /// </summary>
         /// <param name="customMetrics">Enumerable of key/value pairs containing custom metric indexes and values.</param>
         /// <returns>Enumerable of key/value pairs of custom metrics.</returns>
-        internal static IEnumerable<KeyValuePair<string, string>> GetParameters(IEnumerable<KeyValuePair<int, long>> customMetrics)
+        internal static IEnumerable<KeyValuePair<string, string>> GetParameters(IEnumerable<KeyValuePair<int, object>> customMetrics)
         {
             if (customMetrics == null) return Enumerable.Empty<KeyValuePair<string, string>>();
 
             return customMetrics
-                .Select(cd => KeyValuePair.Create("cm" + cd.Key, cd.Value.ToString("0", CultureInfo.InvariantCulture)));
+                .Where(cm => cm.Value != null)
+                .Select(cd => KeyValuePair.Create("cm" + cd.Key, FormatCustomMetric(cd.Value)));
+        }
+
+        /// <summary>
+        /// Format a custom metric so it can be sent to Google Analytics.
+        /// </summary>
+        /// <param name="value">Object containing custom metric value.</param>
+        /// <returns>Formatted string to be sent for this value.</returns>
+        private static string FormatCustomMetric(object value)
+        {
+            if (value is TimeSpan)
+                return ((TimeSpan) value).TotalSeconds.ToString("0");
+
+            if (value is decimal)
+                return ((decimal) value).ToString("0.##");
+
+            if (value is long)
+                return ((long) value).ToString("0");
+
+            return value.ToString();
         }
 
         /// <summary>
