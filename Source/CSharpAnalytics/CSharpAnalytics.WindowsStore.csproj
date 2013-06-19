@@ -116,7 +116,6 @@
     </Compile>
     <Compile Include="Activities\TransactionActivity.cs" />
     <Compile Include="Activities\EventActivity.cs" />
-    <Compile Include="Activities\PageViewActivity.cs" />
     <Compile Include="Activities\SocialActivity.cs" />
     <Compile Include="Activities\TransactionItemActivity.cs" />
     <Compile Include="AutoMeasurement\AnalyticsScreenNameAttribute.cs" />
