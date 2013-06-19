@@ -56,31 +56,44 @@ namespace CSharpAnalytics.Test.Protocols
         }
 
         [TestMethod]
-        public void EpochTime_FormatDate_Returns_Correct_Value_Given_Valid_Number_Of_Seconds()
+        public void EpochTime_TryParse_Returns_Correct_Value_Given_Valid_Number_Of_Seconds()
         {
-            var formattedDate = EpochTime.FormatDate("1356479712");
-            Assert.AreEqual("Tue, 25 Dec 2012 23:55:12 GMT", formattedDate);
+            EpochTime epochTime;
+            var parsed = EpochTime.TryParseSeconds("1356479712", out epochTime);
+
+            Assert.IsTrue(parsed);
+
+            Assert.AreEqual("Tue, 25 Dec 2012 23:55:12 GMT", epochTime.ToUtcString());
         }
 
         [TestMethod]
-        public void EpochTime_FormatDate_Returns_Empty_String_Given_Decimal_Number_Of_Seconds()
+        public void EpochTime_TryParse_Fails_Given_Decimal_Number_Of_Seconds()
         {
-            var decimalSeconds = EpochTime.FormatDate("123.45");
-            Assert.AreEqual("", decimalSeconds);
+            EpochTime epochTime;
+            var parsed = EpochTime.TryParseSeconds("123.45", out epochTime);
+
+            Assert.IsFalse(parsed);
+            Assert.IsNull(epochTime);
         }
 
         [TestMethod]
-        public void EpochTime_FormatDate_Returns_Empty_String_Given_Empty_String()
+        public void EpochTime_TryParse_Fails_Given_Empty_String()
         {
-            var emptyString = EpochTime.FormatDate("");
-            Assert.AreEqual("", emptyString);
+            EpochTime epochTime;
+            var parsed = EpochTime.TryParseSeconds("", out epochTime);
+
+            Assert.IsFalse(parsed);
+            Assert.IsNull(epochTime);
         }
 
         [TestMethod]
-        public void EpochTime_FormatDate_Returns_Empty_String_Given_Text()
+        public void EpochTime_TryParse_Fails_Given_Text()
         {
-            var notSeconds = EpochTime.FormatDate("Shiny");
-            Assert.AreEqual("", notSeconds);
+            EpochTime epochTime;
+            var parsed = EpochTime.TryParseSeconds("Shiny", out epochTime);
+
+            Assert.IsFalse(parsed);
+            Assert.IsNull(epochTime);
         }
     }
 }

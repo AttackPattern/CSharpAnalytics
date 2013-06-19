@@ -22,6 +22,19 @@ namespace CSharpAnalytics.Protocols
         public static EpochTime Now { get { return new EpochTime(DateTimeOffset.Now); } }
 
         /// <summary>
+        /// Try and parse a string representing seconds into an EpochTime.
+        /// </summary>
+        /// <param name="seconds">String containing number of seconds since start of 1970.</param>
+        /// <param name="epochTime">Output parameter containing new EpochTime</param>
+        /// <returns>True if was able to parse an EpochTime, false otherwise.</returns>
+        public static bool TryParseSeconds(string seconds, out EpochTime epochTime)
+        {
+            ulong secondsValue;
+            epochTime = ulong.TryParse(seconds, out secondsValue) ? new EpochTime(secondsValue) : null;
+            return epochTime != null;
+        }
+
+        /// <summary>
         /// Create a new EpochTime with a given number of seconds since the start of 1970.
         /// </summary>
         /// <param name="secondsSince1970">Number of seconds since the start of 1970.</param>
@@ -64,19 +77,6 @@ namespace CSharpAnalytics.Protocols
         public string ToUtcString()
         {
             return ToDateTimeOffset().ToString("r");
-        }
-
-        /// <summary>
-        /// Format number of seconds since 1970 as formatted UTC date.
-        /// </summary>
-        /// <param name="secondsSince1970">Number of seconds since 01-Jan-1970.</param>
-        /// <returns>Formatted UTC date.</returns>
-        public static string FormatDate(string secondsSince1970)
-        {
-            ulong numericSecondsSince1970;
-            return !ulong.TryParse(secondsSince1970, out numericSecondsSince1970)
-                ? String.Empty
-                : new EpochTime(numericSecondsSince1970).ToUtcString();
         }
     }
 }

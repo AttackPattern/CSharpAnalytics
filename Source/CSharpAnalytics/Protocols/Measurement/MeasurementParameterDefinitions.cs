@@ -114,7 +114,7 @@ namespace CSharpAnalytics.Protocols.Measurement
 
             // Undocumented
             new ParameterDefinition("_v",       "Library Version"),
-            new ParameterDefinition("ht",       "Hit Time", EpochTime.FormatDate)
+            new ParameterDefinition("ht",       "Hit Time", FormatDate)
         };
 
         /// <summary>
@@ -130,6 +130,19 @@ namespace CSharpAnalytics.Protocols.Measurement
                 case "0": return "False";
                 default: return "-";
             }
+        }
+
+        /// <summary>
+        /// Format number of seconds since 1970 as formatted UTC date.
+        /// </summary>
+        /// <param name="secondsSince1970">Number of seconds since 01-Jan-1970.</param>
+        /// <returns>Formatted UTC date.</returns>
+        private static string FormatDate(string secondsSince1970)
+        {
+            EpochTime epochTime;
+            return EpochTime.TryParseSeconds(secondsSince1970, out epochTime)
+                ? epochTime.ToUtcString()
+                : string.Empty;
         }
     }
 }
