@@ -39,8 +39,9 @@ namespace CSharpAnalytics.WindowsStore
         private static readonly ProtocolDebugger protocolDebugger = new ProtocolDebugger(s => Debug.WriteLine(s), MeasurementParameterDefinitions.All);
         private static readonly TypedEventHandler<DataTransferManager, TargetApplicationChosenEventArgs> socialShare = (sender, e) => Client.TrackSocial("ShareCharm", e.ApplicationName);
         private static readonly MeasurementAnalyticsClient client = new MeasurementAnalyticsClient();
+        private static readonly ProductInfoHeaderValue userAgentCSharpAnalytics = new ProductInfoHeaderValue("CSharpAnalytics", "0.1");
 
-        private static string[] agentParts;
+        private static string windowsUserAgent;
         private static BackgroundHttpRequester requester;
         private static SessionManager sessionManager;
         private static Frame attachedFrame;
@@ -62,6 +63,7 @@ namespace CSharpAnalytics.WindowsStore
         public static async void StartAsync(MeasurementConfiguration configuration, TimeSpan? uploadInterval = null)
         {
             lastUploadInterval = uploadInterval ?? TimeSpan.FromSeconds(5);
+            await CacheWindowsUserAgent();
             await StartRequesterAsync();
             await RestoreSessionAsync(TimeSpan.FromMinutes(20));
 
@@ -223,16 +225,32 @@ namespace CSharpAnalytics.WindowsStore
         /// Figure out the user agent and add it to the header collection.
         /// </summary>
         /// <param name="userAgent">User agent header collection.</param>
-        private static async void AddUserAgent(ICollection<ProductInfoHeaderValue> userAgent)
+        private static void AddUserAgent(ICollection<ProductInfoHeaderValue> userAgent)
         {
-            userAgent.Add(new ProductInfoHeaderValue("CSharpAnalytics", "0.1"));
+            userAgent.Add(userAgentCSharpAnalytics);
 
-            agentParts = agentParts ?? new[] {
-                "Windows NT " + await SystemInformation.GetWindowsVersionAsync(),
-                GetProcessorArchitectureAsync().Result
-            };
+            if (!String.IsNullOrEmpty(windowsUserAgent))
+                userAgent.Add(new ProductInfoHeaderValue(windowsUserAgent));
+        }
 
-            userAgent.Add(new ProductInfoHeaderValue("(" + String.Join("; ", agentParts) + ")"));
+        /// <summary>
+        /// Get the Windows version number and processor architecture and cache it
+        /// as a user agent string so it can be sent with HTTP requests.
+        /// </summary>
+        /// <returns>String containing formatted Windows user agent.</returns>
+        private static async Task CacheWindowsUserAgent()
+        {
+            try
+            {
+                var versionTask = SystemInformation.GetWindowsVersionAsync();
+                var processorTask = GetProcessorArchitectureAsync();
+                await Task.WhenAll(versionTask, processorTask);
+                windowsUserAgent = "(Windows NT " + versionTask.Result + "; " + processorTask.Result + ")";
+            }
+            catch
+            {
+                windowsUserAgent = ""; // Couldn't figure it out, don't try again
+            }
         }
 
         /// <summary>
