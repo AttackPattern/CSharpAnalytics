@@ -14,7 +14,7 @@ namespace CSharpAnalytics.Protocols
     {
         private static readonly DateTimeOffset epochMoment = new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero);
 
-        private readonly long secondsSince1970;
+        private readonly ulong secondsSince1970;
 
         /// <summary>
         /// Current system time expressed in EpochTime.
@@ -25,7 +25,7 @@ namespace CSharpAnalytics.Protocols
         /// Create a new EpochTime with a given number of seconds since the start of 1970.
         /// </summary>
         /// <param name="secondsSince1970">Number of seconds since the start of 1970.</param>
-        public EpochTime(long secondsSince1970)
+        public EpochTime(ulong secondsSince1970)
         {
             this.secondsSince1970 = secondsSince1970;
         }
@@ -36,7 +36,7 @@ namespace CSharpAnalytics.Protocols
         /// <param name="offset"></param>
         public EpochTime(DateTimeOffset offset)
         {
-            secondsSince1970 = Convert.ToInt64((offset - epochMoment).TotalSeconds);
+            secondsSince1970 = Convert.ToUInt64((offset - epochMoment).TotalSeconds);
         }
 
         /// <summary>
@@ -67,14 +67,14 @@ namespace CSharpAnalytics.Protocols
         }
 
         /// <summary>
-        /// Format number of seconsd since 1970 as formatted UTC date.
+        /// Format number of seconds since 1970 as formatted UTC date.
         /// </summary>
         /// <param name="secondsSince1970">Number of seconds since 01-Jan-1970.</param>
         /// <returns>Formatted UTC date.</returns>
         public static string FormatDate(string secondsSince1970)
         {
-            long numericSecondsSince1970;
-            return !long.TryParse(secondsSince1970, out numericSecondsSince1970)
+            ulong numericSecondsSince1970;
+            return !ulong.TryParse(secondsSince1970, out numericSecondsSince1970)
                 ? String.Empty
                 : new EpochTime(numericSecondsSince1970).ToUtcString();
         }
