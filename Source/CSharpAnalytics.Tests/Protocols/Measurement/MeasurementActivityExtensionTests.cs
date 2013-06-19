@@ -29,7 +29,7 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
         [TestMethod]
         public void AppViewExtension_Throws_If_AnalyticsClient_Null()
         {
-            Assert.ThrowsException<ArgumentNullException>(() => AppViewExtensions.TrackAppView(null, "test"));
+            Assert.ThrowsException<ArgumentNullException>(() => MeasurementActivityExtensions.TrackAppView(null, "test"));
         }
 
         [TestMethod]
@@ -50,7 +50,7 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
         [ExpectedException(typeof(ArgumentNullException))]
         public void AppViewExtension_Throws_If_AnalyticsClient_Null()
         {
-            AppViewExtensions.TrackAppView(null, "test");
+            MeasurementActivityExtensions.TrackAppView(null, "test");
         }
 
         [TestMethod]

@@ -2,10 +2,6 @@
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
-using System;
-using CSharpAnalytics.Activities;
-using CSharpAnalytics.Protocols.Measurement;
-
 namespace CSharpAnalytics.Activities
 {
     /// <summary>
@@ -26,26 +22,5 @@ namespace CSharpAnalytics.Activities
         /// Name of the screen being viewed.
         /// </summary>
         public string ScreenName { get { return ContentDescription; } }
-    }
-}
-
-namespace CSharpAnalytics
-{
-    /// <summary>
-    /// Extension methods for adding AppViews to compatible analytics clients.
-    /// </summary>
-    public static class AppViewExtensions
-    {
-        /// <summary>
-        /// Capture the details of an application view event that will be sent to analytics.
-        /// </summary>
-        /// <param name="analyticsClient"></param>
-        /// <param name="screenName"></param>
-        public static void TrackAppView(this MeasurementAnalyticsClient analyticsClient, string screenName)
-        {
-            if (analyticsClient == null) throw new ArgumentNullException("analyticsClient");
-            if (String.IsNullOrWhiteSpace(screenName)) throw new ArgumentException("Screen name must not be null or blank", "screenName");
-            analyticsClient.Track(new AppViewActivity(screenName));
-        }
     }
 }

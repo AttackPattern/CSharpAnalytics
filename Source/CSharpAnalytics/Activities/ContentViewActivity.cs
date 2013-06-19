@@ -3,7 +3,6 @@
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
 using System;
-using CSharpAnalytics.Activities;
 using System.Diagnostics;
 using CSharpAnalytics.Protocols.Measurement;
 
@@ -76,30 +75,6 @@ namespace CSharpAnalytics.Activities
             this.contentDescription = contentDescription;
             this.documentPath = documentPath;
             this.documentHostName = documentHostName;
-        }
-    }
-}
-
-namespace CSharpAnalytics
-{
-    /// <summary>
-    /// Extension methods for adding ContentViews to compatible analytics clients.
-    /// </summary>
-    public static class ContentViewExtensions
-    {
-        /// <summary>
-        /// Track a ContentView activity for a given piece of content.
-        /// </summary>
-        /// <param name="analyticsClient">MeasurementAnalyticsClient object with queue and configuration set-up.</param>
-        /// <param name="documentLocation">URI location of the document.</param>
-        /// <param name="contentDescription">Description of the content.</param>
-        /// <param name="documentPath">Optional path override of the document location.</param>
-        /// <param name="documentHostName">Optional host name override of the document location.</param>
-        public static void TrackContentView(this MeasurementAnalyticsClient analyticsClient, Uri documentLocation, string contentDescription, 
-            string documentPath = null, string documentHostName = null)
-        {
-            if (analyticsClient == null) throw new ArgumentNullException("analyticsClient");
-            analyticsClient.Track(new ContentViewActivity(documentLocation, contentDescription, documentPath, documentHostName));
         }
     }
 }

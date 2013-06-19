@@ -2,10 +2,8 @@
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
-using CSharpAnalytics.Activities;
 using CSharpAnalytics.Protocols.Measurement;
 using CSharpAnalytics.Protocols.Urchin;
-using System;
 using System.Diagnostics;
 
 namespace CSharpAnalytics.Activities
@@ -69,43 +67,6 @@ namespace CSharpAnalytics.Activities
             this.action = action;
             this.target = target;
             this.pagePath = pagePath;
-        }
-    }
-}
-
-namespace CSharpAnalytics
-{
-    /// <summary>
-    /// Extension methods for adding Social to compatible analytics clients.
-    /// </summary>
-    public static class SocialExtensions
-    {
-        /// <summary>
-        /// Track a social activity being performed.
-        /// </summary>
-        /// <param name="analyticsClient">UrchinAnalyticsClient object with queue and configuration set-up.</param>
-        /// <param name="action">Social action being performed.</param>
-        /// <param name="network">Name of the social network being acted upon.</param>
-        /// <param name="pagePath">Optional path of the page the action occured on.</param>
-        /// <param name="target">Optional target resource being acted upon.</param>
-        public static void TrackSocial(this UrchinAnalyticsClient analyticsClient, string action, string network, string target = null, string pagePath = null)
-        {
-            if (analyticsClient == null) throw new ArgumentNullException("analyticsClient");
-            analyticsClient.Track(new SocialActivity(action, network, pagePath, target));
-        }
-
-        /// <summary>
-        /// Track a social activity being performed.
-        /// </summary>
-        /// <param name="analyticsClient">MeasurementAnalyticsClient object with queue and configuration set-up.</param>
-        /// <param name="action">Social action being performed.</param>
-        /// <param name="network">Name of the social network being acted upon.</param>
-        /// <param name="pagePath">Optional path of the page the action occured on.</param>
-        /// <param name="target">Optional target resource being acted upon.</param>
-        public static void TrackSocial(this MeasurementAnalyticsClient analyticsClient, string action, string network, string target = null, string pagePath = null)
-        {
-            if (analyticsClient == null) throw new ArgumentNullException("analyticsClient");
-            analyticsClient.Track(new SocialActivity(action, network, pagePath, target));
         }
     }
 }

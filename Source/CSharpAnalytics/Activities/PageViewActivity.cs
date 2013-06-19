@@ -2,10 +2,8 @@
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
-using System;
-using CSharpAnalytics.Activities;
-using System.Diagnostics;
 using CSharpAnalytics.Protocols.Urchin;
+using System.Diagnostics;
 
 namespace CSharpAnalytics.Activities
 {
@@ -43,27 +41,6 @@ namespace CSharpAnalytics.Activities
         {
             this.title = title;
             this.page = page;
-        }
-    }
-}
-
-namespace CSharpAnalytics
-{
-    /// <summary>
-    /// Extension methods for adding PageViews to compatible analytics clients.
-    /// </summary>
-    public static class PageViewExtensions
-    {
-        /// <summary>
-        /// Track a new PageView for a given page and title.
-        /// </summary>
-        /// <param name="analyticsClient">UrchinAnalyticsClient object with queue and configuration set-up.</param>
-        /// <param name="title">Title of the page.</param>
-        /// <param name="page">Relative path of the page.</param>
-        public static void TrackPageView(this UrchinAnalyticsClient analyticsClient, string title, string page)
-        {
-            if (analyticsClient == null) throw new ArgumentNullException("analyticsClient");
-            analyticsClient.Track(new PageViewActivity(title, page));
         }
     }
 }

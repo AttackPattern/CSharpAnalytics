@@ -124,6 +124,7 @@
     <Compile Include="Network\BackgroundHttpFuncRequester.cs" />
     <Compile Include="Protocols\Measurement\IMeasurementActivity.cs" />
     <Compile Include="Protocols\Measurement\MeasurementActivityEntry.cs" />
+    <Compile Include="Protocols\Measurement\MeasurementActivityExtensions.cs" />
     <Compile Include="Protocols\Measurement\MeasurementActivityParameterBuilder.cs" />
     <Compile Include="Protocols\Measurement\MeasurementAnalyticsClient.cs" />
     <Compile Include="Protocols\Measurement\MeasurementConfiguration.cs" />
@@ -134,6 +135,7 @@
     <Compile Include="Protocols\Urchin\CustomVariables\ScopedCustomVariableSlot.cs" />
     <Compile Include="Protocols\Urchin\IUrchinActivity.cs" />
     <Compile Include="Protocols\Urchin\UrchinActivityEntry.cs" />
+    <Compile Include="Protocols\Urchin\UrchinActivityExtensions.cs" />
     <Compile Include="Protocols\Urchin\UrchinActivityParameterBuilder.cs" />
     <Compile Include="Protocols\Urchin\UrchinAnalyticsClient.cs" />
     <Compile Include="Protocols\Urchin\UrchinConfiguration.cs" />

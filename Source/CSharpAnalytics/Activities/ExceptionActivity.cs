@@ -2,9 +2,7 @@
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
-using System;
 using System.Diagnostics;
-using CSharpAnalytics.Activities;
 using CSharpAnalytics.Protocols.Measurement;
 
 namespace CSharpAnalytics.Activities
@@ -43,27 +41,6 @@ namespace CSharpAnalytics.Activities
         {
             this.description = description;
             this.isFatal = isFatal;
-        }
-    }
-}
-
-namespace CSharpAnalytics
-{
-    /// <summary>
-    /// Extension methods for adding Exceptions to compatible analytics clients.
-    /// </summary>
-    public static class ExceptionExtensions
-    {
-        /// <summary>
-        /// Capture the details of an event that will be sent to analytics.
-        /// </summary>
-        /// <param name="analyticsClient">MeasurementAnalyticsClient object with queue and configuration set-up.</param>
-        /// <param name="description">Description of the exception.</param>
-        /// <param name="isFatal">Optional whether the exception was fatal (caused the app to crash), defaults to false.</param>
-        public static void TrackException(this MeasurementAnalyticsClient analyticsClient, string description, bool isFatal = false)
-        {
-            if (analyticsClient == null) throw new ArgumentNullException("analyticsClient");
-            analyticsClient.Track(new ExceptionActivity(description, isFatal));
         }
     }
 }
