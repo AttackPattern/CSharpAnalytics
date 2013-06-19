@@ -65,7 +65,6 @@
     <Compile Include="Activities\SocialActivityTests.cs" />
     <Compile Include="Activities\TimedEventActivityTests.cs" />
     <Compile Include="Activities\TransactionActivityTests.cs" />
-    <Compile Include="AnalyticsClientTests.cs" />
     <Compile Include="Network\BackgroundHttpClientRequesterTests.cs" />
     <Compile Include="Network\BackgroundHttpRequesterTests.cs" />
     <Compile Include="Network\BackgroundHttpWebRequesterTests.cs" />

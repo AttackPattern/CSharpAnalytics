@@ -11,7 +11,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace CSharpAnalytics.Test
 {
     [TestClass]
-    public class AnalyticsClientTests
+    public class UrchinAnalyticsClientTests
     {
         [TestMethod]
         public void AnalyticsClient_Track_Sends_Uri_To_Sender()
