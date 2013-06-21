@@ -21,7 +21,7 @@ namespace CSharpAnalytics.Protocols.Measurement
             new ParameterDefinition("v",        "Protocol Version"),
             new ParameterDefinition("tid",      "Tracking ID"),
             new ParameterDefinition("aip",      "Anonymize IP", FormatBoolean),
-            new ParameterDefinition("qt",       "Queue Time"),
+            new ParameterDefinition("qt",       "Queue Time", s => s + " ms"),
             new ParameterDefinition("z",        "Cache Buster"),
 
             // Visitor
@@ -113,8 +113,7 @@ namespace CSharpAnalytics.Protocols.Measurement
             new ParameterDefinition("cm([0-9]+)", "Custom Metric $1", isRegexMatch:true),
 
             // Undocumented
-            new ParameterDefinition("_v",       "Library Version"),
-            new ParameterDefinition("ht",       "Hit Time", FormatDate)
+            new ParameterDefinition("_v",       "Library Version")
         };
 
         /// <summary>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using CSharpAnalytics.Activities;
+using CSharpAnalytics.Protocols;
 using CSharpAnalytics.Protocols.Measurement;
 #if WINDOWS_STORE
 using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
@@ -23,7 +24,7 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
             client.Track(new AppViewActivity("Silk Screen"));
 
             MeasurementTestHelpers.ConfigureForTest(client, actual.Add);
-            
+
             Assert.AreEqual(2, actual.Count);
         }
 
@@ -114,6 +115,26 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
             StringAssert.Contains(actual[0].Query, "cm8=123456.78");
         }
 
+        [TestMethod]
+        public void MeasurementAnalyticsClient_AdjustUriBeforeRequest_Adds_Qt_Parameter()
+        {
+            var originalUri = new Uri("http://anything.really.com/something#" + DateTime.UtcNow.ToString("o"));
+
+            var actual = new MeasurementAnalyticsClient().AdjustUriBeforeRequest(originalUri);
+
+            StringAssert.Contains(actual.Query, "qt=");
+        }
+
+        [TestMethod]
+        public void MeasurementAnalyticsClient_AdjustUriBeforeRequest_Clears_Fragment()
+        {
+            var originalUri = new Uri("http://anything.really.com/something#" + DateTime.UtcNow.ToString("o"));
+
+            var actual = new MeasurementAnalyticsClient().AdjustUriBeforeRequest(originalUri);
+
+            Assert.AreEqual(actual.Fragment, "");
+        }
+
         private enum NotIntBacked : long
         {
             SomeValue
@@ -145,7 +166,7 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void MeasurementAnalyticsClient_SetCustomDimension_Throws_ArgumentOutOfRangeException_If_Enum_Not_Defined()
         {
-            new MeasurementAnalyticsClient().SetCustomDimension((CustomDimensions) 99, "Ninety-Nine");
+            new MeasurementAnalyticsClient().SetCustomDimension((CustomDimensions)99, "Ninety-Nine");
         }
 #endif
     }

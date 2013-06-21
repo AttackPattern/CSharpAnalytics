@@ -51,7 +51,11 @@ namespace CSharpAnalytics.Protocols.Measurement
         {
             var parameters = BuildParameterList(entry);
             CarryForwardParameters(entry.Activity, parameters);
-            var uriBuilder = new UriBuilder(configuration.UseSsl ? secureTrackingEndpoint : trackingEndpoint) { Query = CreateQueryString(parameters) };
+            var endpoint = configuration.UseSsl ? secureTrackingEndpoint : trackingEndpoint;
+            var uriBuilder = new UriBuilder(endpoint) {
+                Query = CreateQueryString(parameters),
+                Fragment = DateTime.UtcNow.ToString("O")
+            };
             return uriBuilder.Uri;
         }
 
@@ -109,7 +113,6 @@ namespace CSharpAnalytics.Protocols.Measurement
         {
             yield return KeyValuePair.Create("v", ProtocolVersion);
             yield return KeyValuePair.Create("z", random.Next().ToString(CultureInfo.InvariantCulture));
-            yield return KeyValuePair.Create("ht", EpochTime.Now.ToString());
         }
 
         /// <summary>
