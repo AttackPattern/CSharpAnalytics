@@ -217,6 +217,7 @@ namespace CSharpAnalytics.WindowsStore
         /// </remarks>
         private static void PreprocessHttpRequest(HttpRequestMessage requestMessage)
         {
+            requestMessage.RequestUri = client.AdjustUriBeforeRequest(requestMessage.RequestUri);
             AddUserAgent(requestMessage.Headers.UserAgent);
             DebugRequest(requestMessage);
         }

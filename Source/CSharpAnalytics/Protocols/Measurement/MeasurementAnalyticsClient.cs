@@ -138,5 +138,51 @@ namespace CSharpAnalytics.Protocols.Measurement
             if (!Enum.IsDefined(index.GetType(), index))
                 throw new ArgumentOutOfRangeException("index", "Enum value is not defined");
         }
+
+        /// <summary>
+        /// Adjust the URI before it is finally sent so it can have a relative queue time parameter.
+        /// </summary>
+        /// <param name="uri">Uri that was going to requested via Measurement Protocol collector.</param>
+        /// <returns>Adjusted Uri to be requested instead.</returns>
+        public Uri AdjustUriBeforeRequest(Uri uri)
+        {
+            if (String.IsNullOrWhiteSpace(uri.Fragment)) return uri;
+
+            DateTime utcHitTime;
+            var decodedFragment = uri.GetComponents(UriComponents.Fragment, UriFormat.Unescaped);
+            if (!DateTime.TryParse(decodedFragment, out utcHitTime)) return uri;
+
+            var queueTime = DateTimeOffset.Now.Subtract(utcHitTime);
+            if (queueTime.TotalMilliseconds < 0) return uri;
+
+            var parameters = GetQueryParameters(uri.GetComponents(UriComponents.Query, UriFormat.Unescaped));
+            parameters["qt"] = queueTime.TotalMilliseconds.ToString("0", CultureInfo.InvariantCulture);
+
+            return new UriBuilder(uri) { Query = GetQueryString(parameters), Fragment = "" }.Uri;
+        }
+
+        /// <summary>
+        /// Splits a URI query string into a key/value dictionary of parameters and
+        /// their arguments.
+        /// </summary>
+        /// <param name="queryString">Query string to split into a dictionary.</param>
+        /// <returns>Dictionary of key-value pairs matching the query string parameter names and values.</returns>
+        private static IDictionary<string, string> GetQueryParameters(string queryString)
+        {
+            return queryString
+                .Split('&')
+                .Select(q => q.Split('='))
+                .ToDictionary(k => k[0], v => v.Length > 1 ? v[1] : "");
+        }
+
+        /// <summary>
+        /// Build a URI query string from a set from an enumeration of key/value pairs.
+        /// </summary>
+        /// <param name="queryParameters">Enumeration of names and parameters to make into a URI query string.</param>
+        /// <returns>URI query string containing the names and parameters.</returns>
+        private static string GetQueryString(IEnumerable<KeyValuePair<string, string>> queryParameters)
+        {
+            return String.Join("&", queryParameters.Select(p => p.Key + "=" + p.Value));
+        }
     }
 }
