@@ -1,7 +1,7 @@
 CSharpAnalytics
 ===============
 
-CSharpAnalytics is a C# library for tracking your application metrics via Google Analytics.
+CSharpAnalytics is a free C# library for tracking application metrics via Google Analytics.
 
 The pitch
 ---------
@@ -12,7 +12,7 @@ Metrics let you see what your app is actually doing in the real world. Crash rat
 
 **Why use Google Analytics?**
 
-Google Analytics is capable, well-supported, easy to use and free. While originally designed for web analytics the new Measurement Protocol expands into more app-specific metrics and features incluing screen views, device breakout and crash data.
+Google Analytics is capable, well-supported, easy to use and free. While originally designed for web analytics the Measurement Protocol expands into more app-specific metrics and features incluing screen views, device breakout and crash data.
 
 **Why the CSharpAnalytics project?**
 
@@ -28,20 +28,23 @@ Platforms
 ---------
 Our goal is to support all major C# platforms. Right now we have project files for:
 
-* Windows 8 Store applications (Visual Studio 2012)
-* .NET 4.5 applications (Visual Studio 2012)
+* Windows 8 Store applications (Visual Studio 2012, Measurement Protocol, AutoMeasurement)
+* .NET 4.5 applications (Visual Studio 2012, Urchin & Measurement Protocol)
 
 Windows 8 Store support also includes a sample app and AutoMeasurement to add basic analytics to your app with just two lines of code.
 
 Features
 --------
-* Offline and online support
-* Configurable upload interval, over HTTPS/SSL if required
-* Support for page views, events, timed events, social events, custom variables
+* Online and offline support with timestamping
+* Configurable upload interval, over HTTPS/SSL if desired
+* Support for page/screen views, events, timed events, social events, custom variables/dimensions/metrics
 * Manages visitor and session state
-* Can auto-hook into a number of interesting events
 * Built-in debug output window support (ga_debug.js style)
-* Tracks operating system and version
+
+Additionally there are some Windows 8 specific features:
+
+* AutoMeasurement can hook into a number of interesting events for you
+* Tracks operating system and version (Windows 8)
 * Helpers for device model, processor architecture
 
 Important notes
@@ -80,6 +83,10 @@ Check out the CSharpAnalytics.Sample.WindowsStore application if still unsure of
 Going further
 -------------
 AutoMeasurement is a start but you'll certainly want to go further.
+
+**To allow users to opt in/out**
+There is a bindable class called AnalyticsUserOptions that can be bound to that automatically takes care of switching
+AutoMeasurement on and off. See the OptionsFlyout in the Windows 8 sample application for an example of usage.
 
 **To give a page a different name in analytics**
 The default name for a page is the class name of the page with "Page" removed from the end. e.g. "TopNewsPage" would be tracked as "TopNews".
@@ -125,14 +132,16 @@ In summary: **Do not share personally identifyable information**
 Untested
 ----------------
 1. E-commerce tracking (Windows Store already has its own)
-1. Campaign tracking (limited use as Windows Store doesn't pass through parameters)
+1. Campaign tracking (Windows Store doesn't pass through necessary parameters)
 
 Future enhancements
 -------------------
 1. Add support for Windows 8 network metering modes
 1. Additional platforms (Windows Phone 7/8, Silverlight, Mono)
-1. Opt-out support
 1. Throttling of hits as per official SDKs
+1. Sample rates
+1. Configurable session management modes
+1. In-app purchase integration
 
 If you want to contribute please consider the CSharpAnalytics.sln which will load all platforms and unit tests (if you get any project load failures you're probably missing an SDK)
 

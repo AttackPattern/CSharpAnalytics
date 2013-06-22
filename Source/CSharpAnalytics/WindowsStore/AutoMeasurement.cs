@@ -74,6 +74,37 @@ namespace CSharpAnalytics.WindowsStore
         }
 
         /// <summary>
+        /// Opt the user in or out of analytics for this application install.
+        /// </summary>
+        /// <param name="optOut">True if the user is opting out, false if they are opting back in.</param>
+        /// <remarks>
+        /// This option persists automatically.
+        /// You should call this only when the user changes their decision.
+        /// </remarks>
+        public static async void SetOptOut(bool optOut)
+        {
+            if (optOut && sessionManager.VisitorStatus == VisitorStatus.Active)
+            {
+                sessionManager.VisitorStatus = VisitorStatus.OptedOut;
+                await SuspendRequesterAsync();
+                await SaveSessionAsync();
+            }
+
+            if (!optOut && sessionManager.VisitorStatus == VisitorStatus.OptedOut)
+            {
+                sessionManager.VisitorStatus = VisitorStatus.Active;
+                if (!requester.IsStarted)
+                    requester.Start(lastUploadInterval);
+                await SaveSessionAsync();
+            }
+        }
+
+        internal static VisitorStatus VisitorStatus
+        {
+            get { return sessionManager.VisitorStatus; }
+        }
+
+        /// <summary>
         /// Attach to the root frame, hook into the navigation event and track initial page appview.
         /// Call this just before Window.Current.Activate() in your App.OnLaunched method.
         /// </summary>
@@ -306,8 +337,12 @@ namespace CSharpAnalytics.WindowsStore
         /// <returns>Task that completes when the requester has been suspended.</returns>
         private static async Task SuspendRequesterAsync()
         {
-            var pendingRequests = await requester.StopAsync();
-            var recentRequestsToPersist = pendingRequests.Skip(pendingRequests.Count - MaximumRequestsToPersist).ToList();
+            var recentRequestsToPersist = new List<Uri>();
+            if (requester.IsStarted)
+            {
+                var pendingRequests = await requester.StopAsync();
+                recentRequestsToPersist = pendingRequests.Skip(pendingRequests.Count - MaximumRequestsToPersist).ToList();
+            }
             await LocalFolderContractSerializer<List<Uri>>.SaveAsync(recentRequestsToPersist, RequestQueueFileName);
         }
 

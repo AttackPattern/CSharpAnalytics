@@ -39,6 +39,8 @@ namespace CSharpAnalytics.Protocols.Measurement
         /// <param name="entry">MeasurementActivityEntry to track in analytics.</param>
         public void Track(MeasurementActivityEntry entry)
         {
+            if (sessionManager.VisitorStatus != VisitorStatus.Active) return;
+
             CarryForwardLastTransaction(entry.Activity);
 
             sessionManager.Hit();

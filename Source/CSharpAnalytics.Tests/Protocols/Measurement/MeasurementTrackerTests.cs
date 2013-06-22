@@ -52,6 +52,35 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
         }
 
         [TestMethod]
+        public void MeasurementTracker_Track_Does_Not_Send_Request_When_Opted_Out()
+        {
+            var actual = new List<Uri>();
+            var sessionManager = MeasurementTestHelpers.CreateSessionManager();
+            var tracker = new MeasurementTracker(MeasurementTestHelpers.Configuration, sessionManager, MeasurementTestHelpers.CreateEnvironment(), actual.Add);
+
+            sessionManager.VisitorStatus = VisitorStatus.OptedOut;
+            tracker.Track(new MeasurementActivityEntry(new AppViewActivity("Testing")));
+
+            Assert.AreEqual(0, actual.Count);
+        }
+
+        [TestMethod]
+        public void MeasurementTracker_Track_Does_Not_Buffer_While_Opted_Out()
+        {
+            var actual = new List<Uri>();
+            var sessionManager = MeasurementTestHelpers.CreateSessionManager();
+            var tracker = new MeasurementTracker(MeasurementTestHelpers.Configuration, sessionManager, MeasurementTestHelpers.CreateEnvironment(), actual.Add);
+
+            sessionManager.VisitorStatus = VisitorStatus.OptedOut;
+            tracker.Track(new MeasurementActivityEntry(new AppViewActivity("OptedOut")));
+            sessionManager.VisitorStatus = VisitorStatus.Active;
+            tracker.Track(new MeasurementActivityEntry(new AppViewActivity("OptedIn")));
+
+            Assert.AreEqual(1, actual.Count);
+            StringAssert.Contains(actual[0].OriginalString, "cd=OptedIn");
+        }
+
+        [TestMethod]
         public void MeasurementTracker_Track_Carries_Forward_Last_Transaction()
         {
             var actual = new List<Uri>();

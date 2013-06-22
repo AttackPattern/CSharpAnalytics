@@ -4,6 +4,7 @@ using CSharpAnalytics.WindowsStore;
 using System;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
+using Windows.UI.ApplicationSettings;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
@@ -76,7 +77,7 @@ namespace CSharpAnalytics.Sample.WindowsStore
             }
 
             // Makes it now hook into the screen and navigation events given the splash screen should now be gone
-            AutoMeasurement.Attach(rootFrame); 
+            AutoMeasurement.Attach(rootFrame);
 
             // Ensure the current window is active
             Window.Current.Activate();
@@ -91,6 +92,25 @@ namespace CSharpAnalytics.Sample.WindowsStore
         /// <param name="e">Details about the suspend request.</param>
         private static void OnSuspending(object sender, SuspendingEventArgs e)
         {
+        }
+
+        /// <summary>
+        /// Used to tell the settings pane what to display. Normally includes options, privacy policy etc.
+        /// </summary>
+        /// <param name="sender">SettingsPane that is being displayed.</param>
+        /// <param name="args">Additional arguments to allow hooking into the settings pane.</param>
+        private static void SettingsCommandsRequested(SettingsPane sender, SettingsPaneCommandsRequestedEventArgs args)
+        {
+            args.Request.ApplicationCommands.Add(new SettingsCommand("options", "Options", _ => Flyout.Open<OptionsFlyout>(Flyout.FlyoutWidth.Regular)));
+        }
+
+        /// <summary>
+        /// Fires when the Window is created and you should sign up for charm notifications.
+        /// </summary>
+        /// <param name="args">Arguments relating to which window was created.</param>
+        protected override void OnWindowCreated(WindowCreatedEventArgs args)
+        {
+            SettingsPane.GetForCurrentView().CommandsRequested += SettingsCommandsRequested;
         }
     }
 }

@@ -7,6 +7,7 @@ using System;
 namespace CSharpAnalytics.Sessions
 {
     public enum SessionStatus { Starting, Active, Ending };
+    public enum VisitorStatus { Active, OptedOut };
 
     /// <summary>
     /// Manages visitors and sessions to ensure they are correctly saved, restored and time-out as appropriate.
@@ -36,6 +37,7 @@ namespace CSharpAnalytics.Sessions
                 PreviousSessionStartedAt = sessionState.PreviousSessionStartedAt;
                 lastActivityAt = sessionState.LastActivityAt;
                 SessionStatus = sessionState.SessionStatus;
+                VisitorStatus = sessionState.VisitorStatus;
             }
             else
             {
@@ -43,6 +45,7 @@ namespace CSharpAnalytics.Sessions
                 Session = new Session();
                 PreviousSessionStartedAt = Session.StartedAt;
                 SessionStatus = SessionStatus.Starting;
+                VisitorStatus = VisitorStatus.Active;
             }
         }
 
@@ -59,6 +62,11 @@ namespace CSharpAnalytics.Sessions
         /// Current status of this session.
         /// </summary>
         public SessionStatus SessionStatus { get; private set; }
+
+        /// <summary>
+        /// Current status of this visitor.
+        /// </summary>
+        public VisitorStatus VisitorStatus { get; internal set; }
 
         /// <summary>
         /// Current session.
@@ -102,7 +110,8 @@ namespace CSharpAnalytics.Sessions
                 PreviousSessionStartedAt = PreviousSessionStartedAt,
                 LastActivityAt = lastActivityAt,
                 Referrer = Referrer,
-                SessionStatus = SessionStatus
+                SessionStatus = SessionStatus,
+                VisitorStatus = VisitorStatus
             };
         }
 
