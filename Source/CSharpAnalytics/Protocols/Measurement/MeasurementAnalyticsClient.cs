@@ -23,6 +23,13 @@ namespace CSharpAnalytics.Protocols.Measurement
 
         private MeasurementTracker tracker;
 
+        /// <summary>
+        /// Configure this MeasurementAnalyticsClient so it can start recording and sending analytics.
+        /// </summary>
+        /// <param name="configuration">Configuration settings for this client.</param>
+        /// <param name="sessionManager">Session manager to store and retreive session state.</param>
+        /// <param name="environment">Provider of environmental details such as screen resolution.</param>
+        /// <param name="sender">Action delegate responsible for sending URIs to analytics.</param>
         public void Configure(MeasurementConfiguration configuration, SessionManager sessionManager, IEnvironment environment, Action<Uri> sender)
         {
             Debug.Assert(tracker == null);
