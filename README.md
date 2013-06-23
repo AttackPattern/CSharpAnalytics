@@ -85,10 +85,12 @@ Going further
 AutoMeasurement is a start but you'll certainly want to go further.
 
 **To allow users to opt in/out**
+
 There is a bindable class called AnalyticsUserOptions that can be bound to that automatically takes care of switching
 AutoMeasurement on and off. See the OptionsFlyout in the Windows 8 sample application for an example of usage.
 
 **To give a page a different name in analytics**
+
 The default name for a page is the class name of the page with "Page" removed from the end. e.g. "TopNewsPage" would be tracked as "TopNews".
 
 For a screen name that doesn't change based on data consider adding the AnalyticsScreenName attribute to the page class. e.g.
