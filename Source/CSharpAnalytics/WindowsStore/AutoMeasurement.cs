@@ -87,7 +87,6 @@ namespace CSharpAnalytics.WindowsStore
             {
                 sessionManager.VisitorStatus = VisitorStatus.OptedOut;
                 await SuspendRequesterAsync();
-                await SaveSessionAsync();
             }
 
             if (!optOut && sessionManager.VisitorStatus == VisitorStatus.OptedOut)
@@ -97,11 +96,6 @@ namespace CSharpAnalytics.WindowsStore
                     requester.Start(lastUploadInterval);
                 await SaveSessionAsync();
             }
-        }
-
-        internal static VisitorStatus VisitorStatus
-        {
-            get { return sessionManager.VisitorStatus; }
         }
 
         /// <summary>
@@ -123,6 +117,14 @@ namespace CSharpAnalytics.WindowsStore
             var content = frame.Content;
             if (content != null)
                 TrackFrameNavigate(content.GetType());
+        }
+
+        /// <summary>
+        /// Internal status of this visitor.
+        /// </summary>
+        internal static VisitorStatus VisitorStatus
+        {
+            get { return sessionManager.VisitorStatus; }
         }
 
         /// <summary>
@@ -160,7 +162,6 @@ namespace CSharpAnalytics.WindowsStore
             var deferral = suspendingEventArgs.SuspendingOperation.GetDeferral();
             Client.Track(new EventActivity("Suspend", "ApplicationLifecycle"), true); // Stop the session
             await SuspendRequesterAsync();
-            await SaveSessionAsync();
             deferral.Complete();
         }
 
@@ -344,6 +345,7 @@ namespace CSharpAnalytics.WindowsStore
                 recentRequestsToPersist = pendingRequests.Skip(pendingRequests.Count - MaximumRequestsToPersist).ToList();
             }
             await LocalFolderContractSerializer<List<Uri>>.SaveAsync(recentRequestsToPersist, RequestQueueFileName);
+            await SaveSessionAsync();
         }
 
         /// <summary>
@@ -355,7 +357,6 @@ namespace CSharpAnalytics.WindowsStore
         {
             var sessionState = await LocalFolderContractSerializer<SessionState>.RestoreAsync(SessionStateFileName);
             sessionManager = new SessionManager(sessionTimeout, sessionState);
-            await SaveSessionAsync();
         }
 
         /// <summary>
