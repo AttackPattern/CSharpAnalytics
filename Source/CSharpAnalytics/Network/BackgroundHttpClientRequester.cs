@@ -77,7 +77,7 @@ namespace CSharpAnalytics.Network
         /// <returns>HttpRequestMessage for this URI.</returns>
         internal static HttpRequestMessage CreateRequest(Uri uri)
         {
-            if (uri.AbsoluteUri.Length <= MaxUriLength)
+            if (!ShouldUsePostForRequest(uri))
                 return new HttpRequestMessage(HttpMethod.Get, uri);
 
             var uriWithoutQuery = new Uri(uri.GetComponents(UriComponents.SchemeAndServer | UriComponents.Path, UriFormat.Unescaped));

@@ -16,7 +16,7 @@ namespace CSharpAnalytics.Network
     /// </summary>
     public abstract class BackgroundHttpRequester : IDisposable
     {
-        protected const int MaxUriLength = 2000;
+        private const int MaxUriLength = 2000;
         protected static readonly TimeSpan NetworkRetryWaitStep = TimeSpan.FromSeconds(5);
         protected static readonly TimeSpan NetworkRetryWaitMax = TimeSpan.FromMinutes(10);
 
@@ -139,6 +139,17 @@ namespace CSharpAnalytics.Network
                             + currentRequests.Count
                             + (currentlySending == null ? 0 : 1);
             }
+        }
+
+        /// <summary>
+        /// Whether a URI request is too long to be sent as a GET and instead the query
+        /// parameters should be sent as the body of a POST instead.
+        /// </summary>
+        /// <param name="requestUri">URI request being considered.</param>
+        /// <returns>True if a POST should be used, false if GET should be used.</returns>
+        internal static bool ShouldUsePostForRequest(Uri requestUri)
+        {
+            return requestUri.AbsoluteUri.Length > MaxUriLength;
         }
 
         /// <summary>

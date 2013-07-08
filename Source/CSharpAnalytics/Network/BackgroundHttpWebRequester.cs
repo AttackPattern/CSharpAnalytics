@@ -75,9 +75,9 @@ namespace CSharpAnalytics.Network
         /// <returns>HttpWebRequest for this URI.</returns>
         internal static HttpWebRequest CreateRequest(Uri requestUri)
         {
-            return requestUri.AbsoluteUri.Length <= MaxUriLength
-                       ? CreateGetRequest(requestUri)
-                       : CreatePostRequest(requestUri);
+            return ShouldUsePostForRequest(requestUri)
+                       ? CreatePostRequest(requestUri)
+                       : CreateGetRequest(requestUri);
         }
 
         /// <summary>
