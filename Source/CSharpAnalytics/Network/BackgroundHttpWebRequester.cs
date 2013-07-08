@@ -72,11 +72,12 @@ namespace CSharpAnalytics.Network
         /// with the query payload moved to the POST body.
         /// </summary>
         /// <param name="requestUri">URI to request.</param>
+        /// <param name="writePostBody">Whether to open the http request and write the POST body.</param>
         /// <returns>HttpWebRequest for this URI.</returns>
-        internal static HttpWebRequest CreateRequest(Uri requestUri)
+        internal static HttpWebRequest CreateRequest(Uri requestUri, bool writePostBody = true)
         {
             return ShouldUsePostForRequest(requestUri)
-                       ? CreatePostRequest(requestUri)
+                       ? CreatePostRequest(requestUri, writePostBody)
                        : CreateGetRequest(requestUri);
         }
 
@@ -97,18 +98,23 @@ namespace CSharpAnalytics.Network
         /// </summary>
         /// <param name="requestUri">URI to request.</param>
         /// <returns>HttpWebRequest for this URI.</returns>
-        private static HttpWebRequest CreatePostRequest(Uri requestUri)
+        private static HttpWebRequest CreatePostRequest(Uri requestUri, bool writeBody)
         {
             var uriWithoutQuery = new Uri(requestUri.GetComponents(UriComponents.SchemeAndServer | UriComponents.Path, UriFormat.Unescaped));
+            var postRequest = WebRequest.CreateHttp(uriWithoutQuery);
+            postRequest.Method = "POST";
+            
             var bodyWithQuery = requestUri.GetComponents(UriComponents.Query, UriFormat.UriEscaped);
             var bodyBytes = Encoding.UTF8.GetBytes(bodyWithQuery);
 
-            var postRequest = WebRequest.CreateHttp(uriWithoutQuery);
-            postRequest.Method = "POST";
             postRequest.ContentLength = bodyBytes.Length;
-            var stream = postRequest.GetRequestStream();
-            stream.Write(bodyBytes, 0, bodyBytes.Length);
-            stream.Close();
+
+            if (writeBody)
+            {
+                var stream = postRequest.GetRequestStream();
+                stream.Write(bodyBytes, 0, bodyBytes.Length);
+                stream.Close();
+            }
 
             return postRequest;
         }

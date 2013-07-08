@@ -59,7 +59,7 @@ namespace CSharpAnalytics.Test.Network
             var baseUri = new Uri(BaseUriString);
             var longUri = new Uri(baseUri.AbsoluteUri + "?" + TestHelpers.RandomChars(2000));
 
-            var request = BackgroundHttpWebRequester.CreateRequest(longUri);
+            var request = BackgroundHttpWebRequester.CreateRequest(longUri, false);
 
             Assert.AreEqual("POST", request.Method);
             Assert.AreEqual(baseUri.AbsoluteUri, request.RequestUri.AbsoluteUri);
