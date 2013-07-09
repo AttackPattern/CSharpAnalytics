@@ -90,6 +90,7 @@
     <Compile Include="Sessions\Session.cs" />
     <Compile Include="Sessions\SessionManager.cs" />
     <Compile Include="Sessions\SessionState.cs" />
+    <Compile Include="Sessions\TimeoutSessionManager.cs" />
     <Compile Include="Sessions\Visitor.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

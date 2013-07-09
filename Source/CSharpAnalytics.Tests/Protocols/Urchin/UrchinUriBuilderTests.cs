@@ -95,7 +95,7 @@ namespace CSharpAnalytics.Test.Protocols.Urchin
                     PreviousSessionStartedAt = new DateTimeOffset(2012, 12, 10, 13, 14, 15, TimeSpan.Zero),
                     SessionStartedAt = new DateTimeOffset(2012, 12, 14, 13, 14, 15, TimeSpan.Zero),
                 };
-            var sessionManager = new SessionManager(TimeSpan.FromMinutes(5), sessionState);
+            var sessionManager = new TimeoutSessionManager(sessionState, TimeSpan.FromMinutes(5));
 
             var cookieSubstitute = UrchinUriBuilder.CreateCookieSubstituteParameter(sessionManager, 1);
 

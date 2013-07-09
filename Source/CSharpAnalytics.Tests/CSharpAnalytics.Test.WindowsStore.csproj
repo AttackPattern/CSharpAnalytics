@@ -137,6 +137,7 @@
     <Compile Include="Sessions\SessionManagerTests.cs" />
     <Compile Include="Sessions\SessionStateTests.cs" />
     <Compile Include="Sessions\SessionTests.cs" />
+    <Compile Include="Sessions\TimeoutSessionManager.cs" />
     <Compile Include="Sessions\VisitorTests.cs" />
     <Compile Include="TestHelpers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

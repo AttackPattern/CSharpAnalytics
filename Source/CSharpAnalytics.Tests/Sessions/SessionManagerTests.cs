@@ -19,9 +19,8 @@ namespace CSharpAnalytics.Test.Sessions
             var timeout = TimeSpan.FromMinutes(5);
             var state = CreateSampleState();
 
-            var sessionManager = new SessionManager(timeout, state);
+            var sessionManager = new SessionManager(state);
 
-            Assert.AreEqual(timeout, sessionManager.Timeout);
             Assert.AreEqual(state.PreviousSessionStartedAt, sessionManager.PreviousSessionStartedAt);
             Assert.AreEqual(state.Referrer, sessionManager.Referrer);
 
@@ -37,11 +36,8 @@ namespace CSharpAnalytics.Test.Sessions
         [TestMethod]
         public void SessionManager_Created_From_Null_State_Is_Fresh()
         {
-            var timeout = TimeSpan.FromHours(1.25);
+            var sessionManager = new SessionManager(null);
 
-            var sessionManager = new SessionManager(timeout, null);
-
-            Assert.AreEqual(timeout, sessionManager.Timeout);
             Assert.IsNull(sessionManager.Referrer);
             Assert.IsNotNull(sessionManager.Visitor);
             Assert.IsNotNull(sessionManager.Session);
@@ -54,7 +50,7 @@ namespace CSharpAnalytics.Test.Sessions
         {
             var expected = CreateSampleState();
 
-            var sessionManager = new SessionManager(TimeSpan.FromDays(1), expected);
+            var sessionManager = new SessionManager(expected);
 
             var actual = sessionManager.GetState();
 
@@ -72,33 +68,15 @@ namespace CSharpAnalytics.Test.Sessions
         public void SessionManager_Referrer_Property_Can_Be_Set()
         {
             var referrer = new Uri("http://stickertales.com");
-            var sessionManager = new SessionManager(TimeSpan.FromSeconds(19), null) { Referrer = referrer };
+            var sessionManager = new SessionManager(null) { Referrer = referrer };
 
             Assert.AreEqual(referrer, sessionManager.Referrer);
         }
 
         [TestMethod]
-        public void SessionManager_Creates_New_Session_When_Hit_After_Timeout()
-        {
-            var timeout = TimeSpan.FromSeconds(2);
-            var sessionManager = new SessionManager(timeout, null);
-
-            Assert.AreEqual(1, sessionManager.Session.Number);
-
-            var starting = DateTimeOffset.Now;
-            Task.Delay(timeout + TimeSpan.FromSeconds(1)).Wait();
-
-            sessionManager.Hit();
-            Assert.AreEqual(2, sessionManager.Session.Number);
-            Assert.IsTrue(sessionManager.Session.StartedAt >= starting, "Session StartedAt too early");
-            Assert.IsTrue(sessionManager.Session.StartedAt <= DateTimeOffset.Now, "Session StartedAt too late");
-        }
-
-        [TestMethod]
         public void SessionManager_Creates_New_Session_When_Requested()
         {
-            var timeout = TimeSpan.FromSeconds(200);
-            var sessionManager = new SessionManager(timeout, null);
+            var sessionManager = new SessionManager(null);
 
             Assert.AreEqual(1, sessionManager.Session.Number);
 
@@ -110,36 +88,11 @@ namespace CSharpAnalytics.Test.Sessions
             Assert.IsTrue(sessionManager.Session.StartedAt <= DateTimeOffset.Now, "Session StartedAt too late");
         }
 
-        [TestMethod]
-        public void SessionManager_Creates_New_Session_In_A_Thread_Safe_Way()
-        {
-            var timeout = TimeSpan.FromSeconds(2);
-            var sessionManager = new SessionManager(timeout, null);
-
-            Task.Delay(timeout + TimeSpan.FromSeconds(1)).Wait();
-
-            Task.WaitAll(
-                Task.Run(() => { for (var i = 0; i < 500; i++) sessionManager.Hit(); }),
-                Task.Run(() => { for (var i = 0; i < 500; i++) sessionManager.Hit(); }),
-                Task.Run(() => { for (var i = 0; i < 500; i++) sessionManager.Hit(); })
-            );
-
-            Task.Delay(timeout + TimeSpan.FromSeconds(1)).Wait();
-
-            Task.WaitAll(
-                Task.Run(() => { for (var i = 0; i < 500; i++) sessionManager.Hit(); }),
-                Task.Run(() => { for (var i = 0; i < 500; i++) sessionManager.Hit(); }),
-                Task.Run(() => { for (var i = 0; i < 500; i++) sessionManager.Hit(); })
-            );
-
-            Assert.AreEqual(3, sessionManager.Session.Number);
-            Assert.AreEqual(1500, sessionManager.Session.HitCount);
-        }
 
         [TestMethod]
         public void SessionManager_SessionStatus_Is_Starting_For_New_Session()
         {
-            var sessionManager = new SessionManager(TimeSpan.FromSeconds(5), null);
+            var sessionManager = new SessionManager(null);
 
             Assert.AreEqual(SessionStatus.Starting, sessionManager.SessionStatus);
         }
@@ -147,7 +100,7 @@ namespace CSharpAnalytics.Test.Sessions
         [TestMethod]
         public void SessionManager_SessionStatus_Is_Active_After_First_Hit()
         {
-            var sessionManager = new SessionManager(TimeSpan.FromSeconds(5), null);
+            var sessionManager = new SessionManager(null);
             sessionManager.Hit();
 
             Assert.AreEqual(SessionStatus.Active, sessionManager.SessionStatus);
@@ -156,7 +109,7 @@ namespace CSharpAnalytics.Test.Sessions
         [TestMethod]
         public void SessionManager_SessionStatus_Is_Ending_After_End()
         {
-            var sessionManager = new SessionManager(TimeSpan.FromSeconds(5), null);
+            var sessionManager = new SessionManager(null);
             sessionManager.Hit();
             sessionManager.End();
 
@@ -166,7 +119,7 @@ namespace CSharpAnalytics.Test.Sessions
         [TestMethod]
         public void SessionManager_SessionStatus_Is_Starting_After_Hit_After_End()
         {
-            var sessionManager = new SessionManager(TimeSpan.FromSeconds(5), null);
+            var sessionManager = new SessionManager(null);
             sessionManager.Hit();
             sessionManager.End();
             sessionManager.Hit();

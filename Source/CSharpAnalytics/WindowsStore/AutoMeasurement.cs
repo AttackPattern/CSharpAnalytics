@@ -32,6 +32,7 @@ namespace CSharpAnalytics.WindowsStore
     /// </summary>
     public static class AutoMeasurement
     {
+        private const string ApplicationLifecycleEvent = "ApplicationLifecycle";
         private const string RequestQueueFileName = "CSharpAnalytics-MeasurementQueue";
         private const string SessionStateFileName = "CSharpAnalytics-MeasurementSession";
         private const int MaximumRequestsToPersist = 50;
@@ -41,12 +42,12 @@ namespace CSharpAnalytics.WindowsStore
         private static readonly MeasurementAnalyticsClient client = new MeasurementAnalyticsClient();
         private static readonly ProductInfoHeaderValue userAgentCSharpAnalytics = new ProductInfoHeaderValue("CSharpAnalytics", "0.1");
 
-        private static string windowsUserAgent;
+        private static DataTransferManager attachedDataTransferManager;
+        private static Frame attachedFrame;
+        private static TimeSpan lastUploadInterval;
         private static BackgroundHttpRequester requester;
         private static SessionManager sessionManager;
-        private static Frame attachedFrame;
-        private static DataTransferManager attachedDataTransferManager;
-        private static TimeSpan lastUploadInterval;
+        private static string windowsUserAgent;
 
         /// <summary>
         /// Access to the MeasurementAnalyticsClient necessary to send additional events.
@@ -64,11 +65,11 @@ namespace CSharpAnalytics.WindowsStore
         {
             lastUploadInterval = uploadInterval ?? TimeSpan.FromSeconds(5);
             await CacheWindowsUserAgent();
-            await StartRequesterAsync();
-            await RestoreSessionAsync(TimeSpan.FromMinutes(20));
+            await StartRequesterAsync();            
+            sessionManager = new SessionManager(await LoadSessionState());
 
             Client.Configure(configuration, sessionManager, new WindowsStoreEnvironment(), requester.Add);
-            Client.TrackEvent("Start", "ApplicationLifecycle");
+            Client.TrackEvent("Start", ApplicationLifecycleEvent);
 
             HookEvents();
         }
@@ -94,7 +95,8 @@ namespace CSharpAnalytics.WindowsStore
                 sessionManager.VisitorStatus = VisitorStatus.Active;
                 if (!requester.IsStarted)
                     requester.Start(lastUploadInterval);
-                await SaveSessionAsync();
+
+                await SaveSessionState(sessionManager.GetState());
             }
         }
 
@@ -109,7 +111,8 @@ namespace CSharpAnalytics.WindowsStore
 
             if (frame != attachedFrame)
             {
-                if (attachedFrame != null) attachedFrame.Navigated -= FrameNavigated;
+                if (attachedFrame != null)
+                    attachedFrame.Navigated -= FrameNavigated;
                 frame.Navigated += FrameNavigated;
                 attachedFrame = frame;
             }
@@ -149,7 +152,7 @@ namespace CSharpAnalytics.WindowsStore
         private static async void ApplicationOnResuming(object sender, object o)
         {
             await StartRequesterAsync();
-            Client.TrackEvent("Resume", "ApplicationLifecycle");
+            Client.TrackEvent("Resume", ApplicationLifecycleEvent);
         }
 
         /// <summary>
@@ -160,7 +163,7 @@ namespace CSharpAnalytics.WindowsStore
         private static async void ApplicationOnSuspending(object sender, SuspendingEventArgs suspendingEventArgs)
         {
             var deferral = suspendingEventArgs.SuspendingOperation.GetDeferral();
-            Client.Track(new EventActivity("Suspend", "ApplicationLifecycle"), true); // Stop the session
+            Client.Track(new EventActivity("Suspend", ApplicationLifecycleEvent), true); // Stop the session
             await SuspendRequesterAsync();
             deferral.Complete();
         }
@@ -326,7 +329,8 @@ namespace CSharpAnalytics.WindowsStore
         /// <returns>Uri with final payload to be sent.</returns>
         private async static Task<Uri> RejoinPayload(HttpRequestMessage requestMessage)
         {
-            if (requestMessage.Content == null) return requestMessage.RequestUri;
+            if (requestMessage.Content == null)
+                return requestMessage.RequestUri;
 
             var bodyPayload = await requestMessage.Content.ReadAsStringAsync();
             return new UriBuilder(requestMessage.RequestUri) { Query = bodyPayload }.Uri;
@@ -345,27 +349,25 @@ namespace CSharpAnalytics.WindowsStore
                 recentRequestsToPersist = pendingRequests.Skip(pendingRequests.Count - MaximumRequestsToPersist).ToList();
             }
             await LocalFolderContractSerializer<List<Uri>>.SaveAsync(recentRequestsToPersist, RequestQueueFileName);
-            await SaveSessionAsync();
+            await SaveSessionState(sessionManager.GetState());
         }
 
         /// <summary>
-        /// Restores the session manager using saved session state or creates a brand new visitor if none exists.
+        /// Load the session state from storage if it exists, null if it does not.
         /// </summary>
-        /// <param name="sessionTimeout">How long a session can be inactive for before it ends.</param>
-        /// <returns>Task that completes when the SessionManager is ready.</returns>
-        private static async Task RestoreSessionAsync(TimeSpan sessionTimeout)
+        /// <returns>Task that completes when the SessionState is available.</returns>
+        private static async Task<SessionState> LoadSessionState()
         {
-            var sessionState = await LocalFolderContractSerializer<SessionState>.RestoreAsync(SessionStateFileName);
-            sessionManager = new SessionManager(sessionTimeout, sessionState);
+            return await LocalFolderContractSerializer<SessionState>.RestoreAsync(SessionStateFileName);
         }
 
         /// <summary>
-        /// Save the session to ensure state is preseved across application launches.
+        /// Save the session state to preserve state between application launches.
         /// </summary>
-        /// <returns>Task that completes when the session has been saved.</returns>
-        private static async Task SaveSessionAsync()
+        /// <returns>Task that completes when the session state has been saved.</returns>
+        private static async Task SaveSessionState(SessionState sessionState)
         {
-            await LocalFolderContractSerializer<SessionState>.SaveAsync(sessionManager.GetState(), SessionStateFileName);
+            await LocalFolderContractSerializer<SessionState>.SaveAsync(sessionState, SessionStateFileName);
         }
     }
 }

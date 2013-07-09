@@ -142,6 +142,7 @@
     <Compile Include="Sessions\Session.cs" />
     <Compile Include="Sessions\SessionManager.cs" />
     <Compile Include="Sessions\SessionState.cs" />
+    <Compile Include="Sessions\TimeoutSessionManager.cs" />
     <Compile Include="Sessions\Visitor.cs" />
     <Compile Include="WindowsStore\AutoMeasurement.cs" />
     <Compile Include="AutoMeasurement\ITrackOwnView.cs" />

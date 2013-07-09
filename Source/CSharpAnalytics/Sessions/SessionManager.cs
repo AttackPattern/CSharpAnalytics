@@ -14,21 +14,19 @@ namespace CSharpAnalytics.Sessions
     /// </summary>
     public class SessionManager
     {
-        private readonly object newSessionLock = new object();
-        private readonly TimeSpan timeout;
         private readonly Visitor visitor;
-        private DateTimeOffset lastActivityAt = DateTimeOffset.Now;
+
+        protected DateTimeOffset lastActivityAt = DateTimeOffset.Now;
+        protected readonly object newSessionLock = new object();
 
         /// <summary>
         /// Recreate a SessionManager from state.
         /// </summary>
         /// <param name="timeout">How long before a session will expire if no activity is seen.</param>
-        /// <param name="sessionState">SessionState containing details captured from a previous SessionManager.</param>
+        /// <param name="sessionState">SessionState containing details captured from a previous SessionManager or null if no previous SessionManager.</param>
         /// <returns>Recreated SessionManager.</returns>
-        public SessionManager(TimeSpan timeout, SessionState sessionState)
+        public SessionManager(SessionState sessionState)
         {
-            this.timeout = timeout;
-
             if (sessionState != null)
             {
                 visitor = new Visitor(sessionState.VisitorId, sessionState.FirstVisitAt);
@@ -74,11 +72,6 @@ namespace CSharpAnalytics.Sessions
         public Session Session { get; private set; }
 
         /// <summary>
-        /// How long before a session will expire if no activity is seen.
-        /// </summary>
-        public TimeSpan Timeout { get { return timeout; } }
-
-        /// <summary>
         /// Visitor.
         /// </summary>
         public Visitor Visitor { get { return visitor; } }
@@ -118,12 +111,20 @@ namespace CSharpAnalytics.Sessions
         /// <summary>
         /// Record a hit to this session to ensure counts and timeouts are honoured.
         /// </summary>
-        internal void Hit()
+        internal virtual void Hit()
         {
-            var now = DateTimeOffset.Now;
+            lastActivityAt = DateTimeOffset.Now;
 
-            StartNewSessionIfTimedOut(now);
+            MoveToNextSessionStatus();
 
+            Session.IncreaseHitCount();
+        }
+
+        /// <summary>
+        /// Move to the next session status, e.g. Ending to Starting, Starting to Active.
+        /// </summary>
+        private void MoveToNextSessionStatus()
+        {
             switch (SessionStatus)
             {
                 case SessionStatus.Ending:
@@ -133,15 +134,10 @@ namespace CSharpAnalytics.Sessions
                     SessionStatus = SessionStatus.Active;
                     break;
             }
-
-            if (now > lastActivityAt)
-                lastActivityAt = now;
-
-            Session.IncreaseHitCount();
         }
 
         /// <summary>
-        /// Tell the session manager it is ending.
+        /// End the current session.
         /// </summary>
         internal void End()
         {
@@ -149,39 +145,10 @@ namespace CSharpAnalytics.Sessions
         }
 
         /// <summary>
-        /// Starts are new session if the previous one has expired.
+        /// Start a new session.
         /// </summary>
-        /// <param name="activityStartedAt">When this hit activity started.</param>
-        private void StartNewSessionIfTimedOut(DateTimeOffset activityStartedAt)
-        {
-            // Two threads could trigger activities back to back after a session ends, e.g. restarting the app
-            // after some time spent suspended.  Only let one of them cause a new session to be started.
-            while (TimeSinceLastActivity(activityStartedAt) > timeout)
-            {
-                lock (newSessionLock)
-                {
-                    if (TimeSinceLastActivity(activityStartedAt) > timeout)
-                        StartNewSession(activityStartedAt);
-                    lastActivityAt = activityStartedAt;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Calculate the elapsed time since the last activity.
-        /// </summary>
-        /// <param name="nextActivityTime">Next activity start time.</param>
-        /// <returns>Elapsed time since the last activity.</returns>
-        private TimeSpan TimeSinceLastActivity(DateTimeOffset nextActivityTime)
-        {
-            return nextActivityTime - lastActivityAt;
-        }
-
-        /// <summary>
-        /// Start a new session for this Visitor.
-        /// </summary>
-        /// <param name="startedAt">When this session started at.</param>
-        private void StartNewSession(DateTimeOffset startedAt)
+        /// <param name="startedAt">When this session started.</param>
+        protected void StartNewSession(DateTimeOffset startedAt)
         {
             lock (newSessionLock)
             {

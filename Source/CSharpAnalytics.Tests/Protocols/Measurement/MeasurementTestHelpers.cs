@@ -10,7 +10,7 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
 
         public static SessionManager CreateSessionManager()
         {
-            return new SessionManager(TimeSpan.FromSeconds(20), new SessionState());
+            return new SessionManager(new SessionState());
         }
 
         public static Environment CreateEnvironment()
