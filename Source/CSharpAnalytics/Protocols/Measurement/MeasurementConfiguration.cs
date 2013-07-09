@@ -18,6 +18,8 @@ namespace CSharpAnalytics.Protocols.Measurement
         private readonly string applicationName;
         private readonly string applicationVersion;
 
+        private double sampleRate = 100.0; // Track all visitors by default
+
         /// <summary>
         /// Google Analytics provided property id in the format UA-XXXX-Y.
         /// </summary>
@@ -42,6 +44,29 @@ namespace CSharpAnalytics.Protocols.Measurement
         /// Send analytics requests over HTTPS/SSL if true, over HTTP if not.
         /// </summary>
         public bool UseSsl { get; set; }
+
+        /// <summary>
+        /// Sample rate percentage to determine how likely new visitors will be tracked.
+        /// </summary>
+        /// <remarks>
+        /// Defaults to 100 meaning all visitors will be tracked.
+        /// Setting this to other values means you need to manually adjust all figures in
+        /// the analytics reports. If you are going to change the value you should bump the
+        /// app version number and be prepared to run reports multiple times, adjust each reports
+        /// figures for that revisions sample rate and then combine them together.
+        /// Only use this if you really need sample rates because you will have too much data
+        /// for your analytics account to handle otherwise.
+        /// </remarks>
+        public double SampleRate
+        {
+            get { return sampleRate; }
+            set
+            {
+                if (value < 0 || value > 100)
+                    throw new ArgumentOutOfRangeException("SampleRate is a percentage and must be between 0 and 100");
+                sampleRate = value;
+            }
+        }
         
         /// <summary>
         /// Create a new cofiguration for analytics.

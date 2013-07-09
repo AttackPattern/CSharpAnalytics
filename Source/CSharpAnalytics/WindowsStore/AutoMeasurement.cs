@@ -65,8 +65,10 @@ namespace CSharpAnalytics.WindowsStore
         {
             lastUploadInterval = uploadInterval ?? TimeSpan.FromSeconds(5);
             await CacheWindowsUserAgent();
-            await StartRequesterAsync();            
-            sessionManager = new SessionManager(await LoadSessionState());
+            await StartRequesterAsync();
+
+            var sessionState = await LoadSessionState();
+            sessionManager = new SessionManager(sessionState, configuration.SampleRate);
 
             Client.Configure(configuration, sessionManager, new WindowsStoreEnvironment(), requester.Add);
             Client.TrackEvent("Start", ApplicationLifecycleEvent);
