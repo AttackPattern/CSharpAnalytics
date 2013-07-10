@@ -48,6 +48,7 @@ namespace CSharpAnalytics.WindowsStore
         private static BackgroundHttpRequester requester;
         private static SessionManager sessionManager;
         private static string windowsUserAgent;
+        private static bool? delayedOptOut;
 
         /// <summary>
         /// Access to the MeasurementAnalyticsClient necessary to send additional events.
@@ -60,13 +61,16 @@ namespace CSharpAnalytics.WindowsStore
         /// </summary>
         /// <param name="configuration">Configuration to use, must at a minimum specify your Google Analytics ID and app name.</param>
         /// <param name="uploadInterval">How often to upload to the server. Lower times = more traffic but realtime. Defaults to 5 seconds.</param>
-        /// <example>await AutoMeasurement.StartAsync(new MeasurementConfiguration("UA-123123123-1", "MyApp", "1.0.0.0"));</example>
+        /// <example>AutoMeasurement.StartAsync(new MeasurementConfiguration("UA-123123123-1", "MyApp", "1.0.0.0"));</example>
         public static async void StartAsync(MeasurementConfiguration configuration, TimeSpan? uploadInterval = null)
         {
             lastUploadInterval = uploadInterval ?? TimeSpan.FromSeconds(5);
             await CacheWindowsUserAgent();
-            await StartRequesterAsync();            
-            sessionManager = new SessionManager(await LoadSessionState());
+            await StartRequesterAsync();
+
+            var sessionState = await LoadSessionState();
+            sessionManager = new SessionManager(sessionState);
+            if (delayedOptOut != null) SetOptOut(delayedOptOut.Value);
 
             Client.Configure(configuration, sessionManager, new WindowsStoreEnvironment(), requester.Add);
             Client.TrackEvent("Start", ApplicationLifecycleEvent);
@@ -84,6 +88,14 @@ namespace CSharpAnalytics.WindowsStore
         /// </remarks>
         public static async void SetOptOut(bool optOut)
         {
+            if (sessionManager == null)
+            {
+                delayedOptOut = optOut;
+                return;
+            }
+
+            delayedOptOut = null;
+
             if (optOut && sessionManager.VisitorStatus == VisitorStatus.Active)
             {
                 sessionManager.VisitorStatus = VisitorStatus.OptedOut;
