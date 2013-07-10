@@ -61,8 +61,8 @@ namespace CSharpAnalytics.WindowsStore
         /// </summary>
         /// <param name="configuration">Configuration to use, must at a minimum specify your Google Analytics ID and app name.</param>
         /// <param name="uploadInterval">How often to upload to the server. Lower times = more traffic but realtime. Defaults to 5 seconds.</param>
-        /// <example>AutoMeasurement.StartAsync(new MeasurementConfiguration("UA-123123123-1", "MyApp", "1.0.0.0"));</example>
-        public static async void StartAsync(MeasurementConfiguration configuration, TimeSpan? uploadInterval = null)
+        /// <example>var analyticsTask = AutoMeasurement.StartAsync(new MeasurementConfiguration("UA-123123123-1", "MyApp", "1.0.0.0"));</example>
+        public static async Task StartAsync(MeasurementConfiguration configuration, TimeSpan? uploadInterval = null)
         {
             lastUploadInterval = uploadInterval ?? TimeSpan.FromSeconds(5);
             await CacheWindowsUserAgent();

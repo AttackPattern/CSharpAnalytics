@@ -72,13 +72,15 @@ The easiest way to start is to use the AutoMeasurement helper class. It hooks in
 
 Simply add two lines to your App.xaml.cs OnLaunched method. At the start of the method add:
 
-`AutoMeasurement.StartAsync(new MeasurementConfiguration("UA-319000-10"));`
+`var analyticsTask = AutoMeasurement.StartAsync(new MeasurementConfiguration("UA-319000-8"));`
 
-Replacing UA-319000-10 with your own Analytics property ID. At the end of the method add:
+Replacing UA-319000-8 with your own Analytics property ID. At the end of the method add:
 
 `AutoMeasurement.Attach(rootFrame);`
 
 Check out the CSharpAnalytics.Sample.WindowsStore application if still unsure of usage.
+
+NOTE: There is no need to await for the analyticsTask to complete. In fact doing so will slow down your app start-up!
 
 Going further
 -------------
@@ -140,7 +142,7 @@ Future enhancements
 -------------------
 1. Add support for Windows 8 network metering modes
 1. Additional platforms (Windows Phone 7/8, Silverlight, Mono)
-1. Throttling of hits as per official SDKs
+1. Throttling & replentishing of hits as per official SDKs
 1. Sample rates
 1. Configurable session management modes
 1. In-app purchase integration
