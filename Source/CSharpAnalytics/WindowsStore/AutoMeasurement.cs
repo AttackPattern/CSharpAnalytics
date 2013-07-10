@@ -35,7 +35,7 @@ namespace CSharpAnalytics.WindowsStore
         private const string ApplicationLifecycleEvent = "ApplicationLifecycle";
         private const string RequestQueueFileName = "CSharpAnalytics-MeasurementQueue";
         private const string SessionStateFileName = "CSharpAnalytics-MeasurementSession";
-        private const int MaximumRequestsToPersist = 50;
+        private const int MaximumRequestsToPersist = 60;
 
         private static readonly ProtocolDebugger protocolDebugger = new ProtocolDebugger(s => Debug.WriteLine(s), MeasurementParameterDefinitions.All);
         private static readonly TypedEventHandler<DataTransferManager, TargetApplicationChosenEventArgs> socialShare = (sender, e) => Client.TrackSocial("ShareCharm", e.ApplicationName);
