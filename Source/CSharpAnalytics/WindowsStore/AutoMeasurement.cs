@@ -139,7 +139,14 @@ namespace CSharpAnalytics.WindowsStore
         /// </summary>
         internal static VisitorStatus VisitorStatus
         {
-            get { return sessionManager.VisitorStatus; }
+            get
+            {
+                // Allow AnalyticsUserOption to function at design time.
+                if (sessionManager == null)
+                    return delayedOptOut == true ? VisitorStatus.OptedOut : VisitorStatus.Active;
+
+                return sessionManager.VisitorStatus;
+            }
         }
 
         /// <summary>
