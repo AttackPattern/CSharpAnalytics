@@ -22,9 +22,9 @@ namespace CSharpAnalytics.WindowsStore
         public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
-        /// Whether a user has allowed anonymous usage data or not.
+        /// Whether a user has allowed usage data collection or not.
         /// </summary>
-        public bool AllowAnonymousUsageData
+        public bool AllowUsageDataCollection
         {
             get { return AutoMeasurement.VisitorStatus == VisitorStatus.Active; }
             set

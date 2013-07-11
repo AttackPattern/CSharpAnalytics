@@ -133,8 +133,8 @@
             <!-- Settings Panel Content -->
             <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="1">
                 <StackPanel x:Name="FlyoutContent" Grid.Row="1" Grid.Column="1" Orientation="Vertical" Margin="40,33,0,0">
-                    <ToggleSwitch Header="Send anonymous usage data"
-                                IsOn="{Binding Source={StaticResource AnalyticsUserOptions}, Path=AllowAnonymousUsageData, Mode=TwoWay}"
+                    <ToggleSwitch Header="Usage data collection"
+                                IsOn="{Binding Source={StaticResource AnalyticsUserOptions}, Path=AllowUsageDataCollection, Mode=TwoWay}"
                                 Margin="-6,15,0,0" HorizontalAlignment="Stretch" />
                 </StackPanel>
             </ScrollViewer>
