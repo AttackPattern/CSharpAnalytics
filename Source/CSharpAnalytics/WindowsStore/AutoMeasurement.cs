@@ -18,7 +18,6 @@ using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
-using Windows.System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
@@ -40,15 +39,15 @@ namespace CSharpAnalytics.WindowsStore
         private static readonly ProtocolDebugger protocolDebugger = new ProtocolDebugger(s => Debug.WriteLine(s), MeasurementParameterDefinitions.All);
         private static readonly TypedEventHandler<DataTransferManager, TargetApplicationChosenEventArgs> socialShare = (sender, e) => Client.TrackSocial("ShareCharm", e.ApplicationName);
         private static readonly MeasurementAnalyticsClient client = new MeasurementAnalyticsClient();
-        private static readonly ProductInfoHeaderValue userAgentCSharpAnalytics = new ProductInfoHeaderValue("CSharpAnalytics", "0.1");
+        private static readonly ProductInfoHeaderValue clientUserAgent = new ProductInfoHeaderValue("CSharpAnalytics", "0.1");
 
         private static DataTransferManager attachedDataTransferManager;
         private static Frame attachedFrame;
+        private static bool? delayedOptOut;
         private static TimeSpan lastUploadInterval;
         private static BackgroundHttpRequester requester;
         private static SessionManager sessionManager;
-        private static string windowsUserAgent;
-        private static bool? delayedOptOut;
+        private static string systemUserAgent;
 
         /// <summary>
         /// Access to the MeasurementAnalyticsClient necessary to send additional events.
@@ -65,7 +64,7 @@ namespace CSharpAnalytics.WindowsStore
         public static async Task StartAsync(MeasurementConfiguration configuration, TimeSpan? uploadInterval = null)
         {
             lastUploadInterval = uploadInterval ?? TimeSpan.FromSeconds(5);
-            await CacheWindowsUserAgent();
+            await CacheSystemUserAgent();
             await StartRequesterAsync();
 
             var sessionState = await LoadSessionState();
@@ -279,32 +278,33 @@ namespace CSharpAnalytics.WindowsStore
         /// <summary>
         /// Figure out the user agent and add it to the header collection.
         /// </summary>
-        /// <param name="userAgent">User agent header collection.</param>
-        private static void AddUserAgent(ICollection<ProductInfoHeaderValue> userAgent)
+        /// <param name="userAgents">User agent header collection.</param>
+        private static void AddUserAgent(ICollection<ProductInfoHeaderValue> userAgents)
         {
-            userAgent.Add(userAgentCSharpAnalytics);
+            userAgents.Add(clientUserAgent);
 
-            if (!String.IsNullOrEmpty(windowsUserAgent))
-                userAgent.Add(new ProductInfoHeaderValue(windowsUserAgent));
+            if (!String.IsNullOrEmpty(systemUserAgent))
+                userAgents.Add(new ProductInfoHeaderValue(systemUserAgent));
         }
 
         /// <summary>
         /// Get the Windows version number and processor architecture and cache it
         /// as a user agent string so it can be sent with HTTP requests.
         /// </summary>
-        /// <returns>String containing formatted Windows user agent.</returns>
-        private static async Task CacheWindowsUserAgent()
+        /// <returns>String containing formatted system parts of the user agent.</returns>
+        private static async Task CacheSystemUserAgent()
         {
             try
             {
-                var versionTask = SystemInformation.GetWindowsVersionAsync();
-                var processorTask = GetProcessorArchitectureAsync();
-                await Task.WhenAll(versionTask, processorTask);
-                windowsUserAgent = "(Windows NT " + versionTask.Result + "; " + processorTask.Result + ")";
+                var parts = new[] {
+                    "Windows NT " + await SystemInformation.GetWindowsVersionAsync(),
+                    GetProcessorArchitecture()
+                };
+
+                systemUserAgent = "(" + String.Join("; ", parts.Where(e => !String.IsNullOrEmpty(e))) + ")";                
             }
             catch
             {
-                windowsUserAgent = ""; // Couldn't figure it out, don't try again
             }
         }
 
@@ -316,13 +316,13 @@ namespace CSharpAnalytics.WindowsStore
         /// processor strings.
         /// </remarks>
         /// <returns>String containing the processor architecture.</returns>
-        private static async Task<string> GetProcessorArchitectureAsync()
+        private static string GetProcessorArchitecture()
         {
-            switch (await SystemInformation.GetProcessorArchitectureAsync())
+            switch (SystemInformation.GetProcessorArchitecture())
             {
-                case ProcessorArchitecture.X64:
+                case ProcessorArchitecture.AMD64:
                     return "x64";
-                case ProcessorArchitecture.Arm:
+                case ProcessorArchitecture.ARM:
                     return "ARM";
                 default:
                     return "";
