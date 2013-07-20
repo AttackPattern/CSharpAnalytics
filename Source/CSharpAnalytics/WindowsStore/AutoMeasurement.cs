@@ -69,7 +69,7 @@ namespace CSharpAnalytics.WindowsStore
             await StartRequesterAsync();
 
             var sessionState = await LoadSessionState();
-            sessionManager = new SessionManager(sessionState);
+            sessionManager = new SessionManager(sessionState, configuration.SampleRate);
             if (delayedOptOut != null) SetOptOut(delayedOptOut.Value);
 
             Client.Configure(configuration, sessionManager, new WindowsStoreEnvironment(), requester.Add);
