@@ -29,6 +29,18 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
 
             Assert.IsTrue(configuration.AnonymizeIp);
             Assert.IsFalse(configuration.UseSsl);
+            Assert.AreEqual(100.0, configuration.SampleRate);
+        }
+
+        [TestMethod]
+        public void MeasurementConfiguration_SampleRate_Property_Can_Be_Set()
+        {
+            var expected = 51.2;
+            var configuration = new MeasurementConfiguration("UA-1234-5", "ApplicationName", "1.2.3.4") {
+                SampleRate = expected
+            };
+
+            Assert.AreEqual(expected, configuration.SampleRate);
         }
 
 #if WINDOWS_STORE
@@ -42,6 +54,20 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
         public void MeasurementConfiguration_Constructor_Throws_ArgumentException_If_AccountID_Does_Not_Have_Two_Numeric_Parts()
         {
             Assert.ThrowsException<ArgumentException>(() => new MeasurementConfiguration("UA-1234", "ApplicationName", "1.2.3.4"));
+        }
+
+        [TestMethod]
+        public void MeasurementConfiguration_SampleRate_Property_Throws_ArgumentOutOfRangeException_If_Below_0()
+        {
+            var configuration = new MeasurementConfiguration("UA-1234-5", "ApplicationName", "1.2.3.4");
+            Assert.ThrowsException<ArgumentOutOfRangeException>(() => configuration.SampleRate = -0.01);
+        }
+
+        [TestMethod]
+        public void MeasurementConfiguration_SampleRate_Property_Throws_ArgumentOutOfRangeException_If_Above_100()
+        {
+            var configuration = new MeasurementConfiguration("UA-1234-5", "ApplicationName", "1.2.3.4");
+            Assert.ThrowsException<ArgumentOutOfRangeException>(() => configuration.SampleRate = 100.01);
         }
 
         [TestMethod]
@@ -68,6 +94,22 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
         public void MeasurementConfiguration_Constructor_Throws_ArgumentException_If_AccountID_Does_Not_Have_Two_Numeric_Parts()
         {
             var configuration = new MeasurementConfiguration("UA-1234", "ApplicationName", "1.2.3.4");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void MeasurementConfiguration_SampleRate_Property_Throws_ArgumentOutOfRangeException_If_Below_0()
+        {
+            var configuration = new MeasurementConfiguration("UA-1234-5", "ApplicationName", "1.2.3.4");
+            configuration.SampleRate = -0.01;
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void MeasurementConfiguration_SampleRate_Property_Throws_ArgumentOutOfRangeException_If_Above_100()
+        {
+            var configuration = new MeasurementConfiguration("UA-1234-5", "ApplicationName", "1.2.3.4");
+            configuration.SampleRate = 100.01;
         }
 #endif
     }

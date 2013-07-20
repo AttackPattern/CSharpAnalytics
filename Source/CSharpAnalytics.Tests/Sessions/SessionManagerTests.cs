@@ -127,6 +127,70 @@ namespace CSharpAnalytics.Test.Sessions
             Assert.AreEqual(SessionStatus.Starting, sessionManager.SessionStatus);
         }
 
+        [TestMethod]
+        public void SessionManager_SampleRate_0_Should_Never_Choose_Visitor()
+        {
+            for (var i = 0; i < 100; i++)
+            {
+                var sessionManager = new SessionManager(null, 0);
+                Assert.AreEqual(VisitorStatus.SampledOut, sessionManager.VisitorStatus);
+            }
+        }
+
+        [TestMethod]
+        public void SessionManager_SampleRate_100_Should_Always_Choose_Visitor()
+        {
+            for (var i = 0; i < 100; i++)
+            {
+                var sessionManager = new SessionManager(null, 100);
+                Assert.AreEqual(VisitorStatus.Active, sessionManager.VisitorStatus);
+            }
+        }
+
+        [TestMethod]
+        public void SessionManager_SampleRate_50_Should_Choose_Half_Of_The_Visitors()
+        {
+            TestSampleRateDistribution(50);
+        }
+
+        [TestMethod]
+        public void SessionManager_SampleRate_25_Should_Choose_Quarter_Of_The_Visitors()
+        {
+            TestSampleRateDistribution(25);
+        }
+
+        [TestMethod]
+        public void SessionManager_SampleRate_66_Should_Choose_Two_Thirds_Of_The_Visitors()
+        {
+            TestSampleRateDistribution(66);
+        }
+
+        private static void TestSampleRateDistribution(double sampleRate)
+        {
+            const int repetitions = 1000;
+
+            int sampledCount = 0;
+            var sessionManager = new SessionManager(null);
+
+            // Setup a linear distribution as random numbers are too unpredictable
+            var nextSelector = 0.0;
+            sessionManager.SampleSelector = () =>
+            {
+                var selector = nextSelector;
+                nextSelector += (100.0 / repetitions);
+                return selector;
+            };
+
+            for (var i = 0; i < repetitions; i++)
+            {
+                if (sessionManager.ShouldTrackThisNewVisitor(sampleRate))
+                    sampledCount++;
+            }
+
+            var expected = repetitions * (sampleRate / 100);
+            Assert.AreEqual(expected, sampledCount);
+        }
+
         private static readonly Random random = new Random();
 
         private static SessionState CreateSampleState()
