@@ -16,6 +16,7 @@ using System.Net.Http.Headers;
 using System.Reflection;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
+using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
 using Windows.System;
@@ -55,14 +56,21 @@ namespace CSharpAnalytics.WindowsStore
         /// </summary>
         public static MeasurementAnalyticsClient Client { get { return client; } }
 
+        [Obsolete("Please use the StartAsync overload that takes the LaunchActivatedEventArgs from your Application OnLaunched")]
+        public static Task StartAsync(MeasurementConfiguration configuration, TimeSpan? uploadInterval = null)
+        {
+            return StartAsync(configuration, null, uploadInterval);
+        }
+
         /// <summary>
         /// Initialize CSharpAnalytics by restoring the session state and starting the background sender and tracking
         /// the application lifecycle start event.
         /// </summary>
         /// <param name="configuration">Configuration to use, must at a minimum specify your Google Analytics ID and app name.</param>
+        /// <param name="launchArgs">Launch arguments from your Application OnLaunched to determine how the app was launched.</param>
         /// <param name="uploadInterval">How often to upload to the server. Lower times = more traffic but realtime. Defaults to 5 seconds.</param>
         /// <example>var analyticsTask = AutoMeasurement.StartAsync(new MeasurementConfiguration("UA-123123123-1", "MyApp", "1.0.0.0"));</example>
-        public static async Task StartAsync(MeasurementConfiguration configuration, TimeSpan? uploadInterval = null)
+        public static async Task StartAsync(MeasurementConfiguration configuration, IActivatedEventArgs launchArgs, TimeSpan? uploadInterval = null)
         {
             lastUploadInterval = uploadInterval ?? TimeSpan.FromSeconds(5);
             await CacheWindowsUserAgent();
@@ -73,7 +81,7 @@ namespace CSharpAnalytics.WindowsStore
             if (delayedOptOut != null) SetOptOut(delayedOptOut.Value);
 
             Client.Configure(configuration, sessionManager, new WindowsStoreEnvironment(), requester.Add);
-            Client.TrackEvent("Start", ApplicationLifecycleEvent);
+            Client.TrackEvent("Start", ApplicationLifecycleEvent, launchArgs.Kind.ToString());
 
             HookEvents();
         }
