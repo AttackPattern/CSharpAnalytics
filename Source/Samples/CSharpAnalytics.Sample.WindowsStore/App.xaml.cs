@@ -34,7 +34,7 @@ namespace CSharpAnalytics.Sample.WindowsStore
         protected override async void OnLaunched(LaunchActivatedEventArgs args)
         {
             // AutoMeasurement uses the Measurement Protocol API that Google's Native SDKs for iOS and Android use
-            var analyticsTask = AutoMeasurement.StartAsync(new MeasurementConfiguration("UA-319000-8"));
+            var analyticsTask = AutoMeasurement.StartAsync(new MeasurementConfiguration("UA-319000-8"), args);
 
             var rootFrame = Window.Current.Content as Frame;
 

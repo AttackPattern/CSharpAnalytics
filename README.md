@@ -72,7 +72,7 @@ The easiest way to start is to use the AutoMeasurement helper class. It hooks in
 
 Simply add two lines to your App.xaml.cs OnLaunched method. At the start of the method add:
 
-`var analyticsTask = AutoMeasurement.StartAsync(new MeasurementConfiguration("UA-319000-8"));`
+`var analyticsTask = AutoMeasurement.StartAsync(new MeasurementConfiguration("UA-319000-8"), args);`
 
 Replacing UA-319000-8 with your own Analytics property ID. At the end of the method add:
 
