@@ -3,7 +3,6 @@
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -21,17 +20,13 @@ namespace CSharpAnalytics.WindowsStore
     /// </remarks>
     public class SystemInformation
     {
-        private const string ItemNameKey = "System.ItemNameDisplay";
         private const string ModelNameKey = "System.Devices.ModelName";
         private const string ManufacturerKey = "System.Devices.Manufacturer";
         private const string DeviceClassKey = "{A45C254E-DF1C-4EFD-8020-67D146A850E0},10";
         private const string DisplayPrimaryCategoryKey = "{78C34FC8-104A-4ACA-9EA4-524D52996E57},97";
         private const string DeviceDriverVersionKey = "{A8B865DD-2E3D-4094-AD97-E593A70C75D6},3";
-
         private const string RootContainer = "{00000000-0000-0000-FFFF-FFFFFFFFFFFF}";
-
         private const string RootContainerQuery = "System.Devices.ContainerId:=\"" + RootContainer + "\"";
-
         private const string HalDeviceClass = "4d36e966-e325-11ce-bfc1-08002be10318";
 
         /// <summary>
@@ -97,13 +92,10 @@ namespace CSharpAnalytics.WindowsStore
             // unless you're using a custom HAL... We could try three different places in the
             // future (e.g. USB drivers, System timer) and let it tie-break.
             var halDevice = await GetHalDevice(DeviceDriverVersionKey);
-            if (halDevice != null && halDevice.Properties[DeviceDriverVersionKey] != null)
-            {
-                var versionParts = halDevice.Properties[DeviceDriverVersionKey].ToString().Split('.');
-                return string.Join(".", versionParts.Take(2).ToArray());
-            }
+            if (halDevice == null || halDevice.Properties[DeviceDriverVersionKey] == null) return null;
 
-            return null;
+            var versionParts = halDevice.Properties[DeviceDriverVersionKey].ToString().Split('.');
+            return string.Join(".", versionParts.Take(2).ToArray());
         }
 
         /// <summary>
@@ -118,32 +110,10 @@ namespace CSharpAnalytics.WindowsStore
             foreach (var rootDevice in rootDevices.Where(d => d.Properties != null && d.Properties.Any()))
             {
                 var lastProperty = rootDevice.Properties.Last();
-                if (lastProperty.Value != null)
-                    if (lastProperty.Value.ToString().Equals(HalDeviceClass))
-                        return rootDevice;
+                if (lastProperty.Value != null && lastProperty.Value.ToString().Equals(HalDeviceClass))
+                    return rootDevice;
             }
             return null;
-        }
-
-        /// <summary>
-        /// Finds the string that an enumeration of strings starts with.
-        /// </summary>
-        /// <param name="values">Enumeration of strings to examine.</param>
-        /// <returns>String that all values start with.</returns>
-        private static string FindStartsWith(IEnumerable<string> values)
-        {
-            string result = null;
-            foreach (var value in values)
-            {
-                result = result ?? value;
-                for (int i = 0; i < result.Length; i++)
-                    if (result[i] != value[i])
-                    {
-                        result = result.Substring(0, i);
-                        break;
-                    }
-            }
-            return result;
         }
 
         [DllImport("kernel32.dll")]
