@@ -154,19 +154,29 @@ namespace CSharpAnalytics.Protocols.Measurement
         /// <returns>Adjusted Uri to be requested instead.</returns>
         public Uri AdjustUriBeforeRequest(Uri uri)
         {
-            if (String.IsNullOrWhiteSpace(uri.Fragment)) return uri;
+            var parameters = GetQueryParameters(uri.GetComponents(UriComponents.Query, UriFormat.Unescaped));
+            AddQueueTime(uri, parameters);
+            return new UriBuilder(uri) { Query = GetQueryString(parameters), Fragment = "" }.Uri;
+        }
+
+        /// <summary>
+        /// Extract the timestamp from the URI fragment and turn it into a relative time offset as
+        /// the QT parameter.
+        /// </summary>
+        /// <param name="uri">URI to extract the timestamp fragment from.</param>
+        /// <param name="parameters">URI parameters to add the relative QT parameter to.</param>
+        private static void AddQueueTime(Uri uri, IDictionary<string, string> parameters)
+        {
+            if (String.IsNullOrWhiteSpace(uri.Fragment)) return;
+            var decodedFragment = uri.GetComponents(UriComponents.Fragment, UriFormat.Unescaped);
 
             DateTime utcHitTime;
-            var decodedFragment = uri.GetComponents(UriComponents.Fragment, UriFormat.Unescaped);
-            if (!DateTime.TryParse(decodedFragment, out utcHitTime)) return uri;
+            if (!DateTime.TryParse(decodedFragment, out utcHitTime)) return;
 
             var queueTime = DateTimeOffset.Now.Subtract(utcHitTime);
-            if (queueTime.TotalMilliseconds < 0) return uri;
+            if (queueTime.TotalMilliseconds < 0) return;
 
-            var parameters = GetQueryParameters(uri.GetComponents(UriComponents.Query, UriFormat.Unescaped));
             parameters["qt"] = queueTime.TotalMilliseconds.ToString("0", CultureInfo.InvariantCulture);
-
-            return new UriBuilder(uri) { Query = GetQueryString(parameters), Fragment = "" }.Uri;
         }
 
         /// <summary>
