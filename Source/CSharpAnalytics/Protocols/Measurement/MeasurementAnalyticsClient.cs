@@ -25,6 +25,11 @@ namespace CSharpAnalytics.Protocols.Measurement
         private MeasurementTracker tracker;
 
         /// <summary>
+        /// Event to allow you to hook in to capture or modify activities.
+        /// </summary>
+        public event EventHandler<IMeasurementActivity> OnTrack = delegate { };
+
+        /// <summary>
         /// Configure this MeasurementAnalyticsClient so it can start recording and sending analytics.
         /// </summary>
         /// <param name="configuration">Configuration settings for this client.</param>
@@ -49,6 +54,8 @@ namespace CSharpAnalytics.Protocols.Measurement
         {
             if (activity is AutoTimedEventActivity)
                 ((AutoTimedEventActivity)activity).End();
+
+            OnTrack(this, activity);
 
             var entry = new MeasurementActivityEntry(activity)
             {
@@ -155,7 +162,7 @@ namespace CSharpAnalytics.Protocols.Measurement
         public Uri AdjustUriBeforeRequest(Uri uri)
         {
             var parameters = GetQueryParameters(uri.GetComponents(UriComponents.Query, UriFormat.Unescaped));
-            AddQueueTime(uri, parameters);
+            AddQueueTimeFromFragment(uri, parameters);
             return new UriBuilder(uri) { Query = GetQueryString(parameters), Fragment = "" }.Uri;
         }
 
@@ -165,7 +172,7 @@ namespace CSharpAnalytics.Protocols.Measurement
         /// </summary>
         /// <param name="uri">URI to extract the timestamp fragment from.</param>
         /// <param name="parameters">URI parameters to add the relative QT parameter to.</param>
-        private static void AddQueueTime(Uri uri, IDictionary<string, string> parameters)
+        private static void AddQueueTimeFromFragment(Uri uri, IDictionary<string, string> parameters)
         {
             if (String.IsNullOrWhiteSpace(uri.Fragment)) return;
             var decodedFragment = uri.GetComponents(UriComponents.Fragment, UriFormat.Unescaped);

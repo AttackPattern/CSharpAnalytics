@@ -135,6 +135,31 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
             Assert.AreEqual(actual.Fragment, "");
         }
 
+        [TestMethod]
+        public void MeasurementAnalyticsClient_OnTrack_Fires_When_Tracked()
+        {
+            var fired = false;
+            var analyticsClient = new MeasurementAnalyticsClient();
+            
+            analyticsClient.OnTrack += (s, e) => fired = true;
+            analyticsClient.Track(new AppViewActivity("Testing"));
+
+            Assert.IsTrue(fired);
+        }
+
+        [TestMethod]
+        public void MeasurementAnalyticsClient_OnTrack_Fires_After_AutoTimedEvent_Ended()
+        {
+            DateTimeOffset? endedAt = null;
+            var analyticsClient = new MeasurementAnalyticsClient();
+            var autoTimedEvent = new AutoTimedEventActivity("Category", "Variable");
+
+            analyticsClient.OnTrack += (s, e) => { endedAt = ((AutoTimedEventActivity) e).EndedAt; };
+            analyticsClient.Track(autoTimedEvent);
+
+            Assert.IsNotNull(endedAt);
+        }
+
         private enum NotIntBacked : long
         {
             SomeValue
