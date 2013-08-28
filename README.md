@@ -74,15 +74,15 @@ The easiest way to start is to use the AutoMeasurement helper class. It hooks in
 
 Simply add three lines to your App.xaml.cs.
 
-1. At the top of the file add:
+At the top of the file add:
 
 `using CSharpAnalytics;`
 
-2. At the start of the OnLaunched method add (replacing UA-319000-8 with your own Google Analytics property ID):
+At the start of the OnLaunched method add (replacing UA-319000-8 with your own Google Analytics property ID):
 
 `var analyticsTask = AutoMeasurement.StartAsync(new MeasurementConfiguration("UA-319000-8"), args);`
 
-3. At the end of the OnLaunched method add:
+At the end of the OnLaunched method add:
 
 `AutoMeasurement.Attach(rootFrame);`
 
@@ -92,43 +92,7 @@ NOTE: There is no need to await for the analyticsTask to complete. In fact doing
 
 Going further
 -------------
-AutoMeasurement is a start but you'll certainly want to go further.
-
-**To allow users to opt in/out**
-
-There is a bindable class called AnalyticsUserOptions that can be bound to that automatically takes care of switching
-AutoMeasurement on and off. See the OptionsFlyout in the Windows 8 sample application for an example of usage.
-
-**To give a page a different name in analytics**
-
-The default name for a page is the class name of the page with "Page" removed from the end. e.g. "TopNewsPage" would be tracked as "TopNews".
-
-For a screen name that doesn't change based on data consider adding the AnalyticsScreenName attribute to the page class. e.g.
-
-```
-[AnalyticsScreenName("Top news")]
-class TopNewsPage {
-```
-
-For screen names that change depending on the data the screen is displaying add ITrackOwnView to the Page class. This empty marker interface does not require you do anything but signals to AutoMeasurement that you will track the screen view yourself. To do that you would add a line of code to the LoadState method of your page once the data has been loaded, e.g.
-
-`AutoMeasurement.Client.TrackAppView(item.Title);`
-
-**For additional user events**
-
-If you want to track when the video "Today's News" is played back:
-
-`AutoMeasurement.Client.TrackEvent("Play", "Video", "Today's News");`
-
-**For timing**
-
-If you want to track how long something takes:
-
-```
-var timedActivity = new AutoTimedEventActivity("Loading", "Pictures");
-// do something that takes time
-AutoMeasurement.Client.Track(timedActivity);
-```
+See our wiki [going further with CSharpAnalytics](https://github.com/AttackPattern/CSharpAnalytics/wiki/Going-further)
 
 Privacy
 -------
