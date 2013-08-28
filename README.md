@@ -99,7 +99,7 @@ For a screen name that doesn't change based on data consider adding the Analytic
 
 ```
 [AnalyticsScreenName("Top news")]
- class TopNewsPage {
+class TopNewsPage {
 ```
 
 For screen names that change depending on the data the screen is displaying add ITrackOwnView to the Page class. This empty marker interface does not require you do anything but signals to AutoMeasurement that you will track the screen view yourself. To do that you would add a line of code to the LoadState method of your page once the data has been loaded, e.g.
@@ -133,17 +133,17 @@ Privacy is very important to Google and Microsoft and it should be to you too. H
  
 In summary: **Do not share personally identifyable information**
 
-Untested
-----------------
-1. E-commerce tracking (Windows Store already has its own)
-1. Campaign tracking (Windows Store doesn't pass through necessary parameters)
+Incomplete
+----------
+1. E-commerce tracking - untested as Windows Store already has its own
+2. Crash tracking - not wired up in AutoAnalytics as Windows Store has its own 
+3. Campaign tracking - untested as Windows Store doesn't pass through necessary parameters
 
 Future enhancements
 -------------------
 1. Add support for Windows 8 network metering modes
 1. Additional platforms (Windows Phone 7/8, Silverlight, Mono)
 1. Throttling & replentishing of hits as per official SDKs
-1. Sample rates
 1. Configurable session management modes
 1. In-app purchase integration
 
