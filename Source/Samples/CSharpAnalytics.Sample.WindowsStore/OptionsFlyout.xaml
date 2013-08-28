@@ -5,7 +5,7 @@
     xmlns:common="using:CSharpAnalytics.Sample.WindowsStore.Common"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:analytics="using:CSharpAnalytics.WindowsStore"
+    xmlns:analytics="using:CSharpAnalytics"
     d:DesignWidth="346" mc:Ignorable="d">
 
     <UserControl.Resources>

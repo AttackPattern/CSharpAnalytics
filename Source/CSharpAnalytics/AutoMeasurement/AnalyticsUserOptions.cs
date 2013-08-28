@@ -6,7 +6,7 @@ using CSharpAnalytics.Sessions;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace CSharpAnalytics.WindowsStore
+namespace CSharpAnalytics
 {
     /// <summary>
     /// User options helper for AutoMeasurement.

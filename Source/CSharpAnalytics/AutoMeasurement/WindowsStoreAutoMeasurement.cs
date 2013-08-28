@@ -22,8 +22,9 @@ using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
+using CSharpAnalytics.WindowsStore;
 
-namespace CSharpAnalytics.WindowsStore
+namespace CSharpAnalytics
 {
     /// <summary>
     /// Helper class to get up and running with CSharpAnalytics in WindowsStore applications.
@@ -305,7 +306,7 @@ namespace CSharpAnalytics.WindowsStore
             try
             {
                 var parts = new[] {
-                    "Windows NT " + await SystemInformation.GetWindowsVersionAsync(),
+                    "Windows NT " + await WindowsStoreSystemInformation.GetWindowsVersionAsync(),
                     GetProcessorArchitecture()
                 };
 
@@ -326,7 +327,7 @@ namespace CSharpAnalytics.WindowsStore
         /// <returns>String containing the processor architecture.</returns>
         private static string GetProcessorArchitecture()
         {
-            switch (SystemInformation.GetProcessorArchitecture())
+            switch (WindowsStoreSystemInformation.GetProcessorArchitecture())
             {
                 case ProcessorArchitecture.AMD64:
                     return "x64";

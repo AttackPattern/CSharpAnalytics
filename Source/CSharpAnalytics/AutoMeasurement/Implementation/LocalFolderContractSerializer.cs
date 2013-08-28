@@ -8,7 +8,7 @@ using System.Runtime.Serialization;
 using System.Threading.Tasks;
 using Windows.Storage;
 
-namespace CSharpAnalytics.WindowsStore
+namespace CSharpAnalytics
 {
     /// <summary>
     /// Provides an easy way to serialize and deserialize simple classes to the local folder in
