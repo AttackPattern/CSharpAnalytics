@@ -92,7 +92,7 @@ NOTE: There is no need to await for the analyticsTask to complete. In fact doing
 
 Going further
 -------------
-See our wiki [going further with CSharpAnalytics](https://github.com/AttackPattern/CSharpAnalytics/wiki/Going-further)
+See [going further with CSharpAnalytics](https://github.com/AttackPattern/CSharpAnalytics/wiki/Going-further)
 
 Privacy
 -------
