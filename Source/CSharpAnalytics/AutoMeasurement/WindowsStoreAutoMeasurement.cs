@@ -73,7 +73,7 @@ namespace CSharpAnalytics
         public static async Task StartAsync(MeasurementConfiguration configuration, IActivatedEventArgs launchArgs, TimeSpan? uploadInterval = null)
         {
             lastUploadInterval = uploadInterval ?? TimeSpan.FromSeconds(5);
-            await CacheSystemUserAgent();
+            systemUserAgent = await WindowsStoreSystemInformation.GetSystemUserAgent();
             await StartRequesterAsync();
 
             var sessionState = await LoadSessionState();
@@ -294,48 +294,6 @@ namespace CSharpAnalytics
 
             if (!String.IsNullOrEmpty(systemUserAgent))
                 userAgents.Add(new ProductInfoHeaderValue(systemUserAgent));
-        }
-
-        /// <summary>
-        /// Get the Windows version number and processor architecture and cache it
-        /// as a user agent string so it can be sent with HTTP requests.
-        /// </summary>
-        /// <returns>String containing formatted system parts of the user agent.</returns>
-        private static async Task CacheSystemUserAgent()
-        {
-            try
-            {
-                var parts = new[] {
-                    "Windows NT " + await WindowsStoreSystemInformation.GetWindowsVersionAsync(),
-                    GetProcessorArchitecture()
-                };
-
-                systemUserAgent = "(" + String.Join("; ", parts.Where(e => !String.IsNullOrEmpty(e))) + ")";                
-            }
-            catch
-            {
-            }
-        }
-
-        /// <summary>
-        /// Determine the current processor architecture string for the user agent.
-        /// </summary>
-        /// <remarks>
-        /// The strings this returns should be compatible with web browser user agent
-        /// processor strings.
-        /// </remarks>
-        /// <returns>String containing the processor architecture.</returns>
-        private static string GetProcessorArchitecture()
-        {
-            switch (WindowsStoreSystemInformation.GetProcessorArchitecture())
-            {
-                case ProcessorArchitecture.AMD64:
-                    return "x64";
-                case ProcessorArchitecture.ARM:
-                    return "ARM";
-                default:
-                    return "";
-            }
         }
 
         /// <summary>
