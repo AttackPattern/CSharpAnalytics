@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Windows.Devices.Enumeration.Pnp;
 
-namespace CSharpAnalytics.WindowsStore
+namespace CSharpAnalytics
 {
     /// <summary>
     /// Obtain system information not conveniently exposed by WinRT APIs.
@@ -18,7 +18,7 @@ namespace CSharpAnalytics.WindowsStore
     /// The techniques used here are not bullet proof but are good enough for analytics.
     /// Do not use these methods or techniques for anything more important than that.
     /// </remarks>
-    public class SystemInformation
+    public class WindowsStoreSystemInformation
     {
         private const string ModelNameKey = "System.Devices.ModelName";
         private const string ManufacturerKey = "System.Devices.Manufacturer";

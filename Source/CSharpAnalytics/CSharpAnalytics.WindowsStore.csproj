@@ -119,6 +119,7 @@
     <Compile Include="Activities\SocialActivity.cs" />
     <Compile Include="Activities\TransactionItemActivity.cs" />
     <Compile Include="AutoMeasurement\AnalyticsScreenNameAttribute.cs" />
+    <Compile Include="AutoMeasurement\WindowsStoreAutoMeasurement.cs" />
     <Compile Include="Network\BackgroundHttpClientRequester.cs" />
     <Compile Include="Network\BackgroundHttpFuncRequester.cs" />
     <Compile Include="Protocols\Measurement\IMeasurementActivity.cs" />
@@ -132,10 +133,10 @@
     <Compile Include="Protocols\Measurement\MeasurementUriBuilder.cs" />
     <Compile Include="Protocols\Urchin\IUrchinActivity.cs" />
     <Compile Include="Network\BackgroundHttpRequester.cs" />
-    <Compile Include="IEnvironment.cs" />
+    <Compile Include="Environment\IEnvironment.cs" />
     <Compile Include="Protocols\ProtocolDebugger.cs" />
     <Compile Include="Protocols\ParameterDefinition.cs" />
-    <Compile Include="Environment.cs" />
+    <Compile Include="Environment\Environment.cs" />
     <Compile Include="Protocols\EpochTime.cs" />
     <Compile Include="Protocols\KeyValuePair.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -144,12 +145,11 @@
     <Compile Include="Sessions\SessionState.cs" />
     <Compile Include="Sessions\TimeoutSessionManager.cs" />
     <Compile Include="Sessions\Visitor.cs" />
-    <Compile Include="WindowsStore\AutoMeasurement.cs" />
     <Compile Include="AutoMeasurement\ITrackOwnView.cs" />
-    <Compile Include="WindowsStore\AnalyticsUserOptions.cs" />
-    <Compile Include="WindowsStore\SystemInformation.cs" />
-    <Compile Include="WindowsStore\WindowsStoreEnvironment.cs" />
-    <Compile Include="WindowsStore\LocalFolderContractSerializer.cs" />
+    <Compile Include="AutoMeasurement\AnalyticsUserOptions.cs" />
+    <Compile Include="AutoMeasurement\Implementation\WindowsStoreSystemInformation.cs" />
+    <Compile Include="Environment\WindowsStoreEnvironment.cs" />
+    <Compile Include="AutoMeasurement\Implementation\LocalFolderContractSerializer.cs" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' ">
     <VisualStudioVersion>11.0</VisualStudioVersion>

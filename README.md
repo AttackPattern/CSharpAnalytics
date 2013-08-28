@@ -72,11 +72,17 @@ The easiest way to start is to use the AutoMeasurement helper class. It hooks in
 * Operating system, window resolution, CPU type identification
 * Save/persist last 50 hits for offline/online support
 
-Simply add two lines to your App.xaml.cs OnLaunched method. At the start of the method add:
+Simply add three lines to your App.xaml.cs.
+
+1. At the top of the file add:
+
+`using CSharpAnalytics;`
+
+2. At the start of the OnLaunched method add (replacing UA-319000-8 with your own Google Analytics property ID):
 
 `var analyticsTask = AutoMeasurement.StartAsync(new MeasurementConfiguration("UA-319000-8"), args);`
 
-Replacing UA-319000-8 with your own Analytics property ID. At the end of the method add:
+3. At the end of the OnLaunched method add:
 
 `AutoMeasurement.Attach(rootFrame);`
 

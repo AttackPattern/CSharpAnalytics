@@ -122,7 +122,7 @@
     <Compile Include="Activities\TransactionActivityTests.cs" />
     <Compile Include="Activities\TransactionItemActivityTests.cs" />
     <Compile Include="AutoMeasurement\AnalyticsScreenNameAttributeTests.cs" />
-    <Compile Include="EnvironmentTests.cs" />
+    <Compile Include="Environment\EnvironmentTests.cs" />
     <Compile Include="Network\BackgroundHttpClientRequesterTests.cs" />
     <Compile Include="Network\BackgroundHttpRequesterTests.cs" />
     <Compile Include="Protocols\EpochTimeTests.cs" />
