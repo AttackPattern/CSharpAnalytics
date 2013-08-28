@@ -104,7 +104,7 @@ In summary: **Do not share personally identifyable information**
 Incomplete
 ----------
 1. E-commerce tracking - untested as Windows Store already has its own
-2. Crash tracking - not wired up in AutoAnalytics as Windows Store has its own 
+2. Crash tracking - not wired up in AutoMeasurement as Windows Store has its own 
 3. Campaign tracking - untested as Windows Store doesn't pass through necessary parameters
 
 Future enhancements
