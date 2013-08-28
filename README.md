@@ -65,10 +65,12 @@ Automatic analytics for Windows 8
 ---------------------------------
 The easiest way to start is to use the AutoMeasurement helper class. It hooks into a few events and will automatically give you:
 
-* Application launch/suspend events
+* Application launch, suspend, resume events
 * Visitor, session counts, time-spent
 * Social sharing events
-* Basic page navigation activity
+* Basic screen navigation activity
+* Operating system, window resolution, CPU type identification
+* Save/persist last 50 hits for offline/online support
 
 Simply add two lines to your App.xaml.cs OnLaunched method. At the start of the method add:
 
