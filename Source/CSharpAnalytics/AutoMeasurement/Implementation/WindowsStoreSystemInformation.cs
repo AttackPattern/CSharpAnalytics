@@ -30,6 +30,45 @@ namespace CSharpAnalytics
         private const string HalDeviceClass = "4d36e966-e325-11ce-bfc1-08002be10318";
 
         /// <summary>
+        /// Build a system user agent string that contains the Windows version number
+        /// and CPU architecture.
+        /// </summary>
+        /// <returns>String containing formatted system parts of the user agent.</returns>
+        public static async Task<string> GetSystemUserAgent()
+        {
+            try
+            {
+                var parts = new[] {
+                    "Windows NT " + await GetWindowsVersionAsync(),
+                    FormatForUserAgent(GetProcessorArchitecture())
+                };
+
+                return "(" + String.Join("; ", parts.Where(e => !String.IsNullOrEmpty(e))) + ")";
+            }
+            catch
+            {
+                return "";
+            }
+        }
+
+        /// <summary>
+        /// Format a ProcessorArchitecture as it would be expected in a user agent of a browser.
+        /// </summary>
+        /// <returns>String containing the format processor architecture.</returns>
+        private static string FormatForUserAgent(ProcessorArchitecture architecture)
+        {
+            switch (architecture)
+            {
+                case ProcessorArchitecture.AMD64:
+                    return "x64";
+                case ProcessorArchitecture.ARM:
+                    return "ARM";
+                default:
+                    return "";
+            }
+        }
+
+        /// <summary>
         /// Get the processor architecture of this computer.
         /// </summary>
         /// <returns>The processor architecture of this computer.</returns>
