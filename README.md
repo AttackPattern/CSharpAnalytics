@@ -33,6 +33,11 @@ Our goal is to support all major C# platforms. Right now we have project files f
 
 Windows 8 Store support also includes a sample app and AutoMeasurement to add basic analytics to your app with just two lines of code.
 
+Important notes
+---------------
+* This project is new and under active development, ensure suitability of code for your purposes
+* Windows 8 network metering is not honored by analytics at this time
+
 Features
 --------
 * Online and offline support with timestamping
@@ -41,16 +46,7 @@ Features
 * Manages visitor and session state
 * Built-in debug output window support (ga_debug.js style)
 
-Additionally there are some Windows 8 specific features:
-
-* AutoMeasurement can hook into a number of interesting events for you
-* Tracks operating system and version (Windows 8)
-* Helpers for device model, processor architecture
-
-Important notes
----------------
-* This project is new and under active development, ensure suitability of code for your purposes
-* Windows 8 network metering is not honored by analytics at this time
+Additionally on Windows 8 there is an automatic mode that wires up a lot of things for you, see Automatic analytics for Windows 8 below.
 
 Getting started
 ---------------
