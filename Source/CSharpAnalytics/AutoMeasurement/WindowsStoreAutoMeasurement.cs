@@ -61,12 +61,6 @@ namespace CSharpAnalytics
         /// </summary>
         public static Action<string> DebugWriter { get; set; }
 
-        [Obsolete("Please use the StartAsync overload that takes the LaunchActivatedEventArgs from your Application OnLaunched")]
-        public static Task StartAsync(MeasurementConfiguration configuration, TimeSpan? uploadInterval = null)
-        {
-            return StartAsync(configuration, null, uploadInterval);
-        }
-
         /// <summary>
         /// Initialize CSharpAnalytics by restoring the session state and starting the background sender and tracking
         /// the application lifecycle start event.
