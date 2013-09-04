@@ -18,16 +18,19 @@ namespace CSharpAnalytics.Protocols
     internal class ProtocolDebugger
     {
         private readonly ParameterDefinition[] parameterDefinitions;
-        private readonly Action<string> writer;
+        private static readonly Action<string> defaultWriter = s =>
+        {
+#if DEBUG
+            System.Diagnostics.Debug.WriteLine(s);
+#endif
+        };
 
         /// <summary>
         /// Create a new ProtocolDebugger with a given action to receive debugger output.
         /// </summary>
-        /// <param name="writer">Action that takes a string to receive debugger output.</param>
         /// <param name="parameterDefinitions">Array of ParameterDefinitions valid for this debugger.</param>
-        public ProtocolDebugger(Action<string> writer, ParameterDefinition[] parameterDefinitions)
+        public ProtocolDebugger(ParameterDefinition[] parameterDefinitions)
         {
-            this.writer = writer;
             this.parameterDefinitions = parameterDefinitions;
         }
 
@@ -36,35 +39,52 @@ namespace CSharpAnalytics.Protocols
         /// for this debugger.
         /// </summary>
         /// <param name="uri">Analytics tracking URI to examine.</param>
-        public void Examine(Uri uri)
+        /// <param name="writer">Action that takes a string to receive output, defaults to debug window.</param>
+        public void Dump(Uri uri, Action<string> writer = null)
         {
-            writer("-Analytics-------------------------------------");
+            writer = writer ?? defaultWriter;
+            writer(uri.ToString());
 
             var parameters = ExtractParameters(uri);
-
-            writer(uri.Query);
-
             foreach (var parameterDefinition in parameterDefinitions)
             {
-                if (!parameterDefinition.IsRegexMatch)
-                {
-                    string rawValue;
-                    if (parameters.TryGetValue(parameterDefinition.Name, out rawValue))
-                        WriteParameter(parameterDefinition, parameterDefinition.Label, rawValue);
-                }
+                if (parameterDefinition.IsRegexMatch)
+                    DumpRegexParameters(parameterDefinition, parameters, writer);
                 else
+                    DumpExactParameter(parameterDefinition, parameters, writer);
+            }
+        }
+
+        /// <summary>
+        /// Dump any parameters that match the given parameter definition's regular expression.
+        /// </summary>
+        /// <param name="parameterDefinition">Parameter definition to regex match with parameters.</param>
+        /// <param name="parameters">All parameters to consider for a regex match.</param>
+        /// <param name="writer">Action that takes a string to receive output.</param>
+        private void DumpRegexParameters(ParameterDefinition parameterDefinition, Dictionary<string, string> parameters, Action<string> writer)
+        {
+            foreach (var pair in parameters)
+            {
+                var match = Regex.Match(pair.Key, parameterDefinition.Name);
+                if (match.Success)
                 {
-                    foreach (var pair in parameters)
-                    {
-                        var match = Regex.Match(pair.Key, parameterDefinition.Name);
-                        if (match.Success)
-                        {
-                            var label = parameterDefinition.Label.Replace("$1", match.Groups[1].Captures[0].Value);
-                            WriteParameter(parameterDefinition, label, pair.Value);
-                        }
-                    }
+                    var label = parameterDefinition.Label.Replace("$1", match.Groups[1].Captures[0].Value);
+                    DumpParameter(parameterDefinition, label, pair.Value, writer);
                 }
             }
+        }
+
+        /// <summary>
+        /// Dump any parameter exactly matching the given parameter definition.
+        /// </summary>
+        /// <param name="parameterDefinition">Parameter definition to exactly match with parameters.</param>
+        /// <param name="parameters">All parameters to consider for an exact match.</param>
+        /// <param name="writer">Action that takes a string to receive debugger output.</param>
+        private void DumpExactParameter(ParameterDefinition parameterDefinition, Dictionary<string, string> parameters, Action<string> writer)
+        {
+            string rawValue;
+            if (parameters.TryGetValue(parameterDefinition.Name, out rawValue))
+                DumpParameter(parameterDefinition, parameterDefinition.Label, rawValue, writer);
         }
 
         /// <summary>
@@ -86,7 +106,8 @@ namespace CSharpAnalytics.Protocols
         /// <param name="parameterDefinition">Parameter to write out.</param>
         /// <param name="label">Human-readable label to prefix before the value.</param>
         /// <param name="rawValue">Raw value of the parameter to format before writing.</param>
-        private void WriteParameter(ParameterDefinition parameterDefinition, string label, string rawValue)
+        /// <param name="writer">Action that takes a string to receive output.</param>
+        private void DumpParameter(ParameterDefinition parameterDefinition, string label, string rawValue, Action<string> writer)
         {
             var formattedValue = parameterDefinition.Formatter(rawValue);
             if (!String.IsNullOrWhiteSpace(formattedValue))

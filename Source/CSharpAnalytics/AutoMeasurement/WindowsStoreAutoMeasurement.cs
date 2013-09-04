@@ -38,7 +38,7 @@ namespace CSharpAnalytics
         private const string SessionStateFileName = "CSharpAnalytics-MeasurementSession";
         private const int MaximumRequestsToPersist = 60;
 
-        private static readonly ProtocolDebugger protocolDebugger = new ProtocolDebugger(s => Debug.WriteLine(s), MeasurementParameterDefinitions.All);
+        private static readonly ProtocolDebugger protocolDebugger = new ProtocolDebugger(MeasurementParameterDefinitions.All);
         private static readonly TypedEventHandler<DataTransferManager, TargetApplicationChosenEventArgs> socialShare = (sender, e) => Client.TrackSocial("ShareCharm", e.ApplicationName);
         private static readonly MeasurementAnalyticsClient client = new MeasurementAnalyticsClient();
         private static readonly ProductInfoHeaderValue clientUserAgent = new ProductInfoHeaderValue("CSharpAnalytics", "0.1");
@@ -55,6 +55,11 @@ namespace CSharpAnalytics
         /// Access to the MeasurementAnalyticsClient necessary to send additional events.
         /// </summary>
         public static MeasurementAnalyticsClient Client { get { return client; } }
+
+        /// <summary>
+        /// Action to receive protocol debug output. 
+        /// </summary>
+        public static Action<string> DebugWriter { get; set; }
 
         [Obsolete("Please use the StartAsync overload that takes the LaunchActivatedEventArgs from your Application OnLaunched")]
         public static Task StartAsync(MeasurementConfiguration configuration, TimeSpan? uploadInterval = null)
@@ -300,11 +305,10 @@ namespace CSharpAnalytics
         /// Send the HttpRequestMessage with the protocol debugger for examination.
         /// </summary>
         /// <param name="requestMessage">HttpRequestMessage to examine with the protocol debugger.</param>
-        [Conditional("DEBUG")]
         private async static void DebugRequest(HttpRequestMessage requestMessage)
         {
             var payloadUri = await RejoinPayload(requestMessage);
-            protocolDebugger.Examine(payloadUri);
+            protocolDebugger.Dump(payloadUri, DebugWriter);
         }
 
         /// <summary>
