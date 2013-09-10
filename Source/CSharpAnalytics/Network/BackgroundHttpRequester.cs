@@ -57,6 +57,7 @@ namespace CSharpAnalytics.Network
 
             cancellationTokenSource = new CancellationTokenSource();
             currentUploadInterval = uploadInterval;
+
             backgroundSender = Task.Factory.StartNew(RequestLoop, cancellationTokenSource.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
         }
 
@@ -86,24 +87,32 @@ namespace CSharpAnalytics.Network
         {
             using (var queueEmptyWait = new ManualResetEventSlim())
             {
-                try
+                while (IsStarted)
                 {
-                    while (IsStarted)
+                    try
                     {
-                        while (GetNextQueueEntry(out currentlySending))
+                        if (IsInternetAvailable)
                         {
-                            RequestWithFailureRetry(currentlySending, cancellationTokenSource.Token);
-                            currentlySending = null;
+                            while (GetNextQueueEntry(out currentlySending))
+                            {
+                                RequestWithFailureRetry(currentlySending, cancellationTokenSource.Token);
+                                currentlySending = null;
+                            }
                         }
 
                         queueEmptyWait.Wait(currentUploadInterval, cancellationTokenSource.Token);
                     }
-                }
-                catch
-                {
+                    catch
+                    {
+                    }
                 }
             }
         }
+
+        /// <summary>
+        /// Determines if the internet is currently available without having to send requests.
+        /// </summary>
+        protected virtual bool IsInternetAvailable { get { return true; } }
 
         /// <summary>
         /// Get the next entry from the queue.

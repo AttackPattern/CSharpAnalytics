@@ -66,11 +66,11 @@ Download or clone the source and add a reference to CSharpAnalytics.WindowsStore
 The easiest way to start is to use the AutoMeasurement helper class. It hooks into a few events and will automatically give you:
 
 * Application launch, suspend, resume events
-* Visitor, session counts, time-spent
+* Visitor, session activity, time-spent
 * Social sharing events
-* Basic screen navigation activity
+* Screen navigation activity
 * Operating system, window resolution, CPU type identification
-* Save/persist last 50 hits for offline/online support
+* Save/persist last 60 hits for offline/online support
 
 Simply add three lines to your App.xaml.cs.
 

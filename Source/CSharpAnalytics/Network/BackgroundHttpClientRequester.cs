@@ -15,14 +15,17 @@ namespace CSharpAnalytics.Network
     public class BackgroundHttpClientRequester : BackgroundHttpRequester
     {
         private readonly Action<HttpRequestMessage> preprocessor;
+        private readonly Func<bool> checkInternetAvailable; 
 
         /// <summary>
         /// Create a new BackgroundHttpClientRequester.
         /// </summary>
         /// <param name="preprocessor">Optional preprocessor for setting user agents, debugging etc.</param>
-        public BackgroundHttpClientRequester(Action<HttpRequestMessage> preprocessor = null)
+        /// <param name="checkInternetAvailable">Optional func to determine if the Internet is available.</param>
+        public BackgroundHttpClientRequester(Action<HttpRequestMessage> preprocessor = null, Func<bool> checkInternetAvailable = null)
         {
             this.preprocessor = preprocessor;
+            this.checkInternetAvailable = checkInternetAvailable;
         }
 
         /// <summary>
@@ -84,6 +87,17 @@ namespace CSharpAnalytics.Network
 
             var uriWithoutQuery = new Uri(uri.GetComponents(UriComponents.SchemeAndServer | UriComponents.Path, UriFormat.Unescaped));
             return new HttpRequestMessage(HttpMethod.Post, uriWithoutQuery) { Content = new StringContent(uri.GetComponents(UriComponents.Query, UriFormat.UriEscaped)) };
+        }
+
+        /// <summary>
+        /// Determines whether a connection to the Internet is available.
+        /// </summary>
+        protected override bool IsInternetAvailable
+        {
+            get
+            {
+                return checkInternetAvailable == null ? base.IsInternetAvailable : checkInternetAvailable();
+            }
         }
     }
 }

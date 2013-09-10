@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
+using Windows.Networking.Connectivity;
 using CSharpAnalytics.Network;
 using CSharpAnalytics.Protocols;
 using CSharpAnalytics.Protocols.Measurement;
@@ -263,9 +264,28 @@ namespace CSharpAnalytics
         /// <returns>Task that completes when the requester is ready.</returns>
         private static async Task StartRequesterAsync()
         {
-            requester = new BackgroundHttpClientRequester(PreprocessHttpRequest);
+            requester = new BackgroundHttpClientRequester(PreprocessHttpRequest, IsInternetAvailable);
             var previousRequests = await LocalFolderContractSerializer<List<Uri>>.RestoreAsync(RequestQueueFileName);
             requester.Start(lastUploadInterval, previousRequests);
+        }
+
+        /// <summary>
+        /// Determine if the Internet is available at this point in time.
+        /// </summary>
+        /// <returns>True if the Internet is available, false otherwise.</returns>
+        private static bool IsInternetAvailable()
+        {
+            var internetProfile = NetworkInformation.GetInternetConnectionProfile();
+            if (internetProfile == null) return false;
+
+            switch (internetProfile.GetNetworkConnectivityLevel())
+            {
+                case NetworkConnectivityLevel.None:
+                case NetworkConnectivityLevel.LocalAccess:
+                    return false;
+                default:
+                    return true;
+            }
         }
 
         /// <summary>
