@@ -50,6 +50,7 @@ namespace CSharpAnalytics
         private static BackgroundHttpRequester requester;
         private static SessionManager sessionManager;
         private static string systemUserAgent;
+        private static bool isStarted;
 
         /// <summary>
         /// Access to the MeasurementAnalyticsClient necessary to send additional events.
@@ -71,18 +72,22 @@ namespace CSharpAnalytics
         /// <example>var analyticsTask = AutoMeasurement.StartAsync(new MeasurementConfiguration("UA-123123123-1", "MyApp", "1.0.0.0"));</example>
         public static async Task StartAsync(MeasurementConfiguration configuration, IActivatedEventArgs launchArgs, TimeSpan? uploadInterval = null)
         {
-            lastUploadInterval = uploadInterval ?? TimeSpan.FromSeconds(5);
-            systemUserAgent = await WindowsStoreSystemInformation.GetSystemUserAgent();
-            await StartRequesterAsync();
+            if (!isStarted)
+            {
+                isStarted = true;
+                lastUploadInterval = uploadInterval ?? TimeSpan.FromSeconds(5);
+                systemUserAgent = await WindowsStoreSystemInformation.GetSystemUserAgent();
+                await StartRequesterAsync();
 
-            var sessionState = await LoadSessionState();
-            sessionManager = new SessionManager(sessionState, configuration.SampleRate);
-            if (delayedOptOut != null) SetOptOut(delayedOptOut.Value);
+                var sessionState = await LoadSessionState();
+                sessionManager = new SessionManager(sessionState, configuration.SampleRate);
+                if (delayedOptOut != null) SetOptOut(delayedOptOut.Value);
 
-            Client.Configure(configuration, sessionManager, new WindowsStoreEnvironment(), requester.Add);
+                Client.Configure(configuration, sessionManager, new WindowsStoreEnvironment(), requester.Add);
+                HookEvents();
+            }
+
             Client.TrackEvent("Start", ApplicationLifecycleEvent, launchArgs.Kind.ToString());
-
-            HookEvents();
         }
 
         /// <summary>
