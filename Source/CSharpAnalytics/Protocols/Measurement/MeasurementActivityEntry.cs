@@ -11,9 +11,24 @@ namespace CSharpAnalytics.Protocols.Measurement
     /// </summary>
     internal class MeasurementActivityEntry
     {
+        /// <summary>
+        /// The activity this entry should track.
+        /// </summary>
         public IMeasurementActivity Activity;
+
+        /// <summary>
+        /// Any custom dimensions associated with this activity.
+        /// </summary>
         public IEnumerable<KeyValuePair<int, string>> CustomDimensions;
+
+        /// <summary>
+        /// Any custom metrics associated with this activity.
+        /// </summary>
         public IEnumerable<KeyValuePair<int, object>> CustomMetrics;
+
+        /// <summary>
+        /// Whether the session should end with this activity.
+        /// </summary>
         public bool EndSession;
 
         /// <summary>

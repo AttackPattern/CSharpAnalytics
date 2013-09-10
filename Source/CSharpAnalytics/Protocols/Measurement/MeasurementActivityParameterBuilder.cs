@@ -39,10 +39,7 @@ namespace CSharpAnalytics.Protocols.Measurement
             if (activity is SocialActivity)
                 return GetParameters((SocialActivity)activity);
             if (activity is TransactionActivity)
-            {
-                var transaction = (TransactionActivity) activity;
-                return GetParameters(transaction);
-            }
+                return GetParameters((TransactionActivity)activity);
             if (activity is TransactionItemActivity)
                 return GetParameters((TransactionItemActivity)activity);
 
