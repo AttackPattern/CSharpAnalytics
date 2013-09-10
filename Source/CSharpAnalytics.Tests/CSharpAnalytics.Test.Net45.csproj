@@ -58,7 +58,6 @@
     <Compile Include="Activities\ExceptionActivityTests.cs" />
     <Compile Include="Activities\TransactionItemActivityTests.cs" />
     <Compile Include="Activities\EventActivityTests.cs" />
-    <Compile Include="Activities\PageViewActivityTests.cs" />
     <Compile Include="Activities\SocialActivityTests.cs" />
     <Compile Include="Activities\TimedEventActivityTests.cs" />
     <Compile Include="Activities\TransactionActivityTests.cs" />
