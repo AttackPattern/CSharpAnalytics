@@ -34,7 +34,6 @@ namespace CSharpAnalytics.Sessions
             if (sessionState != null)
             {
                 visitor = new Visitor(sessionState.VisitorId);
-                Session = new Session();
                 Referrer = sessionState.Referrer;
                 lastActivityAt = sessionState.LastActivityAt;
                 SessionStatus = sessionState.SessionStatus;
@@ -43,7 +42,6 @@ namespace CSharpAnalytics.Sessions
             else
             {
                 visitor = new Visitor();
-                Session = new Session();
                 SessionStatus = SessionStatus.Starting;
                 var willTrackThisVisitor = ShouldTrackThisNewVisitor(sampleRate);
                 VisitorStatus = willTrackThisVisitor ? VisitorStatus.Active : VisitorStatus.SampledOut;
@@ -87,11 +85,6 @@ namespace CSharpAnalytics.Sessions
         /// Current status of this visitor.
         /// </summary>
         public VisitorStatus VisitorStatus { get; internal set; }
-
-        /// <summary>
-        /// Current session.
-        /// </summary>
-        public Session Session { get; private set; }
 
         /// <summary>
         /// Visitor.
@@ -159,7 +152,6 @@ namespace CSharpAnalytics.Sessions
         {
             lock (newSessionLock)
             {
-                Session = new Session();
                 SessionStatus = SessionStatus.Starting;
             }
         }

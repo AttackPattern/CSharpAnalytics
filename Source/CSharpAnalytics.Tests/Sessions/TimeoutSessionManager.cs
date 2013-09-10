@@ -1,7 +1,6 @@
 ﻿using System.Globalization;
 using CSharpAnalytics.Sessions;
 using System;
-using System.Threading.Tasks;
 #if WINDOWS_STORE
 using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
 #else

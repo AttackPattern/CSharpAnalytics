@@ -139,7 +139,6 @@
     <Compile Include="Protocols\EpochTime.cs" />
     <Compile Include="Protocols\KeyValuePair.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Sessions\Session.cs" />
     <Compile Include="Sessions\SessionManager.cs" />
     <Compile Include="Sessions\SessionState.cs" />
     <Compile Include="Sessions\TimeoutSessionManager.cs" />

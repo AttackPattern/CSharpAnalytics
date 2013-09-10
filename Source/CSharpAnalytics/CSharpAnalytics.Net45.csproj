@@ -71,7 +71,6 @@
     <Compile Include="Protocols\Measurement\MeasurementUriBuilder.cs" />
     <Compile Include="Protocols\ParameterDefinition.cs" />
     <Compile Include="Protocols\ProtocolDebugger.cs" />
-    <Compile Include="Sessions\Session.cs" />
     <Compile Include="Sessions\SessionManager.cs" />
     <Compile Include="Sessions\SessionState.cs" />
     <Compile Include="Sessions\TimeoutSessionManager.cs" />

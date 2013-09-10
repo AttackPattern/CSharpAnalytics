@@ -31,7 +31,6 @@ namespace CSharpAnalytics.Test.Sessions
 
             Assert.IsNull(sessionManager.Referrer);
             Assert.IsNotNull(sessionManager.Visitor);
-            Assert.IsNotNull(sessionManager.Session);
         }
 
         [TestMethod]
