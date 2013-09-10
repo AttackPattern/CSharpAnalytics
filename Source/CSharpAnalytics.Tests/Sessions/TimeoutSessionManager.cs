@@ -87,7 +87,6 @@ namespace CSharpAnalytics.Test.Sessions
             );
 
             Assert.AreEqual(3, sessionManager.Session.Number);
-            Assert.AreEqual(1500, sessionManager.Session.HitCount);
         }
 
         private static readonly Random random = new Random();
@@ -97,7 +96,6 @@ namespace CSharpAnalytics.Test.Sessions
             return new SessionState
             {
                 VisitorId = Guid.NewGuid(),
-                SessionHitCount = random.Next(),
                 SessionNumber = random.Next(),
                 LastActivityAt = DateTime.Now.Subtract(new TimeSpan(0, 0, 0, 1)),
                 PreviousSessionStartedAt = DateTime.Now.Subtract(new TimeSpan(0, 1, 10, 15)),

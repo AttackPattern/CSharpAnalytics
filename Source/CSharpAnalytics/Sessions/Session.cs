@@ -3,7 +3,6 @@
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
 using System;
-using System.Threading;
 
 namespace CSharpAnalytics.Sessions
 {
@@ -12,7 +11,6 @@ namespace CSharpAnalytics.Sessions
     /// </summary>
     public class Session
     {
-        private int hitCount;
         private readonly int number;
         private readonly DateTimeOffset startedAt;
 
@@ -20,11 +18,6 @@ namespace CSharpAnalytics.Sessions
         /// When this session started.
         /// </summary>
         public DateTimeOffset StartedAt { get { return startedAt; } }
-
-        /// <summary>
-        /// Number of hits in this session so far.
-        /// </summary>
-        public int HitCount { get { return hitCount; } }
 
         /// <summary>
         /// Session number for this Visitor that counts up by one each time.
@@ -45,29 +38,9 @@ namespace CSharpAnalytics.Sessions
         /// <param name="startedAt">When this session started at.</param>
         /// <param name="number">Session number.</param>
         public Session(DateTimeOffset startedAt, int number)
-            : this(startedAt, number, 0)
-        {
-        }
-
-        /// <summary>
-        /// Create a new session given all the parameters possible. Used to restore sessions from state before the timeout occurs.
-        /// </summary>
-        /// <param name="startedAt">When this session started at.</param>
-        /// <param name="number">Session number.</param>
-        /// <param name="hitCount">Number of hits in this session so far.</param>
-        public Session(DateTimeOffset startedAt, int number, int hitCount)
         {
             this.startedAt = startedAt;
             this.number = number;
-            this.hitCount = hitCount;
-        }
-
-        /// <summary>
-        /// Increase the hit count for this session in a thread-safe way.
-        /// </summary>
-        public void IncreaseHitCount()
-        {
-            Interlocked.Increment(ref hitCount);
         }
     }
 }

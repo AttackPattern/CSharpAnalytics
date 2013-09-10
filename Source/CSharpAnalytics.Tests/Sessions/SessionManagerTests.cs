@@ -1,7 +1,6 @@
 ﻿using System.Globalization;
 using CSharpAnalytics.Sessions;
 using System;
-using System.Threading.Tasks;
 #if WINDOWS_STORE
 using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
 #else
@@ -16,7 +15,6 @@ namespace CSharpAnalytics.Test.Sessions
         [TestMethod]
         public void SessionManager_Can_Be_Created_From_State()
         {
-            var timeout = TimeSpan.FromMinutes(5);
             var state = CreateSampleState();
 
             var sessionManager = new SessionManager(state);
@@ -26,7 +24,6 @@ namespace CSharpAnalytics.Test.Sessions
 
             Assert.AreEqual(state.VisitorId, sessionManager.Visitor.ClientId);
             
-            Assert.AreEqual(state.SessionHitCount, sessionManager.Session.HitCount);
             Assert.AreEqual(state.SessionNumber, sessionManager.Session.Number);
             Assert.AreEqual(state.SessionStartedAt, sessionManager.Session.StartedAt);
         }
@@ -39,7 +36,6 @@ namespace CSharpAnalytics.Test.Sessions
             Assert.IsNull(sessionManager.Referrer);
             Assert.IsNotNull(sessionManager.Visitor);
             Assert.IsNotNull(sessionManager.Session);
-            Assert.AreEqual(0, sessionManager.Session.HitCount);
             Assert.IsTrue(sessionManager.PreviousSessionStartedAt <= DateTimeOffset.Now);
         }
 
@@ -55,7 +51,6 @@ namespace CSharpAnalytics.Test.Sessions
             Assert.AreEqual(expected.LastActivityAt, actual.LastActivityAt);
             Assert.AreEqual(expected.PreviousSessionStartedAt, actual.PreviousSessionStartedAt);
             Assert.AreEqual(expected.Referrer, actual.Referrer);
-            Assert.AreEqual(expected.SessionHitCount, actual.SessionHitCount);
             Assert.AreEqual(expected.SessionNumber, actual.SessionNumber);
             Assert.AreEqual(expected.SessionStartedAt, actual.SessionStartedAt);
         }
@@ -194,7 +189,6 @@ namespace CSharpAnalytics.Test.Sessions
             return new SessionState
             {
                 VisitorId = Guid.NewGuid(),
-                SessionHitCount = random.Next(),
                 SessionNumber = random.Next(),
                 LastActivityAt = DateTime.Now.Subtract(new TimeSpan(0, 0, 0, 1)),
                 PreviousSessionStartedAt = DateTime.Now.Subtract(new TimeSpan(0, 1, 10, 15)),

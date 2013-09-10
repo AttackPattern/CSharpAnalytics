@@ -18,7 +18,6 @@ namespace CSharpAnalytics.Test.Sessions
         public void SessionState_Properties_Can_Be_Set()
         {
             var visitorId = Guid.NewGuid();
-            const int sessionHitCount = 201;
             const int sessionNumber = 3;
 
             var lastActivityAt = new DateTimeOffset(2006, 3, 1, 8, 00, 00, TimeSpan.Zero);
@@ -30,7 +29,6 @@ namespace CSharpAnalytics.Test.Sessions
             var state = new SessionState
             {
                 VisitorId = visitorId,
-                SessionHitCount = sessionHitCount,
                 SessionNumber = sessionNumber,
 
                 LastActivityAt = lastActivityAt,
@@ -41,7 +39,6 @@ namespace CSharpAnalytics.Test.Sessions
             };
 
             Assert.AreEqual(visitorId, state.VisitorId);
-            Assert.AreEqual(sessionHitCount, state.SessionHitCount);
             Assert.AreEqual(sessionNumber, state.SessionNumber);
 
             Assert.AreEqual(lastActivityAt, state.LastActivityAt);
@@ -59,7 +56,6 @@ namespace CSharpAnalytics.Test.Sessions
             var deserialized = SerializeAndDeserialize(original);
 
             Assert.AreEqual(original.VisitorId, deserialized.VisitorId);
-            Assert.AreEqual(original.SessionHitCount, deserialized.SessionHitCount);
             Assert.AreEqual(original.SessionNumber, deserialized.SessionNumber);
 
             Assert.AreEqual(original.LastActivityAt, deserialized.LastActivityAt);
@@ -74,7 +70,6 @@ namespace CSharpAnalytics.Test.Sessions
             var original = new SessionState
             {
                 VisitorId = Guid.NewGuid(),
-                SessionHitCount = 90123,
                 SessionNumber = 408,
                 LastActivityAt = DateTime.Now.Subtract(new TimeSpan(0, 0, 0, 1)),
                 PreviousSessionStartedAt = DateTime.Now.Subtract(new TimeSpan(0, 1, 10, 15)),
