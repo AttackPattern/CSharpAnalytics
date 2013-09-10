@@ -47,7 +47,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Activities\TransactionItemActivity.cs" />
-    <Compile Include="Activities\PageViewActivity.cs" />
     <Compile Include="Activities\SocialActivity.cs" />
     <Compile Include="Activities\TransactionActivity.cs" />
     <Compile Include="AutoMeasurement\AnalyticsScreenNameAttribute.cs" />
