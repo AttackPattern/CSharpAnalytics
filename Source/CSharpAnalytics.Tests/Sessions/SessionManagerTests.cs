@@ -20,7 +20,6 @@ namespace CSharpAnalytics.Test.Sessions
             var sessionManager = new SessionManager(state);
 
             Assert.AreEqual(state.Referrer, sessionManager.Referrer);
-
             Assert.AreEqual(state.VisitorId, sessionManager.Visitor.ClientId);            
         }
 
@@ -147,7 +146,7 @@ namespace CSharpAnalytics.Test.Sessions
         {
             const int repetitions = 1000;
 
-            int sampledCount = 0;
+            var sampledCount = 0;
             var sessionManager = new SessionManager(null);
 
             // Setup a linear distribution as random numbers are too unpredictable

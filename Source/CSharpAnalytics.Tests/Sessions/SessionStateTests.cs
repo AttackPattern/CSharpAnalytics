@@ -1,12 +1,11 @@
 ﻿using System;
 using System.IO;
+using System.Runtime.Serialization;
 using CSharpAnalytics.Sessions;
 #if WINDOWS_STORE
-using System.Runtime.Serialization;
 using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
 #else
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Runtime.Serialization;
 #endif
 
 namespace CSharpAnalytics.Test.Sessions
@@ -18,25 +17,18 @@ namespace CSharpAnalytics.Test.Sessions
         public void SessionState_Properties_Can_Be_Set()
         {
             var visitorId = Guid.NewGuid();
-
             var lastActivityAt = new DateTimeOffset(2006, 3, 1, 8, 00, 00, TimeSpan.Zero);
-            var sessionStartedAt = new DateTimeOffset(2005, 2, 3, 4, 5, 6, TimeSpan.Zero);
-
             var referrer = new Uri("http://attackpattern.com");
 
             var state = new SessionState
             {
                 VisitorId = visitorId,
-
                 LastActivityAt = lastActivityAt,
-
                 Referrer = referrer
             };
 
             Assert.AreEqual(visitorId, state.VisitorId);
-
             Assert.AreEqual(lastActivityAt, state.LastActivityAt);
-
             Assert.AreEqual(referrer, state.Referrer);
         }
 
@@ -48,21 +40,18 @@ namespace CSharpAnalytics.Test.Sessions
             var deserialized = SerializeAndDeserialize(original);
 
             Assert.AreEqual(original.VisitorId, deserialized.VisitorId);
-
-            Assert.AreEqual(original.LastActivityAt, deserialized.LastActivityAt);
-            
+            Assert.AreEqual(original.LastActivityAt, deserialized.LastActivityAt);            
             Assert.AreEqual(original.Referrer, deserialized.Referrer);
         }
 
         private static SessionState CreateSampleState()
         {
-            var original = new SessionState
+            return new SessionState
             {
                 VisitorId = Guid.NewGuid(),
                 LastActivityAt = DateTime.Now.Subtract(new TimeSpan(0, 0, 0, 1)),
                 Referrer = new Uri("http://damieng.com")
             };
-            return original;
         }
 
         private static T SerializeAndDeserialize<T>(T objectToSerialize)
