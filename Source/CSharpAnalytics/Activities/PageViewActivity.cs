@@ -2,7 +2,6 @@
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
-using CSharpAnalytics.Protocols.Urchin;
 using System.Diagnostics;
 
 namespace CSharpAnalytics.Activities
@@ -11,7 +10,7 @@ namespace CSharpAnalytics.Activities
     /// Captures the details of a page view to be recorded in analytics.
     /// </summary>
     [DebuggerDisplay("PageView {Title} [{Page}]")]
-    public class PageViewActivity : IUrchinActivity
+    public class PageViewActivity
     {
         private readonly string page;
         private readonly string title;

@@ -131,7 +131,6 @@
     <Compile Include="Protocols\Measurement\MeasurementParameterDefinitions.cs" />
     <Compile Include="Protocols\Measurement\MeasurementTracker.cs" />
     <Compile Include="Protocols\Measurement\MeasurementUriBuilder.cs" />
-    <Compile Include="Protocols\Urchin\IUrchinActivity.cs" />
     <Compile Include="Network\BackgroundHttpRequester.cs" />
     <Compile Include="Environment\IEnvironment.cs" />
     <Compile Include="Protocols\ProtocolDebugger.cs" />

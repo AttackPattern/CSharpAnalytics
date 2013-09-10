@@ -3,7 +3,6 @@
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
 using CSharpAnalytics.Protocols.Measurement;
-using CSharpAnalytics.Protocols.Urchin;
 using System.Diagnostics;
 
 namespace CSharpAnalytics.Activities
@@ -12,7 +11,7 @@ namespace CSharpAnalytics.Activities
     /// Captures the details of an social action that has been performed.
     /// </summary>
     [DebuggerDisplay("Social {Action} on {Network}")]
-    public class SocialActivity : IUrchinActivity, IMeasurementActivity
+    public class SocialActivity : IMeasurementActivity
     {
         private readonly string action;
         private readonly string network;

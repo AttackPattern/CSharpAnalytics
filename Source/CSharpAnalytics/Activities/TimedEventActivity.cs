@@ -3,7 +3,6 @@
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
 using CSharpAnalytics.Protocols.Measurement;
-using CSharpAnalytics.Protocols.Urchin;
 using System;
 using System.Diagnostics;
 
@@ -14,7 +13,7 @@ namespace CSharpAnalytics.Activities
     /// See https://developers.google.com/analytics/devguides/collection/gajs/methods/gaJSApiUserTiming User Timing
     /// </summary>
     [DebuggerDisplay("TimedEvent {Category}, {Variable}, {Time}, {Label}")]
-    public class TimedEventActivity : IUrchinActivity, IMeasurementActivity
+    public class TimedEventActivity : IMeasurementActivity
     {
         private readonly string category;
         private readonly string label;
