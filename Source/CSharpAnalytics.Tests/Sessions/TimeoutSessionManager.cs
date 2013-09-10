@@ -44,7 +44,7 @@ namespace CSharpAnalytics.Test.Sessions
             var sessionManager = new TimeoutSessionManager(expected, TimeSpan.FromDays(1));
             var actual = sessionManager.GetState();
 
-            Assert.AreEqual(expected.FirstVisitAt, actual.FirstVisitAt);
+            Assert.AreEqual(expected.VisitorId, actual.VisitorId);
         }
 
         [TestMethod]
@@ -100,7 +100,6 @@ namespace CSharpAnalytics.Test.Sessions
                 VisitorId = Guid.NewGuid(),
                 SessionHitCount = random.Next(),
                 SessionNumber = random.Next(),
-                FirstVisitAt = DateTime.Now.Subtract(new TimeSpan(1, 12, 30, 20)),
                 LastActivityAt = DateTime.Now.Subtract(new TimeSpan(0, 0, 0, 1)),
                 PreviousSessionStartedAt = DateTime.Now.Subtract(new TimeSpan(0, 1, 10, 15)),
                 SessionStartedAt = DateTime.Now.Subtract(new TimeSpan(0, 0, 0, 15)),

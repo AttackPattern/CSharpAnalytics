@@ -23,26 +23,13 @@ namespace CSharpAnalytics.Test.Sessions
         }
 
         [TestMethod]
-        public void New_Default_Visitor_Started_Now()
-        {
-            var start = DateTimeOffset.Now;
-            var session = new Visitor();
-            var end = DateTimeOffset.Now;
-
-            Assert.IsTrue(session.FirstVisitAt >= start, "FirstVisitAt too early expected after {0} found {1}", start, session.FirstVisitAt);
-            Assert.IsTrue(session.FirstVisitAt <= end, "FirstVisitAt too late expected before {0} found {1}", end, session.FirstVisitAt);
-        }
-
-        [TestMethod]
         public void New_Visitor_With_Parameters_Sets_Properties()
         {
             var id = Guid.NewGuid();
-            var startedAt = DateTimeOffset.Now.Subtract(new TimeSpan(1, 2, 3, 4, 5));
             
-            var visitor = new Visitor(id, startedAt);
+            var visitor = new Visitor(id);
 
             Assert.AreEqual(id, visitor.ClientId);
-            Assert.AreEqual(startedAt, visitor.FirstVisitAt);
         }
     }
 }

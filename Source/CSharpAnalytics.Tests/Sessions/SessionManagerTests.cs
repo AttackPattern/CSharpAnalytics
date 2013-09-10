@@ -24,7 +24,6 @@ namespace CSharpAnalytics.Test.Sessions
             Assert.AreEqual(state.PreviousSessionStartedAt, sessionManager.PreviousSessionStartedAt);
             Assert.AreEqual(state.Referrer, sessionManager.Referrer);
 
-            Assert.AreEqual(state.FirstVisitAt, sessionManager.Visitor.FirstVisitAt);
             Assert.AreEqual(state.VisitorId, sessionManager.Visitor.ClientId);
             
             Assert.AreEqual(state.HitId, sessionManager.Session.HitId);
@@ -54,7 +53,6 @@ namespace CSharpAnalytics.Test.Sessions
 
             var actual = sessionManager.GetState();
 
-            Assert.AreEqual(expected.FirstVisitAt, actual.FirstVisitAt);
             Assert.AreEqual(expected.HitId, actual.HitId);
             Assert.AreEqual(expected.LastActivityAt, actual.LastActivityAt);
             Assert.AreEqual(expected.PreviousSessionStartedAt, actual.PreviousSessionStartedAt);
@@ -201,7 +199,6 @@ namespace CSharpAnalytics.Test.Sessions
                 VisitorId = Guid.NewGuid(),
                 SessionHitCount = random.Next(),
                 SessionNumber = random.Next(),
-                FirstVisitAt = DateTime.Now.Subtract(new TimeSpan(1, 12, 30, 20)),
                 LastActivityAt = DateTime.Now.Subtract(new TimeSpan(0, 0, 0, 1)),
                 PreviousSessionStartedAt = DateTime.Now.Subtract(new TimeSpan(0, 1, 10, 15)),
                 SessionStartedAt = DateTime.Now.Subtract(new TimeSpan(0, 0, 0, 15)),

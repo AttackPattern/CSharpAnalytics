@@ -33,7 +33,7 @@ namespace CSharpAnalytics.Sessions
         {
             if (sessionState != null)
             {
-                visitor = new Visitor(sessionState.VisitorId, sessionState.FirstVisitAt);
+                visitor = new Visitor(sessionState.VisitorId);
                 Session = new Session(sessionState.SessionStartedAt, sessionState.SessionNumber, sessionState.SessionHitCount, sessionState.HitId);
                 Referrer = sessionState.Referrer;
                 PreviousSessionStartedAt = sessionState.PreviousSessionStartedAt;
@@ -127,7 +127,6 @@ namespace CSharpAnalytics.Sessions
         {
             return new SessionState
             {
-                FirstVisitAt = Visitor.FirstVisitAt,
                 VisitorId = Visitor.ClientId,
                 SessionStartedAt = Session.StartedAt,
                 SessionHitCount = Session.HitCount,
