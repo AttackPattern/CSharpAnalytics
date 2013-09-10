@@ -34,7 +34,7 @@ namespace CSharpAnalytics.Sessions
             if (sessionState != null)
             {
                 visitor = new Visitor(sessionState.VisitorId);
-                Session = new Session(sessionState.SessionStartedAt, sessionState.SessionNumber);
+                Session = new Session(sessionState.SessionStartedAt);
                 Referrer = sessionState.Referrer;
                 lastActivityAt = sessionState.LastActivityAt;
                 SessionStatus = sessionState.SessionStatus;
@@ -122,7 +122,6 @@ namespace CSharpAnalytics.Sessions
             {
                 VisitorId = Visitor.ClientId,
                 SessionStartedAt = Session.StartedAt,
-                SessionNumber = Session.Number,
                 LastActivityAt = lastActivityAt,
                 Referrer = Referrer,
                 SessionStatus = SessionStatus,
@@ -171,7 +170,7 @@ namespace CSharpAnalytics.Sessions
         {
             lock (newSessionLock)
             {
-                Session = new Session(startedAt, Session.Number + 1);
+                Session = new Session(startedAt);
                 SessionStatus = SessionStatus.Starting;
             }
         }

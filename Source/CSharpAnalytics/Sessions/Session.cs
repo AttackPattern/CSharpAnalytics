@@ -11,7 +11,6 @@ namespace CSharpAnalytics.Sessions
     /// </summary>
     public class Session
     {
-        private readonly int number;
         private readonly DateTimeOffset startedAt;
 
         /// <summary>
@@ -20,15 +19,10 @@ namespace CSharpAnalytics.Sessions
         public DateTimeOffset StartedAt { get { return startedAt; } }
 
         /// <summary>
-        /// Session number for this Visitor that counts up by one each time.
-        /// </summary>
-        public int Number { get { return number; } }
-
-        /// <summary>
         /// Creates the first ever session for a Visitor.
         /// </summary>
         public Session()
-            : this(DateTimeOffset.Now, 1)
+            : this(DateTimeOffset.Now)
         {
         }
 
@@ -36,11 +30,9 @@ namespace CSharpAnalytics.Sessions
         /// Create a new session given a specific start time and session number. Used to create the next session.
         /// </summary>
         /// <param name="startedAt">When this session started at.</param>
-        /// <param name="number">Session number.</param>
-        public Session(DateTimeOffset startedAt, int number)
+        public Session(DateTimeOffset startedAt)
         {
             this.startedAt = startedAt;
-            this.number = number;
         }
     }
 }

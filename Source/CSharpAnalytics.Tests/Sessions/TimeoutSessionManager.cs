@@ -53,40 +53,15 @@ namespace CSharpAnalytics.Test.Sessions
             var timeout = TimeSpan.FromSeconds(2);
             var sessionManager = new TimeoutSessionManager(null, timeout);
 
-            Assert.AreEqual(1, sessionManager.Session.Number);
+            var firstSessionStartedAt = sessionManager.Session.StartedAt;
 
             var starting = DateTimeOffset.Now;
             Task.Delay(timeout + TimeSpan.FromSeconds(1)).Wait();
 
             sessionManager.Hit();
-            Assert.AreEqual(2, sessionManager.Session.Number);
+            Assert.IsTrue(sessionManager.Session.StartedAt >= firstSessionStartedAt);
             Assert.IsTrue(sessionManager.Session.StartedAt >= starting, "Session StartedAt too early");
             Assert.IsTrue(sessionManager.Session.StartedAt <= DateTimeOffset.Now, "Session StartedAt too late");
-        }
-
-        [TestMethod]
-        public void TimeoutSessionManager_Creates_New_Session_In_A_Thread_Safe_Way()
-        {
-            var timeout = TimeSpan.FromSeconds(2);
-            var sessionManager = new TimeoutSessionManager(null, timeout);
-
-            Task.Delay(timeout + TimeSpan.FromSeconds(1)).Wait();
-
-            Task.WaitAll(
-                Task.Run(() => { for (var i = 0; i < 500; i++) sessionManager.Hit(); }),
-                Task.Run(() => { for (var i = 0; i < 500; i++) sessionManager.Hit(); }),
-                Task.Run(() => { for (var i = 0; i < 500; i++) sessionManager.Hit(); })
-            );
-
-            Task.Delay(timeout + TimeSpan.FromSeconds(1)).Wait();
-
-            Task.WaitAll(
-                Task.Run(() => { for (var i = 0; i < 500; i++) sessionManager.Hit(); }),
-                Task.Run(() => { for (var i = 0; i < 500; i++) sessionManager.Hit(); }),
-                Task.Run(() => { for (var i = 0; i < 500; i++) sessionManager.Hit(); })
-            );
-
-            Assert.AreEqual(3, sessionManager.Session.Number);
         }
 
         private static readonly Random random = new Random();
@@ -96,7 +71,6 @@ namespace CSharpAnalytics.Test.Sessions
             return new SessionState
             {
                 VisitorId = Guid.NewGuid(),
-                SessionNumber = random.Next(),
                 LastActivityAt = DateTime.Now.Subtract(new TimeSpan(0, 0, 0, 1)),
                 SessionStartedAt = DateTime.Now.Subtract(new TimeSpan(0, 0, 0, 15)),
                 Referrer = new Uri("http://damieng.com/" + random.Next().ToString(CultureInfo.InvariantCulture))

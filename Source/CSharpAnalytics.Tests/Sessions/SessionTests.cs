@@ -23,23 +23,13 @@ namespace CSharpAnalytics.Test.Sessions
         }
 
         [TestMethod]
-        public void Session_Created_Is_Session_Number_One()
-        {
-            var session = new Session();
-
-            Assert.AreEqual(1, session.Number);
-        }
-
-        [TestMethod]
         public void Session_Created_With_Parameters_Sets_Properties()
         {
             var startedAt = DateTimeOffset.Now.Subtract(new TimeSpan(1, 2, 3, 4, 5));
-            const int sessionNumber = 29;
             
-            var session = new Session(startedAt, sessionNumber);
+            var session = new Session(startedAt);
 
             Assert.AreEqual(startedAt, session.StartedAt);
-            Assert.AreEqual(sessionNumber, session.Number);
         }
     }
 }

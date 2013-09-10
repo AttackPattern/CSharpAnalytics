@@ -18,10 +18,8 @@ namespace CSharpAnalytics.Test.Sessions
         public void SessionState_Properties_Can_Be_Set()
         {
             var visitorId = Guid.NewGuid();
-            const int sessionNumber = 3;
 
             var lastActivityAt = new DateTimeOffset(2006, 3, 1, 8, 00, 00, TimeSpan.Zero);
-            var previousSessionStartedAt = new DateTimeOffset(2003, 1, 1, 18, 22, 55, TimeSpan.Zero);
             var sessionStartedAt = new DateTimeOffset(2005, 2, 3, 4, 5, 6, TimeSpan.Zero);
 
             var referrer = new Uri("http://attackpattern.com");
@@ -29,7 +27,6 @@ namespace CSharpAnalytics.Test.Sessions
             var state = new SessionState
             {
                 VisitorId = visitorId,
-                SessionNumber = sessionNumber,
 
                 LastActivityAt = lastActivityAt,
                 SessionStartedAt = sessionStartedAt,
@@ -38,7 +35,6 @@ namespace CSharpAnalytics.Test.Sessions
             };
 
             Assert.AreEqual(visitorId, state.VisitorId);
-            Assert.AreEqual(sessionNumber, state.SessionNumber);
 
             Assert.AreEqual(lastActivityAt, state.LastActivityAt);
             Assert.AreEqual(sessionStartedAt, state.SessionStartedAt);
@@ -54,7 +50,6 @@ namespace CSharpAnalytics.Test.Sessions
             var deserialized = SerializeAndDeserialize(original);
 
             Assert.AreEqual(original.VisitorId, deserialized.VisitorId);
-            Assert.AreEqual(original.SessionNumber, deserialized.SessionNumber);
 
             Assert.AreEqual(original.LastActivityAt, deserialized.LastActivityAt);
             Assert.AreEqual(original.SessionStartedAt, deserialized.SessionStartedAt);
@@ -67,7 +62,6 @@ namespace CSharpAnalytics.Test.Sessions
             var original = new SessionState
             {
                 VisitorId = Guid.NewGuid(),
-                SessionNumber = 408,
                 LastActivityAt = DateTime.Now.Subtract(new TimeSpan(0, 0, 0, 1)),
                 SessionStartedAt = DateTime.Now.Subtract(new TimeSpan(0, 0, 0, 15)),
                 Referrer = new Uri("http://damieng.com")
