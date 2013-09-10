@@ -189,7 +189,7 @@ namespace CSharpAnalytics
         private static async void ApplicationOnSuspending(object sender, SuspendingEventArgs suspendingEventArgs)
         {
             var deferral = suspendingEventArgs.SuspendingOperation.GetDeferral();
-            Client.Track(new EventActivity("Suspend", ApplicationLifecycleEvent), true); // Stop the session
+            Client.Track(new EventActivity("Suspend", ApplicationLifecycleEvent));
             await SuspendRequesterAsync();
             deferral.Complete();
         }
