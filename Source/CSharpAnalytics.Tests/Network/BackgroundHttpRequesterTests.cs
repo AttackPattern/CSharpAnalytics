@@ -66,20 +66,24 @@ namespace CSharpAnalytics.Test.Network
         [TestMethod]
         public void BackgroundHttpRequester_StopAsync_Stops_Current_Active_Request()
         {
-            bool cancelled = false;
+            var cancelled = false;
             var mre = new ManualResetEventSlim();
 
-            Func<Uri, CancellationToken, bool> processor = (u, c) => {
+            Func<Uri, CancellationToken, bool> processor = (u, c) =>
+            {
                 try
                 {
                     mre.Wait(c);
+                }
+                catch (AggregateException)
+                {
                 }
                 catch (OperationCanceledException)
                 {
                 }
                 mre.Set();
                 cancelled = c.IsCancellationRequested;
-                return true; 
+                return true;
             };
 
             var requester = new BackgroundHttpFuncRequester(processor);
@@ -88,9 +92,9 @@ namespace CSharpAnalytics.Test.Network
 
             Assert.IsFalse(cancelled);
             requester.StopAsync().Wait(3000);
-            
+
             Assert.IsTrue(mre.Wait(3000));
             Assert.IsTrue(cancelled);
-        } 
+        }
     }
 }
