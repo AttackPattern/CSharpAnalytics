@@ -5,6 +5,7 @@ using System.Threading;
 using CSharpAnalytics.Network;
 #if WINDOWS_STORE
 using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
+using System.Threading.Tasks;
 #else
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 #endif
@@ -66,16 +67,18 @@ namespace CSharpAnalytics.Test.Network
         public void BackgroundHttpRequester_StopAsync_Stops_Current_Active_Request()
         {
             bool cancelled = false;
+            var mre = new ManualResetEventSlim();
 
             Func<Uri, CancellationToken, bool> processor = (u, c) => {
                 try
                 {
-                    new ManualResetEventSlim().Wait(c);
+                    mre.Wait(c);
                 }
                 catch (OperationCanceledException)
                 {
-                    cancelled = c.IsCancellationRequested;
                 }
+                mre.Set();
+                cancelled = c.IsCancellationRequested;
                 return true; 
             };
 
@@ -85,7 +88,8 @@ namespace CSharpAnalytics.Test.Network
 
             Assert.IsFalse(cancelled);
             requester.StopAsync().Wait(3000);
-
+            
+            Assert.IsTrue(mre.Wait(3000));
             Assert.IsTrue(cancelled);
         } 
     }
