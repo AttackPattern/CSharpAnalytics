@@ -13,7 +13,6 @@ namespace CSharpAnalytics.Sessions
     public class Session
     {
         private int hitCount;
-        private readonly long hitId;
         private readonly int number;
         private readonly DateTimeOffset startedAt;
 
@@ -33,11 +32,6 @@ namespace CSharpAnalytics.Sessions
         public int Number { get { return number; } }
 
         /// <summary>
-        /// Random Id used to ensure any web cache is bypassed.
-        /// </summary>
-        public long HitId { get { return hitId; } }
-
-        /// <summary>
         /// Creates the first ever session for a Visitor.
         /// </summary>
         public Session()
@@ -51,7 +45,7 @@ namespace CSharpAnalytics.Sessions
         /// <param name="startedAt">When this session started at.</param>
         /// <param name="number">Session number.</param>
         public Session(DateTimeOffset startedAt, int number)
-            : this(startedAt, number, 0, new Random().Next())
+            : this(startedAt, number, 0)
         {
         }
 
@@ -61,13 +55,11 @@ namespace CSharpAnalytics.Sessions
         /// <param name="startedAt">When this session started at.</param>
         /// <param name="number">Session number.</param>
         /// <param name="hitCount">Number of hits in this session so far.</param>
-        /// <param name="hitId">Random Id used to ensure any web cache is bypassed.</param>
-        public Session(DateTimeOffset startedAt, int number, int hitCount, long hitId)
+        public Session(DateTimeOffset startedAt, int number, int hitCount)
         {
             this.startedAt = startedAt;
             this.number = number;
             this.hitCount = hitCount;
-            this.hitId = hitId;
         }
 
         /// <summary>

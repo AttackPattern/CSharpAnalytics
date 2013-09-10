@@ -96,7 +96,6 @@ namespace CSharpAnalytics.Test.Sessions
         {
             return new SessionState
             {
-                HitId = random.Next(),
                 VisitorId = Guid.NewGuid(),
                 SessionHitCount = random.Next(),
                 SessionNumber = random.Next(),

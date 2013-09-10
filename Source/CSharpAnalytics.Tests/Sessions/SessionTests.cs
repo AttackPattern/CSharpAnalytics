@@ -45,14 +45,12 @@ namespace CSharpAnalytics.Test.Sessions
             var startedAt = DateTimeOffset.Now.Subtract(new TimeSpan(1, 2, 3, 4, 5));
             const int sessionNumber = 29;
             const int hitCount = 101;
-            const int hitId = 123456;
             
-            var session = new Session(startedAt, sessionNumber, hitCount, hitId);
+            var session = new Session(startedAt, sessionNumber, hitCount);
 
             Assert.AreEqual(startedAt, session.StartedAt);
             Assert.AreEqual(sessionNumber, session.Number);
             Assert.AreEqual(hitCount, session.HitCount);
-            Assert.AreEqual(hitId, session.HitId);
         }
 
         [TestMethod]

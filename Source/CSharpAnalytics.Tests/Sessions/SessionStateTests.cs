@@ -17,7 +17,6 @@ namespace CSharpAnalytics.Test.Sessions
         [TestMethod]
         public void SessionState_Properties_Can_Be_Set()
         {
-            const int hitId = 123789221;
             var visitorId = Guid.NewGuid();
             const int sessionHitCount = 201;
             const int sessionNumber = 3;
@@ -30,7 +29,6 @@ namespace CSharpAnalytics.Test.Sessions
 
             var state = new SessionState
             {
-                HitId = hitId,
                 VisitorId = visitorId,
                 SessionHitCount = sessionHitCount,
                 SessionNumber = sessionNumber,
@@ -42,7 +40,6 @@ namespace CSharpAnalytics.Test.Sessions
                 Referrer = referrer
             };
 
-            Assert.AreEqual(hitId, state.HitId);
             Assert.AreEqual(visitorId, state.VisitorId);
             Assert.AreEqual(sessionHitCount, state.SessionHitCount);
             Assert.AreEqual(sessionNumber, state.SessionNumber);
@@ -61,7 +58,6 @@ namespace CSharpAnalytics.Test.Sessions
 
             var deserialized = SerializeAndDeserialize(original);
 
-            Assert.AreEqual(original.HitId, deserialized.HitId);
             Assert.AreEqual(original.VisitorId, deserialized.VisitorId);
             Assert.AreEqual(original.SessionHitCount, deserialized.SessionHitCount);
             Assert.AreEqual(original.SessionNumber, deserialized.SessionNumber);
@@ -77,7 +73,6 @@ namespace CSharpAnalytics.Test.Sessions
         {
             var original = new SessionState
             {
-                HitId = 12345,
                 VisitorId = Guid.NewGuid(),
                 SessionHitCount = 90123,
                 SessionNumber = 408,
