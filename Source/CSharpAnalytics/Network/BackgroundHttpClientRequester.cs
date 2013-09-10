@@ -5,6 +5,7 @@
 using System;
 using System.Diagnostics;
 using System.Net.Http;
+using System.Threading;
 
 namespace CSharpAnalytics.Network
 {
@@ -28,7 +29,8 @@ namespace CSharpAnalytics.Network
         /// Request the URI with retry logic using HttpClient.
         /// </summary>
         /// <param name="requestUri">URI to request.</param>
-        protected override void RequestWithFailureRetry(Uri requestUri)
+        /// <param name="cancellationToken">Token to indicate if request should be abandoned.</param>
+        protected override void RequestWithFailureRetry(Uri requestUri, CancellationToken cancellationToken)
         {
             var retryDelay = TimeSpan.Zero;
             var successfullySent = false;
@@ -44,7 +46,7 @@ namespace CSharpAnalytics.Network
                     HttpResponseMessage response = null;
                     try
                     {
-                        response = httpClient.SendAsync(message).Result;
+                        response = httpClient.SendAsync(message, cancellationToken).Result;
                     }
                     catch (Exception ex)
                     {
