@@ -21,9 +21,7 @@ namespace CSharpAnalytics.Test.Sessions
 
             Assert.AreEqual(state.Referrer, sessionManager.Referrer);
 
-            Assert.AreEqual(state.VisitorId, sessionManager.Visitor.ClientId);
-            
-            Assert.AreEqual(state.SessionStartedAt, sessionManager.Session.StartedAt);
+            Assert.AreEqual(state.VisitorId, sessionManager.Visitor.ClientId);            
         }
 
         [TestMethod]
@@ -47,7 +45,6 @@ namespace CSharpAnalytics.Test.Sessions
 
             Assert.AreEqual(expected.LastActivityAt, actual.LastActivityAt);
             Assert.AreEqual(expected.Referrer, actual.Referrer);
-            Assert.AreEqual(expected.SessionStartedAt, actual.SessionStartedAt);
         }
 
         [TestMethod]
@@ -68,8 +65,6 @@ namespace CSharpAnalytics.Test.Sessions
 
             sessionManager.StartNewSession();
             Assert.AreEqual(SessionStatus.Starting, sessionManager.SessionStatus);
-            Assert.IsTrue(sessionManager.Session.StartedAt >= starting, "Session StartedAt too early");
-            Assert.IsTrue(sessionManager.Session.StartedAt <= DateTimeOffset.Now, "Session StartedAt too late");
         }
 
 
@@ -183,7 +178,6 @@ namespace CSharpAnalytics.Test.Sessions
             {
                 VisitorId = Guid.NewGuid(),
                 LastActivityAt = DateTime.Now.Subtract(new TimeSpan(0, 0, 0, 1)),
-                SessionStartedAt = DateTime.Now.Subtract(new TimeSpan(0, 0, 0, 15)),
                 Referrer = new Uri("http://damieng.com/" + random.Next().ToString(CultureInfo.InvariantCulture))
             };
         }

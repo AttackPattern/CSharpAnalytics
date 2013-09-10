@@ -47,23 +47,6 @@ namespace CSharpAnalytics.Test.Sessions
             Assert.AreEqual(expected.VisitorId, actual.VisitorId);
         }
 
-        [TestMethod]
-        public void TimeoutSessionManager_Creates_New_Session_When_Hit_After_Timeout()
-        {
-            var timeout = TimeSpan.FromSeconds(2);
-            var sessionManager = new TimeoutSessionManager(null, timeout);
-
-            var firstSessionStartedAt = sessionManager.Session.StartedAt;
-
-            var starting = DateTimeOffset.Now;
-            Task.Delay(timeout + TimeSpan.FromSeconds(1)).Wait();
-
-            sessionManager.Hit();
-            Assert.IsTrue(sessionManager.Session.StartedAt >= firstSessionStartedAt);
-            Assert.IsTrue(sessionManager.Session.StartedAt >= starting, "Session StartedAt too early");
-            Assert.IsTrue(sessionManager.Session.StartedAt <= DateTimeOffset.Now, "Session StartedAt too late");
-        }
-
         private static readonly Random random = new Random();
 
         private static SessionState CreateSampleState()
@@ -72,7 +55,6 @@ namespace CSharpAnalytics.Test.Sessions
             {
                 VisitorId = Guid.NewGuid(),
                 LastActivityAt = DateTime.Now.Subtract(new TimeSpan(0, 0, 0, 1)),
-                SessionStartedAt = DateTime.Now.Subtract(new TimeSpan(0, 0, 0, 15)),
                 Referrer = new Uri("http://damieng.com/" + random.Next().ToString(CultureInfo.InvariantCulture))
             };
         }
