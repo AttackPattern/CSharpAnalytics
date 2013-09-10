@@ -15,7 +15,7 @@ namespace CSharpAnalytics.Network
     public class BackgroundHttpClientRequester : BackgroundHttpRequester
     {
         private readonly Action<HttpRequestMessage> preprocessor;
-        private readonly Func<bool> checkInternetAvailable; 
+        private readonly Func<bool> checkInternetAvailable;
 
         /// <summary>
         /// Create a new BackgroundHttpClientRequester.
@@ -45,6 +45,8 @@ namespace CSharpAnalytics.Network
                     var message = CreateRequest(requestUri);
                     if (preprocessor != null)
                         preprocessor(message);
+
+                    if (message.RequestUri == null) return;
 
                     HttpResponseMessage response = null;
                     try

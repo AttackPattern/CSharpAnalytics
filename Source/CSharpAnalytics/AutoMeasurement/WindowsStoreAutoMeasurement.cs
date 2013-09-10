@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
+using System.Runtime.InteropServices.ComTypes;
 using CSharpAnalytics.Network;
 using CSharpAnalytics.Protocols;
 using CSharpAnalytics.Protocols.Measurement;
@@ -104,21 +105,15 @@ namespace CSharpAnalytics
                 delayedOptOut = optOut;
                 return;
             }
-
             delayedOptOut = null;
 
-            if (optOut && sessionManager.VisitorStatus == VisitorStatus.Active)
-            {
-                sessionManager.VisitorStatus = VisitorStatus.OptedOut;
-                await SuspendRequesterAsync();
-            }
+            if (sessionManager.VisitorStatus == VisitorStatus.SampledOut) return;
 
-            if (!optOut && sessionManager.VisitorStatus == VisitorStatus.OptedOut)
+            var newVisitorStatus = optOut ? VisitorStatus.OptedOut : VisitorStatus.Active;
+            if (newVisitorStatus != sessionManager.VisitorStatus)
             {
-                sessionManager.VisitorStatus = VisitorStatus.Active;
-                if (!requester.IsStarted)
-                    requester.Start(lastUploadInterval);
-
+                System.Diagnostics.Debug.WriteLine("Switching VisitorStatus from {0} to {1}", sessionManager.VisitorStatus, newVisitorStatus);
+                sessionManager.VisitorStatus = newVisitorStatus;
                 await SaveSessionState(sessionManager.GetState());
             }
         }
@@ -207,12 +202,11 @@ namespace CSharpAnalytics
             var application = Application.Current;
             application.Resuming -= ApplicationOnResuming;
             application.Suspending -= ApplicationOnSuspending;
+            attachedDataTransferManager.TargetApplicationChosen -= socialShare;
 
             if (attachedFrame != null)
                 attachedFrame.Navigated -= FrameNavigated;
             attachedFrame = null;
-
-            attachedDataTransferManager.TargetApplicationChosen -= socialShare;
         }
 
         /// <summary>
@@ -299,6 +293,12 @@ namespace CSharpAnalytics
         /// </remarks>
         private static void PreprocessHttpRequest(HttpRequestMessage requestMessage)
         {
+            if (sessionManager.VisitorStatus != VisitorStatus.Active)
+            {
+                requestMessage.RequestUri = null;
+                return;
+            }
+
             requestMessage.RequestUri = client.AdjustUriBeforeRequest(requestMessage.RequestUri);
             AddUserAgent(requestMessage.Headers.UserAgent);
             DebugRequest(requestMessage);
