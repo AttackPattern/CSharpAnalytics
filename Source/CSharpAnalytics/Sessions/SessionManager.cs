@@ -36,7 +36,6 @@ namespace CSharpAnalytics.Sessions
                 visitor = new Visitor(sessionState.VisitorId);
                 Session = new Session(sessionState.SessionStartedAt, sessionState.SessionNumber);
                 Referrer = sessionState.Referrer;
-                PreviousSessionStartedAt = sessionState.PreviousSessionStartedAt;
                 lastActivityAt = sessionState.LastActivityAt;
                 SessionStatus = sessionState.SessionStatus;
                 VisitorStatus = sessionState.VisitorStatus;
@@ -45,7 +44,6 @@ namespace CSharpAnalytics.Sessions
             {
                 visitor = new Visitor();
                 Session = new Session();
-                PreviousSessionStartedAt = Session.StartedAt;
                 SessionStatus = SessionStatus.Starting;
                 var willTrackThisVisitor = ShouldTrackThisNewVisitor(sampleRate);
                 VisitorStatus = willTrackThisVisitor ? VisitorStatus.Active : VisitorStatus.SampledOut;
@@ -110,11 +108,6 @@ namespace CSharpAnalytics.Sessions
         public Visitor Visitor { get { return visitor; } }
 
         /// <summary>
-        /// When the previous session started at.
-        /// </summary>
-        public DateTimeOffset PreviousSessionStartedAt { get; private set; }
-
-        /// <summary>
         /// Last page or URI visited to act as referrer for subsequent ones.
         /// </summary>
         public Uri Referrer { get; internal set; }
@@ -130,7 +123,6 @@ namespace CSharpAnalytics.Sessions
                 VisitorId = Visitor.ClientId,
                 SessionStartedAt = Session.StartedAt,
                 SessionNumber = Session.Number,
-                PreviousSessionStartedAt = PreviousSessionStartedAt,
                 LastActivityAt = lastActivityAt,
                 Referrer = Referrer,
                 SessionStatus = SessionStatus,
@@ -179,7 +171,6 @@ namespace CSharpAnalytics.Sessions
         {
             lock (newSessionLock)
             {
-                PreviousSessionStartedAt = Session.StartedAt;
                 Session = new Session(startedAt, Session.Number + 1);
                 SessionStatus = SessionStatus.Starting;
             }

@@ -23,7 +23,6 @@ namespace CSharpAnalytics.Sessions
         [DataMember] public SessionStatus SessionStatus { get; set; }
 
         // Internal
-        [DataMember] public DateTimeOffset PreviousSessionStartedAt { get; set; }
         [DataMember] public DateTimeOffset LastActivityAt { get; set; }
         [DataMember] public Uri Referrer { get; set; }
     }

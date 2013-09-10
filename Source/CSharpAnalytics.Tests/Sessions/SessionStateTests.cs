@@ -32,7 +32,6 @@ namespace CSharpAnalytics.Test.Sessions
                 SessionNumber = sessionNumber,
 
                 LastActivityAt = lastActivityAt,
-                PreviousSessionStartedAt = previousSessionStartedAt,
                 SessionStartedAt = sessionStartedAt,
 
                 Referrer = referrer
@@ -42,7 +41,6 @@ namespace CSharpAnalytics.Test.Sessions
             Assert.AreEqual(sessionNumber, state.SessionNumber);
 
             Assert.AreEqual(lastActivityAt, state.LastActivityAt);
-            Assert.AreEqual(previousSessionStartedAt, state.PreviousSessionStartedAt);
             Assert.AreEqual(sessionStartedAt, state.SessionStartedAt);
 
             Assert.AreEqual(referrer, state.Referrer);
@@ -59,7 +57,6 @@ namespace CSharpAnalytics.Test.Sessions
             Assert.AreEqual(original.SessionNumber, deserialized.SessionNumber);
 
             Assert.AreEqual(original.LastActivityAt, deserialized.LastActivityAt);
-            Assert.AreEqual(original.PreviousSessionStartedAt, deserialized.PreviousSessionStartedAt);
             Assert.AreEqual(original.SessionStartedAt, deserialized.SessionStartedAt);
             
             Assert.AreEqual(original.Referrer, deserialized.Referrer);
@@ -72,7 +69,6 @@ namespace CSharpAnalytics.Test.Sessions
                 VisitorId = Guid.NewGuid(),
                 SessionNumber = 408,
                 LastActivityAt = DateTime.Now.Subtract(new TimeSpan(0, 0, 0, 1)),
-                PreviousSessionStartedAt = DateTime.Now.Subtract(new TimeSpan(0, 1, 10, 15)),
                 SessionStartedAt = DateTime.Now.Subtract(new TimeSpan(0, 0, 0, 15)),
                 Referrer = new Uri("http://damieng.com")
             };

@@ -22,7 +22,7 @@ namespace CSharpAnalytics.Test.Sessions
             var sessionManager = new TimeoutSessionManager(state, timeout);
 
             Assert.AreEqual(timeout, sessionManager.Timeout);
-            Assert.AreEqual(state.PreviousSessionStartedAt, sessionManager.PreviousSessionStartedAt);
+            Assert.AreEqual(state.VisitorId, sessionManager.Visitor.ClientId);
         }
 
         [TestMethod]
@@ -98,7 +98,6 @@ namespace CSharpAnalytics.Test.Sessions
                 VisitorId = Guid.NewGuid(),
                 SessionNumber = random.Next(),
                 LastActivityAt = DateTime.Now.Subtract(new TimeSpan(0, 0, 0, 1)),
-                PreviousSessionStartedAt = DateTime.Now.Subtract(new TimeSpan(0, 1, 10, 15)),
                 SessionStartedAt = DateTime.Now.Subtract(new TimeSpan(0, 0, 0, 15)),
                 Referrer = new Uri("http://damieng.com/" + random.Next().ToString(CultureInfo.InvariantCulture))
             };

@@ -19,7 +19,6 @@ namespace CSharpAnalytics.Test.Sessions
 
             var sessionManager = new SessionManager(state);
 
-            Assert.AreEqual(state.PreviousSessionStartedAt, sessionManager.PreviousSessionStartedAt);
             Assert.AreEqual(state.Referrer, sessionManager.Referrer);
 
             Assert.AreEqual(state.VisitorId, sessionManager.Visitor.ClientId);
@@ -36,7 +35,6 @@ namespace CSharpAnalytics.Test.Sessions
             Assert.IsNull(sessionManager.Referrer);
             Assert.IsNotNull(sessionManager.Visitor);
             Assert.IsNotNull(sessionManager.Session);
-            Assert.IsTrue(sessionManager.PreviousSessionStartedAt <= DateTimeOffset.Now);
         }
 
         [TestMethod]
@@ -49,7 +47,6 @@ namespace CSharpAnalytics.Test.Sessions
             var actual = sessionManager.GetState();
 
             Assert.AreEqual(expected.LastActivityAt, actual.LastActivityAt);
-            Assert.AreEqual(expected.PreviousSessionStartedAt, actual.PreviousSessionStartedAt);
             Assert.AreEqual(expected.Referrer, actual.Referrer);
             Assert.AreEqual(expected.SessionNumber, actual.SessionNumber);
             Assert.AreEqual(expected.SessionStartedAt, actual.SessionStartedAt);
@@ -191,7 +188,6 @@ namespace CSharpAnalytics.Test.Sessions
                 VisitorId = Guid.NewGuid(),
                 SessionNumber = random.Next(),
                 LastActivityAt = DateTime.Now.Subtract(new TimeSpan(0, 0, 0, 1)),
-                PreviousSessionStartedAt = DateTime.Now.Subtract(new TimeSpan(0, 1, 10, 15)),
                 SessionStartedAt = DateTime.Now.Subtract(new TimeSpan(0, 0, 0, 15)),
                 Referrer = new Uri("http://damieng.com/" + random.Next().ToString(CultureInfo.InvariantCulture))
             };
