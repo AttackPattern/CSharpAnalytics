@@ -41,7 +41,7 @@ namespace CSharpAnalytics
         private static readonly ProtocolDebugger protocolDebugger = new ProtocolDebugger(MeasurementParameterDefinitions.All);
         private static readonly TypedEventHandler<DataTransferManager, TargetApplicationChosenEventArgs> socialShare = (sender, e) => Client.TrackSocial("ShareCharm", e.ApplicationName);
         private static readonly MeasurementAnalyticsClient client = new MeasurementAnalyticsClient();
-        private static readonly ProductInfoHeaderValue clientUserAgent = new ProductInfoHeaderValue("CSharpAnalytics", "0.1");
+        private static readonly ProductInfoHeaderValue clientUserAgent = new ProductInfoHeaderValue("CSharpAnalytics", "0.2");
 
         private static DataTransferManager attachedDataTransferManager;
         private static Frame attachedFrame;
@@ -183,7 +183,6 @@ namespace CSharpAnalytics
         private static async void ApplicationOnResuming(object sender, object o)
         {
             await StartRequesterAsync();
-            Client.TrackEvent("Resume", ApplicationLifecycleEvent);
         }
 
         /// <summary>
@@ -194,7 +193,6 @@ namespace CSharpAnalytics
         private static async void ApplicationOnSuspending(object sender, SuspendingEventArgs suspendingEventArgs)
         {
             var deferral = suspendingEventArgs.SuspendingOperation.GetDeferral();
-            Client.TrackEvent("Suspend", ApplicationLifecycleEvent);
             await SuspendRequesterAsync();
             deferral.Complete();
         }
