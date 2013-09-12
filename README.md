@@ -18,7 +18,7 @@ This is the best solution for C# apps wanting to talk to Google Analytics. Why?
 
 1. Pure C# - easy to debug, extend or port (no JavaScript, web views or DLLs)
 1. Feature rich - offline, configurable, OS stats
-1. Ease of use - add *three lines* to your WindowsStore app
+1. Ease of use - add *two lines* to your WindowsStore app
 
 Still not convinced? Check out [how we compare to the alternatives](https://github.com/AttackPattern/CSharpAnalytics/wiki/Comparison)
 
@@ -72,19 +72,15 @@ The easiest way to start is to use the AutoMeasurement helper class. It hooks in
 * Operating system, window resolution, CPU type identification
 * Save/persist last 50 hits for offline/online support
 
-Simply add three lines to your App.xaml.cs.
-
-At the top of the file add:
-
-`using CSharpAnalytics;`
+Simply add two lines to your App.xaml.cs.
 
 At the start of the OnLaunched method add (replacing UA-319000-8 with your own Google Analytics property ID):
 
-`var analyticsTask = AutoMeasurement.StartAsync(new MeasurementConfiguration("UA-319000-8"), args);`
+`var analyticsTask = CSharpAnalytics.AutoMeasurement.StartAsync(new MeasurementConfiguration("UA-319000-8"), args);`
 
 At the end of the OnLaunched method add:
 
-`AutoMeasurement.Attach(rootFrame);`
+`CSharpAnalytics.AutoMeasurement.Attach(rootFrame);`
 
 Check out the CSharpAnalytics.Sample.WindowsStore application if still unsure of usage.
 
