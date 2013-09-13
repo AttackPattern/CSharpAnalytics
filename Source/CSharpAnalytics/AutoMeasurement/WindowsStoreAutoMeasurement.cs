@@ -2,14 +2,13 @@
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
-using CSharpAnalytics.Activities;
 using CSharpAnalytics.Network;
 using CSharpAnalytics.Protocols;
 using CSharpAnalytics.Protocols.Measurement;
 using CSharpAnalytics.Sessions;
+using CSharpAnalytics.WindowsStore;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -19,10 +18,10 @@ using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
+using Windows.Networking.Connectivity;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
-using CSharpAnalytics.WindowsStore;
 
 namespace CSharpAnalytics
 {
@@ -39,9 +38,9 @@ namespace CSharpAnalytics
         private const int MaximumRequestsToPersist = 60;
 
         private static readonly ProtocolDebugger protocolDebugger = new ProtocolDebugger(MeasurementParameterDefinitions.All);
-        private static readonly TypedEventHandler<DataTransferManager, TargetApplicationChosenEventArgs> socialShare = (sender, e) => Client.TrackSocial("ShareCharm", e.ApplicationName);
+        private static readonly TypedEventHandler<DataTransferManager, TargetApplicationChosenEventArgs> socialShare = (sender, e) => Client.TrackEvent("Share", "Charms", e.ApplicationName);
         private static readonly MeasurementAnalyticsClient client = new MeasurementAnalyticsClient();
-        private static readonly ProductInfoHeaderValue clientUserAgent = new ProductInfoHeaderValue("CSharpAnalytics", "0.1");
+        private static readonly ProductInfoHeaderValue clientUserAgent = new ProductInfoHeaderValue("CSharpAnalytics", "0.2");
 
         private static DataTransferManager attachedDataTransferManager;
         private static Frame attachedFrame;
@@ -50,6 +49,7 @@ namespace CSharpAnalytics
         private static BackgroundHttpRequester requester;
         private static SessionManager sessionManager;
         private static string systemUserAgent;
+        private static bool isStarted;
 
         /// <summary>
         /// Access to the MeasurementAnalyticsClient necessary to send additional events.
@@ -71,18 +71,22 @@ namespace CSharpAnalytics
         /// <example>var analyticsTask = AutoMeasurement.StartAsync(new MeasurementConfiguration("UA-123123123-1", "MyApp", "1.0.0.0"));</example>
         public static async Task StartAsync(MeasurementConfiguration configuration, IActivatedEventArgs launchArgs, TimeSpan? uploadInterval = null)
         {
-            lastUploadInterval = uploadInterval ?? TimeSpan.FromSeconds(5);
-            systemUserAgent = await WindowsStoreSystemInformation.GetSystemUserAgent();
-            await StartRequesterAsync();
+            if (!isStarted)
+            {
+                isStarted = true;
+                lastUploadInterval = uploadInterval ?? TimeSpan.FromSeconds(5);
+                systemUserAgent = await WindowsStoreSystemInformation.GetSystemUserAgent();
+                await StartRequesterAsync();
 
-            var sessionState = await LoadSessionState();
-            sessionManager = new SessionManager(sessionState, configuration.SampleRate);
-            if (delayedOptOut != null) SetOptOut(delayedOptOut.Value);
+                var sessionState = await LoadSessionState();
+                sessionManager = new SessionManager(sessionState, configuration.SampleRate);
+                if (delayedOptOut != null) SetOptOut(delayedOptOut.Value);
 
-            Client.Configure(configuration, sessionManager, new WindowsStoreEnvironment(), requester.Add);
+                Client.Configure(configuration, sessionManager, new WindowsStoreEnvironment(), requester.Add);
+                HookEvents();
+            }
+
             Client.TrackEvent("Start", ApplicationLifecycleEvent, launchArgs.Kind.ToString());
-
-            HookEvents();
         }
 
         /// <summary>
@@ -100,21 +104,15 @@ namespace CSharpAnalytics
                 delayedOptOut = optOut;
                 return;
             }
-
             delayedOptOut = null;
 
-            if (optOut && sessionManager.VisitorStatus == VisitorStatus.Active)
-            {
-                sessionManager.VisitorStatus = VisitorStatus.OptedOut;
-                await SuspendRequesterAsync();
-            }
+            if (sessionManager.VisitorStatus == VisitorStatus.SampledOut) return;
 
-            if (!optOut && sessionManager.VisitorStatus == VisitorStatus.OptedOut)
+            var newVisitorStatus = optOut ? VisitorStatus.OptedOut : VisitorStatus.Active;
+            if (newVisitorStatus != sessionManager.VisitorStatus)
             {
-                sessionManager.VisitorStatus = VisitorStatus.Active;
-                if (!requester.IsStarted)
-                    requester.Start(lastUploadInterval);
-
+                System.Diagnostics.Debug.WriteLine("Switching VisitorStatus from {0} to {1}", sessionManager.VisitorStatus, newVisitorStatus);
+                sessionManager.VisitorStatus = newVisitorStatus;
                 await SaveSessionState(sessionManager.GetState());
             }
         }
@@ -178,7 +176,6 @@ namespace CSharpAnalytics
         private static async void ApplicationOnResuming(object sender, object o)
         {
             await StartRequesterAsync();
-            Client.TrackEvent("Resume", ApplicationLifecycleEvent);
         }
 
         /// <summary>
@@ -189,7 +186,6 @@ namespace CSharpAnalytics
         private static async void ApplicationOnSuspending(object sender, SuspendingEventArgs suspendingEventArgs)
         {
             var deferral = suspendingEventArgs.SuspendingOperation.GetDeferral();
-            Client.Track(new EventActivity("Suspend", ApplicationLifecycleEvent), true); // Stop the session
             await SuspendRequesterAsync();
             deferral.Complete();
         }
@@ -205,12 +201,11 @@ namespace CSharpAnalytics
             var application = Application.Current;
             application.Resuming -= ApplicationOnResuming;
             application.Suspending -= ApplicationOnSuspending;
+            attachedDataTransferManager.TargetApplicationChosen -= socialShare;
 
             if (attachedFrame != null)
                 attachedFrame.Navigated -= FrameNavigated;
             attachedFrame = null;
-
-            attachedDataTransferManager.TargetApplicationChosen -= socialShare;
         }
 
         /// <summary>
@@ -262,9 +257,28 @@ namespace CSharpAnalytics
         /// <returns>Task that completes when the requester is ready.</returns>
         private static async Task StartRequesterAsync()
         {
-            requester = new BackgroundHttpClientRequester(PreprocessHttpRequest);
+            requester = new BackgroundHttpClientRequester(PreprocessHttpRequest, IsInternetAvailable);
             var previousRequests = await LocalFolderContractSerializer<List<Uri>>.RestoreAsync(RequestQueueFileName);
             requester.Start(lastUploadInterval, previousRequests);
+        }
+
+        /// <summary>
+        /// Determine if the Internet is available at this point in time.
+        /// </summary>
+        /// <returns>True if the Internet is available, false otherwise.</returns>
+        private static bool IsInternetAvailable()
+        {
+            var internetProfile = NetworkInformation.GetInternetConnectionProfile();
+            if (internetProfile == null) return false;
+
+            switch (internetProfile.GetNetworkConnectivityLevel())
+            {
+                case NetworkConnectivityLevel.None:
+                case NetworkConnectivityLevel.LocalAccess:
+                    return false;
+                default:
+                    return true;
+            }
         }
 
         /// <summary>
@@ -278,6 +292,12 @@ namespace CSharpAnalytics
         /// </remarks>
         private static void PreprocessHttpRequest(HttpRequestMessage requestMessage)
         {
+            if (sessionManager.VisitorStatus != VisitorStatus.Active)
+            {
+                requestMessage.RequestUri = null;
+                return;
+            }
+
             requestMessage.RequestUri = client.AdjustUriBeforeRequest(requestMessage.RequestUri);
             AddUserAgent(requestMessage.Headers.UserAgent);
             DebugRequest(requestMessage);

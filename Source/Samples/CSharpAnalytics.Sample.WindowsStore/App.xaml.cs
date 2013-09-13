@@ -1,6 +1,5 @@
 ﻿using CSharpAnalytics.Protocols.Measurement;
 using CSharpAnalytics.Sample.WindowsStore.Common;
-using CSharpAnalytics.WindowsStore;
 using System;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
