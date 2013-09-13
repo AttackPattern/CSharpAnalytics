@@ -3,6 +3,7 @@
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -24,7 +25,9 @@ namespace CSharpAnalytics
         private const string ManufacturerKey = "System.Devices.Manufacturer";
         private const string DeviceClassKey = "{A45C254E-DF1C-4EFD-8020-67D146A850E0},10";
         private const string DisplayPrimaryCategoryKey = "{78C34FC8-104A-4ACA-9EA4-524D52996E57},97";
-        private const string DeviceDriverVersionKey = "{A8B865DD-2E3D-4094-AD97-E593A70C75D6},3";
+        private const string DeviceDriverKey = "{A8B865DD-2E3D-4094-AD97-E593A70C75D6}";
+        private const string DeviceDriverVersionKey = DeviceDriverKey + ",3";
+        private const string DeviceDriverProviderKey = DeviceDriverKey + ",9";
         private const string RootContainer = "{00000000-0000-0000-FFFF-FFFFFFFFFFFF}";
         private const string RootContainerQuery = "System.Devices.ContainerId:=\"" + RootContainer + "\"";
         private const string HalDeviceClass = "4d36e966-e325-11ce-bfc1-08002be10318";
@@ -123,7 +126,7 @@ namespace CSharpAnalytics
         /// <summary>
         /// Get the version of Windows for this computer.
         /// </summary>
-        /// <example>5.2</example>
+        /// <example>6.2</example>
         /// <returns>Version number of Windows running on this computer.</returns>
         public static async Task<string> GetWindowsVersionAsync()
         {
@@ -144,15 +147,21 @@ namespace CSharpAnalytics
         /// <returns>PnpObject of the HAL with the additional properties populated.</returns>
         private static async Task<PnpObject> GetHalDevice(params string[] properties)
         {
-            var actualProperties = properties.Concat(new[] { DeviceClassKey });
+            var actualProperties = properties.Concat(new[] { DeviceClassKey, DeviceDriverProviderKey });
             var rootDevices = (await PnpObject.FindAllAsync(PnpObjectType.Device, actualProperties, RootContainerQuery));
-            foreach (var rootDevice in rootDevices.Where(d => d.Properties != null && d.Properties.Any()))
-            {
-                var lastProperty = rootDevice.Properties.Last();
-                if (lastProperty.Value != null && lastProperty.Value.ToString().Equals(HalDeviceClass))
-                    return rootDevice;
-            }
-            return null;
+            return rootDevices.FirstOrDefault(rootDevice => IsMicrosoftHal(rootDevice.Properties));
+        }
+
+        /// <summary>
+        /// Determine if this device represents a Microsoft-provided HAL.
+        /// </summary>
+        /// <param name="properties"></param>
+        /// <returns></returns>
+        private static bool IsMicrosoftHal(IReadOnlyDictionary<string, object> properties)
+        {
+            return
+                properties.Any(p => p.Value.ToString().Equals(HalDeviceClass) && p.Key.Equals(DeviceClassKey.Replace(',', ' '))) &&
+                properties.Any(p => p.Key.Equals(DeviceDriverProviderKey.Replace(',', ' ')) && p.Value.Equals("Microsoft"));
         }
 
         [DllImport("kernel32.dll")]
