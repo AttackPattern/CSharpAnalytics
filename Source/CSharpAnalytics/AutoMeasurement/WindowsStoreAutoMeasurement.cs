@@ -82,7 +82,7 @@ namespace CSharpAnalytics
                 sessionManager = new SessionManager(sessionState, configuration.SampleRate);
                 if (delayedOptOut != null) SetOptOut(delayedOptOut.Value);
 
-                Client.Configure(configuration, sessionManager, new WindowsStoreEnvironment(), requester.Add);
+                Client.Configure(configuration, sessionManager, new WindowsStoreEnvironment(), Add);
                 HookEvents();
             }
 
@@ -372,6 +372,16 @@ namespace CSharpAnalytics
         private static async Task SaveSessionState(SessionState sessionState)
         {
             await LocalFolderContractSerializer<SessionState>.SaveAsync(sessionState, SessionStateFileName);
+        }
+
+        /// <summary>
+        /// Send the Uri request to the current background requester safely.
+        /// </summary>
+        private static void Add(Uri uri)
+        {
+            var safeRequester = requester;
+            if (safeRequester != null)
+                safeRequester.Add(uri);
         }
     }
 }
