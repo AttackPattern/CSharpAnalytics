@@ -27,7 +27,7 @@ Still not convinced? Check out [how we compare to the alternatives](https://gith
 Our goal is to support all major C# platforms. Right now we have project files for:
 
 * Windows 8 Store applications (Visual Studio 2012, Measurement Protocol, AutoMeasurement)
-* .NET 4.5 applications (Visual Studio 2012, Urchin & Measurement Protocol)
+* .NET 4.5 applications (Visual Studio 2012, Measurement Protocol)
 
 Windows Store support is the most complete as it includes a sample app and an AutoMeasurement implementation that provides a plug-in-and-go solution.
 
@@ -35,7 +35,6 @@ Windows Store support is the most complete as it includes a sample app and an Au
 
 This project:
 
-* is new and under active development
 * does not support e-commerce or exception track yet as both are covered by Windows Store
 * does not support campaign tracking as there is no way to do so via the Windows Store
 * does not honor Windows 8 network metering modes
