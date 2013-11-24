@@ -54,27 +54,6 @@ namespace CSharpAnalytics.Activities
         }
 
         /// <summary>
-        /// Billing address city.
-        /// </summary>
-        /// <example>San Jose</example>
-        /// <remarks>Urchin only, MeasurementProtocol does not support.</remarks>
-        public string BillingCity { get; set; }
-
-        /// <summary>
-        /// Billing address region, province or state.
-        /// </summary>
-        /// <example>CA</example>
-        /// <remarks>Urchin only, MeasurementProtocol does not support.</remarks>
-        public string BillingRegion { get; set; }
-
-        /// <summary>
-        /// Billing address country.
-        /// </summary>
-        /// <example>USA</example>
-        /// <remarks>Urchin only, MeasurementProtocol does not support.</remarks>
-        public string BillingCountry { get; set; }
-
-        /// <summary>
         /// Currency of the order.
         /// </summary>
         /// <example>USD</example>
