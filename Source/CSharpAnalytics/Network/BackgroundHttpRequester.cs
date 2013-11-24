@@ -57,6 +57,7 @@ namespace CSharpAnalytics.Network
 
             cancellationTokenSource = new CancellationTokenSource();
             currentUploadInterval = uploadInterval;
+
             backgroundSender = Task.Factory.StartNew(RequestLoop, cancellationTokenSource.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
         }
 
@@ -73,7 +74,7 @@ namespace CSharpAnalytics.Network
             await backgroundSender;
 
             return priorRequests
-                .Concat(new [] { currentlySending })
+                .Concat(new[] { currentlySending })
                 .Concat(currentRequests)
                 .Where(r => r != null)
                 .ToList();
@@ -86,26 +87,42 @@ namespace CSharpAnalytics.Network
         {
             using (var queueEmptyWait = new ManualResetEventSlim())
             {
-                try
+                while (IsStarted)
                 {
-                    while (IsStarted)
+                    try
                     {
-                        // Always empty the priorRequest queue first
-                        var requestQueue = priorRequests.Count > 0 ? priorRequests : currentRequests;
-                        // Send all the requests we currently have
-                        while (requestQueue.TryDequeue(out currentlySending))
-                       {
-                            RequestWithFailureRetry(currentlySending);
-                            currentlySending = null;
+                        if (IsInternetAvailable)
+                        {
+                            while (GetNextQueueEntry(out currentlySending))
+                            {
+                                RequestWithFailureRetry(currentlySending, cancellationTokenSource.Token);
+                                currentlySending = null;
+                            }
                         }
 
                         queueEmptyWait.Wait(currentUploadInterval, cancellationTokenSource.Token);
                     }
-                }
-                catch
-                {
+                    catch
+                    {
+                    }
                 }
             }
+        }
+
+        /// <summary>
+        /// Determines if the internet is currently available without having to send requests.
+        /// </summary>
+        protected virtual bool IsInternetAvailable { get { return true; } }
+
+        /// <summary>
+        /// Get the next entry from the queue.
+        /// </summary>
+        /// <param name="entry">Entry obtained from the queue.</param>
+        /// <returns>True if an entry was available, false otherwise.</returns>
+        private bool GetNextQueueEntry(out Uri entry)
+        {
+            var requestQueue = priorRequests.Count > 0 ? priorRequests : currentRequests;
+            return requestQueue.TryDequeue(out entry);
         }
 
         /// <summary>
@@ -126,7 +143,7 @@ namespace CSharpAnalytics.Network
         /// Request the URI retrying as appropriate if a failure occurs.
         /// </summary>
         /// <param name="requestUri">URI to requqest.</param>
-        protected abstract void RequestWithFailureRetry(Uri requestUri);
+        protected abstract void RequestWithFailureRetry(Uri requestUri, CancellationToken cancellationToken);
 
         /// <summary>
         /// Total count of all remaining items in the queue.

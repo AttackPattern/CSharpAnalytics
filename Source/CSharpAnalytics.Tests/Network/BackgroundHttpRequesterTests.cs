@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using CSharpAnalytics.Network;
 #if WINDOWS_STORE
 using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
+using System.Threading.Tasks;
 #else
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 #endif
@@ -18,7 +20,7 @@ namespace CSharpAnalytics.Test.Network
         {
             var expectedList = TestHelpers.CreateRequestList(4);
             var actualList = new List<Uri>();
-            Func<Uri, bool> processor = u => { actualList.Add(u); return true; };
+            Func<Uri, CancellationToken, bool> processor = (u, c) => { actualList.Add(u); return true; };
 
             var requester = new BackgroundHttpFuncRequester(processor);
             requester.Start(TimeSpan.FromMilliseconds(10), expectedList);
@@ -33,7 +35,7 @@ namespace CSharpAnalytics.Test.Network
         {
             var expectedList = TestHelpers.CreateRequestList(10);
             var actualList = new List<Uri>();
-            Func<Uri, bool> processor = u => { actualList.Add(u); return true; };
+            Func<Uri, CancellationToken, bool> processor = (u, c) => { actualList.Add(u); return true; };
 
             var requester = new BackgroundHttpFuncRequester(processor);
             requester.Start(TimeSpan.FromMilliseconds(10), expectedList.Take(5));
@@ -49,7 +51,7 @@ namespace CSharpAnalytics.Test.Network
         public void BackgroundHttpRequester_StopAsync_Stops_Requesting()
         {
             var actualList = new List<Uri>();
-            Func<Uri, bool> processor = u => { actualList.Add(u); return true; };
+            Func<Uri, CancellationToken, bool> processor = (u, c) => { actualList.Add(u); return true; };
 
             var requester = new BackgroundHttpFuncRequester(processor);
             requester.Start(TimeSpan.FromMilliseconds(10));
@@ -59,6 +61,40 @@ namespace CSharpAnalytics.Test.Network
 
             Assert.AreEqual(0, actualList.Count);
             Assert.AreEqual(3, requester.QueueCount);
+        }
+
+        [TestMethod]
+        public void BackgroundHttpRequester_StopAsync_Stops_Current_Active_Request()
+        {
+            var cancelled = false;
+            var mre = new ManualResetEventSlim();
+
+            Func<Uri, CancellationToken, bool> processor = (u, c) =>
+            {
+                try
+                {
+                    mre.Wait(c);
+                }
+                catch (AggregateException)
+                {
+                }
+                catch (OperationCanceledException)
+                {
+                }
+                mre.Set();
+                cancelled = c.IsCancellationRequested;
+                return true;
+            };
+
+            var requester = new BackgroundHttpFuncRequester(processor);
+            requester.Add(TestHelpers.CreateRequestList(1)[0]);
+            requester.Start(TimeSpan.FromMilliseconds(10));
+
+            Assert.IsFalse(cancelled);
+            requester.StopAsync().Wait(3000);
+
+            Assert.IsTrue(mre.Wait(3000));
+            Assert.IsTrue(cancelled);
         }
     }
 }

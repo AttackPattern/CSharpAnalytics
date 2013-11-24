@@ -4,6 +4,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Threading;
 
 namespace CSharpAnalytics.Network
 {
@@ -12,13 +13,13 @@ namespace CSharpAnalytics.Network
     /// </summary>
     public class BackgroundHttpFuncRequester : BackgroundHttpRequester
     {
-        private readonly Func<Uri, bool> requester;
+        private readonly Func<Uri, CancellationToken, bool> requester;
 
         /// <summary>
         /// Create a new BackgroundHttpFuncRequester.
         /// </summary>
         /// <param name="requester">Func to perform the request that will return true if successful.</param>
-        public BackgroundHttpFuncRequester(Func<Uri, bool> requester)
+        public BackgroundHttpFuncRequester(Func<Uri, CancellationToken, bool> requester)
         {
             this.requester = requester;
         }
@@ -27,7 +28,8 @@ namespace CSharpAnalytics.Network
         /// Request the URI with retry logic using HttpClient.
         /// </summary>
         /// <param name="requestUri">URI to request.</param>
-        protected override void RequestWithFailureRetry(Uri requestUri)
+        /// <param name="cancellationToken">Cancellation token that indicates if a request should be cancelled.</param>
+        protected override void RequestWithFailureRetry(Uri requestUri, CancellationToken cancellationToken)
         {
             var retryDelay = TimeSpan.Zero;
             var successfullySent = false;
@@ -36,7 +38,7 @@ namespace CSharpAnalytics.Network
             {
                 try
                 {
-                    successfullySent = requester(requestUri);
+                    successfullySent = requester(requestUri, cancellationToken);
                 }
                 catch (Exception ex)
                 {

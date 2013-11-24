@@ -5,6 +5,7 @@
 using System;
 using System.Diagnostics;
 using System.Net.Http;
+using System.Threading;
 
 namespace CSharpAnalytics.Network
 {
@@ -14,21 +15,25 @@ namespace CSharpAnalytics.Network
     public class BackgroundHttpClientRequester : BackgroundHttpRequester
     {
         private readonly Action<HttpRequestMessage> preprocessor;
+        private readonly Func<bool> checkInternetAvailable;
 
         /// <summary>
         /// Create a new BackgroundHttpClientRequester.
         /// </summary>
         /// <param name="preprocessor">Optional preprocessor for setting user agents, debugging etc.</param>
-        public BackgroundHttpClientRequester(Action<HttpRequestMessage> preprocessor = null)
+        /// <param name="checkInternetAvailable">Optional func to determine if the Internet is available.</param>
+        public BackgroundHttpClientRequester(Action<HttpRequestMessage> preprocessor = null, Func<bool> checkInternetAvailable = null)
         {
             this.preprocessor = preprocessor;
+            this.checkInternetAvailable = checkInternetAvailable;
         }
 
         /// <summary>
         /// Request the URI with retry logic using HttpClient.
         /// </summary>
         /// <param name="requestUri">URI to request.</param>
-        protected override void RequestWithFailureRetry(Uri requestUri)
+        /// <param name="cancellationToken">Token to indicate if request should be abandoned.</param>
+        protected override void RequestWithFailureRetry(Uri requestUri, CancellationToken cancellationToken)
         {
             var retryDelay = TimeSpan.Zero;
             var successfullySent = false;
@@ -41,10 +46,12 @@ namespace CSharpAnalytics.Network
                     if (preprocessor != null)
                         preprocessor(message);
 
+                    if (message.RequestUri == null) return;
+
                     HttpResponseMessage response = null;
                     try
                     {
-                        response = httpClient.SendAsync(message).Result;
+                        response = httpClient.SendAsync(message, cancellationToken).Result;
                     }
                     catch (Exception ex)
                     {
@@ -82,6 +89,17 @@ namespace CSharpAnalytics.Network
 
             var uriWithoutQuery = new Uri(uri.GetComponents(UriComponents.SchemeAndServer | UriComponents.Path, UriFormat.Unescaped));
             return new HttpRequestMessage(HttpMethod.Post, uriWithoutQuery) { Content = new StringContent(uri.GetComponents(UriComponents.Query, UriFormat.UriEscaped)) };
+        }
+
+        /// <summary>
+        /// Determines whether a connection to the Internet is available.
+        /// </summary>
+        protected override bool IsInternetAvailable
+        {
+            get
+            {
+                return checkInternetAvailable == null ? base.IsInternetAvailable : checkInternetAvailable();
+            }
         }
     }
 }
