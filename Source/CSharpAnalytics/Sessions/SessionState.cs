@@ -15,18 +15,12 @@ namespace CSharpAnalytics.Sessions
     {
         // Visitor
         [DataMember] public Guid VisitorId { get; set; }
-        [DataMember] public DateTimeOffset FirstVisitAt { get; set; }
         [DataMember] public VisitorStatus VisitorStatus { get; set; }
         
         // Session
-        [DataMember] public DateTimeOffset SessionStartedAt { get; set; }
-        [DataMember] public int SessionHitCount { get; set; }
-        [DataMember] public int SessionNumber { get; set; }
-        [DataMember] public long HitId { get; set; }
         [DataMember] public SessionStatus SessionStatus { get; set; }
 
         // Internal
-        [DataMember] public DateTimeOffset PreviousSessionStartedAt { get; set; }
         [DataMember] public DateTimeOffset LastActivityAt { get; set; }
         [DataMember] public Uri Referrer { get; set; }
     }

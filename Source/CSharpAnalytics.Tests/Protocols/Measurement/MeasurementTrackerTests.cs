@@ -16,18 +16,6 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
     public class MeasurementTrackerTests
     {
         [TestMethod]
-        public void MeasurementTracker_Track_Hits_Session()
-        {
-            var actual = new List<Uri>();
-            var sessionManager = MeasurementTestHelpers.CreateSessionManager();
-            var tracker = new MeasurementTracker(MeasurementTestHelpers.Configuration, sessionManager, MeasurementTestHelpers.CreateEnvironment(), actual.Add);
-
-            tracker.Track(new MeasurementActivityEntry(new AppViewActivity("Testing")));
-
-            Assert.AreEqual(1, sessionManager.Session.HitCount);
-        }
-
-        [TestMethod]
         public void MeasurementTracker_Track_Ends_Session()
         {
             var actual = new List<Uri>();

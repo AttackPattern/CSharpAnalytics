@@ -1,7 +1,6 @@
 ﻿using System.Globalization;
 using CSharpAnalytics.Sessions;
 using System;
-using System.Threading.Tasks;
 #if WINDOWS_STORE
 using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
 #else
@@ -16,21 +15,12 @@ namespace CSharpAnalytics.Test.Sessions
         [TestMethod]
         public void SessionManager_Can_Be_Created_From_State()
         {
-            var timeout = TimeSpan.FromMinutes(5);
             var state = CreateSampleState();
 
             var sessionManager = new SessionManager(state);
 
-            Assert.AreEqual(state.PreviousSessionStartedAt, sessionManager.PreviousSessionStartedAt);
             Assert.AreEqual(state.Referrer, sessionManager.Referrer);
-
-            Assert.AreEqual(state.FirstVisitAt, sessionManager.Visitor.FirstVisitAt);
-            Assert.AreEqual(state.VisitorId, sessionManager.Visitor.ClientId);
-            
-            Assert.AreEqual(state.HitId, sessionManager.Session.HitId);
-            Assert.AreEqual(state.SessionHitCount, sessionManager.Session.HitCount);
-            Assert.AreEqual(state.SessionNumber, sessionManager.Session.Number);
-            Assert.AreEqual(state.SessionStartedAt, sessionManager.Session.StartedAt);
+            Assert.AreEqual(state.VisitorId, sessionManager.Visitor.ClientId);            
         }
 
         [TestMethod]
@@ -40,9 +30,6 @@ namespace CSharpAnalytics.Test.Sessions
 
             Assert.IsNull(sessionManager.Referrer);
             Assert.IsNotNull(sessionManager.Visitor);
-            Assert.IsNotNull(sessionManager.Session);
-            Assert.AreEqual(0, sessionManager.Session.HitCount);
-            Assert.IsTrue(sessionManager.PreviousSessionStartedAt <= DateTimeOffset.Now);
         }
 
         [TestMethod]
@@ -54,14 +41,8 @@ namespace CSharpAnalytics.Test.Sessions
 
             var actual = sessionManager.GetState();
 
-            Assert.AreEqual(expected.FirstVisitAt, actual.FirstVisitAt);
-            Assert.AreEqual(expected.HitId, actual.HitId);
             Assert.AreEqual(expected.LastActivityAt, actual.LastActivityAt);
-            Assert.AreEqual(expected.PreviousSessionStartedAt, actual.PreviousSessionStartedAt);
             Assert.AreEqual(expected.Referrer, actual.Referrer);
-            Assert.AreEqual(expected.SessionHitCount, actual.SessionHitCount);
-            Assert.AreEqual(expected.SessionNumber, actual.SessionNumber);
-            Assert.AreEqual(expected.SessionStartedAt, actual.SessionStartedAt);
         }
 
         [TestMethod]
@@ -78,14 +59,10 @@ namespace CSharpAnalytics.Test.Sessions
         {
             var sessionManager = new SessionManager(null);
 
-            Assert.AreEqual(1, sessionManager.Session.Number);
-
             var starting = DateTimeOffset.Now;
 
             sessionManager.StartNewSession();
-            Assert.AreEqual(2, sessionManager.Session.Number);
-            Assert.IsTrue(sessionManager.Session.StartedAt >= starting, "Session StartedAt too early");
-            Assert.IsTrue(sessionManager.Session.StartedAt <= DateTimeOffset.Now, "Session StartedAt too late");
+            Assert.AreEqual(SessionStatus.Starting, sessionManager.SessionStatus);
         }
 
 
@@ -169,7 +146,7 @@ namespace CSharpAnalytics.Test.Sessions
         {
             const int repetitions = 1000;
 
-            int sampledCount = 0;
+            var sampledCount = 0;
             var sessionManager = new SessionManager(null);
 
             // Setup a linear distribution as random numbers are too unpredictable
@@ -197,14 +174,8 @@ namespace CSharpAnalytics.Test.Sessions
         {
             return new SessionState
             {
-                HitId = random.Next(),
                 VisitorId = Guid.NewGuid(),
-                SessionHitCount = random.Next(),
-                SessionNumber = random.Next(),
-                FirstVisitAt = DateTime.Now.Subtract(new TimeSpan(1, 12, 30, 20)),
                 LastActivityAt = DateTime.Now.Subtract(new TimeSpan(0, 0, 0, 1)),
-                PreviousSessionStartedAt = DateTime.Now.Subtract(new TimeSpan(0, 1, 10, 15)),
-                SessionStartedAt = DateTime.Now.Subtract(new TimeSpan(0, 0, 0, 15)),
                 Referrer = new Uri("http://damieng.com/" + random.Next().ToString(CultureInfo.InvariantCulture))
             };
         }

@@ -6,7 +6,6 @@ using System;
 using System.Diagnostics;
 using CSharpAnalytics.Activities;
 using CSharpAnalytics.Protocols.Measurement;
-using CSharpAnalytics.Protocols.Urchin;
 
 namespace CSharpAnalytics.Activities
 {
@@ -15,7 +14,7 @@ namespace CSharpAnalytics.Activities
     /// See https://developers.google.com/analytics/devguides/collection/gajs/eventTrackerGuide Event Tracking Guide
     /// </summary>
     [DebuggerDisplay("Event {Category}, {Action}, {Label}")]
-    public class EventActivity : IUrchinActivity, IMeasurementActivity
+    public class EventActivity : IMeasurementActivity
     {
         private readonly string action;
         private readonly string category;

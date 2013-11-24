@@ -33,10 +33,8 @@ namespace CSharpAnalytics.Sessions
         {
             if (sessionState != null)
             {
-                visitor = new Visitor(sessionState.VisitorId, sessionState.FirstVisitAt);
-                Session = new Session(sessionState.SessionStartedAt, sessionState.SessionNumber, sessionState.SessionHitCount, sessionState.HitId);
+                visitor = new Visitor(sessionState.VisitorId);
                 Referrer = sessionState.Referrer;
-                PreviousSessionStartedAt = sessionState.PreviousSessionStartedAt;
                 lastActivityAt = sessionState.LastActivityAt;
                 SessionStatus = sessionState.SessionStatus;
                 VisitorStatus = sessionState.VisitorStatus;
@@ -44,8 +42,6 @@ namespace CSharpAnalytics.Sessions
             else
             {
                 visitor = new Visitor();
-                Session = new Session();
-                PreviousSessionStartedAt = Session.StartedAt;
                 SessionStatus = SessionStatus.Starting;
                 var willTrackThisVisitor = ShouldTrackThisNewVisitor(sampleRate);
                 VisitorStatus = willTrackThisVisitor ? VisitorStatus.Active : VisitorStatus.SampledOut;
@@ -81,15 +77,6 @@ namespace CSharpAnalytics.Sessions
         }
 
         /// <summary>
-        /// Manually start a new session. Useful for scoping out session custom variables,
-        /// e.g. if an anonymous user becomes known via sign-in.
-        /// </summary>
-        public void StartNewSession()
-        {
-            StartNewSession(DateTimeOffset.Now);
-        }
-
-        /// <summary>
         /// Current status of this session.
         /// </summary>
         public SessionStatus SessionStatus { get; private set; }
@@ -100,19 +87,9 @@ namespace CSharpAnalytics.Sessions
         public VisitorStatus VisitorStatus { get; internal set; }
 
         /// <summary>
-        /// Current session.
-        /// </summary>
-        public Session Session { get; private set; }
-
-        /// <summary>
         /// Visitor.
         /// </summary>
         public Visitor Visitor { get { return visitor; } }
-
-        /// <summary>
-        /// When the previous session started at.
-        /// </summary>
-        public DateTimeOffset PreviousSessionStartedAt { get; private set; }
 
         /// <summary>
         /// Last page or URI visited to act as referrer for subsequent ones.
@@ -127,13 +104,7 @@ namespace CSharpAnalytics.Sessions
         {
             return new SessionState
             {
-                FirstVisitAt = Visitor.FirstVisitAt,
                 VisitorId = Visitor.ClientId,
-                SessionStartedAt = Session.StartedAt,
-                SessionHitCount = Session.HitCount,
-                HitId = Session.HitId,
-                SessionNumber = Session.Number,
-                PreviousSessionStartedAt = PreviousSessionStartedAt,
                 LastActivityAt = lastActivityAt,
                 Referrer = Referrer,
                 SessionStatus = SessionStatus,
@@ -148,7 +119,6 @@ namespace CSharpAnalytics.Sessions
         {
             lastActivityAt = DateTimeOffset.Now;
             MoveToNextSessionStatus();
-            Session.IncreaseHitCount();
         }
 
         /// <summary>
@@ -178,13 +148,10 @@ namespace CSharpAnalytics.Sessions
         /// <summary>
         /// Start a new session.
         /// </summary>
-        /// <param name="startedAt">When this session started.</param>
-        protected void StartNewSession(DateTimeOffset startedAt)
+        public void StartNewSession()
         {
             lock (newSessionLock)
             {
-                PreviousSessionStartedAt = Session.StartedAt;
-                Session = new Session(startedAt, Session.Number + 1);
                 SessionStatus = SessionStatus.Starting;
             }
         }

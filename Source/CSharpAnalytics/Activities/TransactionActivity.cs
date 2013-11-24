@@ -3,7 +3,6 @@
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
 using CSharpAnalytics.Protocols.Measurement;
-using CSharpAnalytics.Protocols.Urchin;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -12,7 +11,7 @@ namespace CSharpAnalytics.Activities
     /// <summary>
     /// Captures the details of an order and the items within it.
     /// </summary>
-    public class TransactionActivity : IUrchinActivity, IMeasurementActivity
+    public class TransactionActivity : IMeasurementActivity
     {
         private readonly Dictionary<string, TransactionItemActivity> items = new Dictionary<string, TransactionItemActivity>();
         private decimal? orderTotal;

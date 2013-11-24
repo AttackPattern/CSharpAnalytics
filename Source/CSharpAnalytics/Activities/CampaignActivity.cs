@@ -3,14 +3,13 @@
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
 using CSharpAnalytics.Protocols.Measurement;
-using CSharpAnalytics.Protocols.Urchin;
 
 namespace CSharpAnalytics.Activities
 {
     /// <summary>
     /// Captures the details of a campaign to be recorded in analytics.
     /// </summary>
-    public class CampaignActivity : IUrchinActivity, IMeasurementActivity
+    public class CampaignActivity : IMeasurementActivity
     {
         private readonly string source;
 

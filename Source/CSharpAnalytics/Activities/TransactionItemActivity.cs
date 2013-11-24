@@ -3,7 +3,6 @@
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
 using CSharpAnalytics.Protocols.Measurement;
-using CSharpAnalytics.Protocols.Urchin;
 using System;
 
 namespace CSharpAnalytics.Activities
@@ -11,7 +10,7 @@ namespace CSharpAnalytics.Activities
     /// <summary>
     /// Captures the details of an item on an order.
     /// </summary>
-    public class TransactionItemActivity : IUrchinActivity, IMeasurementActivity
+    public class TransactionItemActivity : IMeasurementActivity
     {
         private readonly string code;
         private readonly string name;

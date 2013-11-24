@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CSharpAnalytics.Sessions
 {
@@ -50,7 +46,7 @@ namespace CSharpAnalytics.Sessions
                 lock (newSessionLock)
                 {
                     if (TimeSinceLastActivity(activityStartedAt) > timeout)
-                        StartNewSession(activityStartedAt);
+                        StartNewSession();
                     lastActivityAt = activityStartedAt;
                 }
             }
