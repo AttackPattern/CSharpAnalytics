@@ -143,6 +143,7 @@ namespace CSharpAnalytics.Network
         /// Request the URI retrying as appropriate if a failure occurs.
         /// </summary>
         /// <param name="requestUri">URI to requqest.</param>
+        /// <param name="cancellationToken">CancellationToken used to stop the request.</param>
         protected abstract void RequestWithFailureRetry(Uri requestUri, CancellationToken cancellationToken);
 
         /// <summary>

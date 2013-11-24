@@ -19,7 +19,7 @@ namespace CSharpAnalytics.Activities
         /// <summary>
         /// Description of this exception.
         /// </summary>
-        public virtual string Description
+        public string Description
         {
             get { return description; }
         }

@@ -57,8 +57,8 @@ namespace CSharpAnalytics.Sessions
         /// <returns>True if this visitor should be tracked, false if they should be ignored.</returns>
         internal bool ShouldTrackThisNewVisitor(double sampleRate)
         {
-            if (sampleRate == 100) return true;
-            if (sampleRate == 0) return false;
+            if (sampleRate >= 100.0) return true;
+            if (sampleRate <= 0.0) return false;
             
             return SampleSelector() <= sampleRate;
         }

@@ -19,7 +19,7 @@ namespace CSharpAnalytics
     /// The techniques used here are not bullet proof but are good enough for analytics.
     /// Do not use these methods or techniques for anything more important than that.
     /// </remarks>
-    public class WindowsStoreSystemInformation
+    public static class WindowsStoreSystemInformation
     {
         private const string ModelNameKey = "System.Devices.ModelName";
         private const string ManufacturerKey = "System.Devices.Manufacturer";

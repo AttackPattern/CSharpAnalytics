@@ -99,6 +99,7 @@ namespace CSharpAnalytics.Network
         /// Create a HttpWebRequest using the HTTP POST method.
         /// </summary>
         /// <param name="requestUri">URI to request.</param>
+        /// <param name="writeBody">Whether it should write the contents of the body.</param>
         /// <returns>HttpWebRequest for this URI.</returns>
         private static HttpWebRequest CreatePostRequest(Uri requestUri, bool writeBody)
         {

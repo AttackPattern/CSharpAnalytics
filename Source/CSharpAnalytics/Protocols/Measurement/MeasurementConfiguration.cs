@@ -63,7 +63,7 @@ namespace CSharpAnalytics.Protocols.Measurement
             set
             {
                 if (value < 0 || value > 100)
-                    throw new ArgumentOutOfRangeException("SampleRate is a percentage and must be between 0 and 100");
+                    throw new ArgumentOutOfRangeException("value", "SampleRate is a percentage and must be between 0 and 100");
                 sampleRate = value;
             }
         }
