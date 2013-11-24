@@ -125,7 +125,6 @@
     <Compile Include="Environment\EnvironmentTests.cs" />
     <Compile Include="Network\BackgroundHttpClientRequesterTests.cs" />
     <Compile Include="Network\BackgroundHttpRequesterTests.cs" />
-    <Compile Include="Protocols\EpochTimeTests.cs" />
     <Compile Include="Protocols\Measurement\MeasurementActivityExtensionTests.cs" />
     <Compile Include="Protocols\Measurement\MeasurementActivityParameterBuilderTrackerTests.cs" />
     <Compile Include="Protocols\Measurement\MeasurementAnalyticsClientTests.cs" />
