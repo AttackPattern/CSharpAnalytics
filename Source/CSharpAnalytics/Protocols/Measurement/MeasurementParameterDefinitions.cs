@@ -15,7 +15,7 @@ namespace CSharpAnalytics.Protocols.Measurement
         /// <summary>
         /// All parameters that may be found in a Google Analytics Measurement Protocol request.
         /// </summary>
-        public static readonly ParameterDefinition[] All = new[]
+        public static readonly ParameterDefinition[] All = 
         {
             // General
             new ParameterDefinition("v",        "Protocol Version"),
@@ -85,6 +85,7 @@ namespace CSharpAnalytics.Protocols.Measurement
             new ParameterDefinition("ic",       "Item Code"),
             new ParameterDefinition("in",       "Item Name"),
             new ParameterDefinition("iv",       "Item Category"),
+            new ParameterDefinition("cu",       "Currency Code"),
 
             // Social Interactions
             new ParameterDefinition("sn",       "Social Network"),
