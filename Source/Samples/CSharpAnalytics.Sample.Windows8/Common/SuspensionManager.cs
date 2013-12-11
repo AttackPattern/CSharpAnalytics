@@ -7,7 +7,7 @@ using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
-namespace CSharpAnalytics.Sample.WindowsStore.Common
+namespace CSharpAnalytics.Sample.Windows8.Common
 {
     /// <summary>
     /// SuspensionManager captures global session state to simplify process lifetime management

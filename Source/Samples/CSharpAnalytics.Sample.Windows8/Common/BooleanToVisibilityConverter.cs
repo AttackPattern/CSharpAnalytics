@@ -2,7 +2,7 @@
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
 
-namespace CSharpAnalytics.Sample.WindowsStore.Common
+namespace CSharpAnalytics.Sample.Windows8.Common
 {
     /// <summary>
     /// Value converter that translates true to <see cref="Visibility.Visible"/> and false to

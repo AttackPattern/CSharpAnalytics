@@ -1,5 +1,5 @@
 ﻿using CSharpAnalytics.Protocols.Measurement;
-using CSharpAnalytics.Sample.WindowsStore.Common;
+using CSharpAnalytics.Sample.Windows8.Common;
 using System;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
@@ -7,7 +7,7 @@ using Windows.UI.ApplicationSettings;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
-namespace CSharpAnalytics.Sample.WindowsStore
+namespace CSharpAnalytics.Sample.Windows8
 {
     /// <summary>
     /// Provides application-specific behavior to supplement the default Application class.

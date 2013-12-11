@@ -14,7 +14,7 @@ using Windows.UI.Xaml.Media.Imaging;
 // Applications may use this model as a starting point and build on it, or discard it entirely and
 // replace it with something appropriate to their needs.
 
-namespace CSharpAnalytics.Sample.WindowsStore.Data
+namespace CSharpAnalytics.Sample.Windows8.Data
 {
     /// <summary>
     /// Base class for <see cref="SampleDataItem"/> and <see cref="SampleDataGroup"/> that

@@ -7,7 +7,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Media.Animation;
 
-namespace CSharpAnalytics.Sample.WindowsStore
+namespace CSharpAnalytics.Sample.Windows8
 {
     public sealed partial class OptionsFlyout
     {

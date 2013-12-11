@@ -9,7 +9,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 
-namespace CSharpAnalytics.Sample.WindowsStore.Common
+namespace CSharpAnalytics.Sample.Windows8.Common
 {
     /// <summary>
     /// Typical implementation of Page that provides several important conveniences:

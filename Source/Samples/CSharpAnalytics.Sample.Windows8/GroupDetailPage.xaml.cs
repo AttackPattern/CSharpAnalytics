@@ -1,11 +1,11 @@
-﻿using CSharpAnalytics.Sample.WindowsStore.Data;
+﻿using CSharpAnalytics.Sample.Windows8.Data;
 using System;
 using System.Collections.Generic;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 
-namespace CSharpAnalytics.Sample.WindowsStore
+namespace CSharpAnalytics.Sample.Windows8
 {
     /// <summary>
     /// A page that displays an overview of a single group, including a preview of the items

@@ -1,10 +1,10 @@
-﻿using CSharpAnalytics.Sample.WindowsStore.Data;
+﻿using CSharpAnalytics.Sample.Windows8.Data;
 using System;
 using System.Collections.Generic;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
-namespace CSharpAnalytics.Sample.WindowsStore
+namespace CSharpAnalytics.Sample.Windows8
 {
     /// <summary>
     /// A page that displays a grouped collection of items.

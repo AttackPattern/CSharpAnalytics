@@ -1,8 +1,8 @@
 ﻿using System.Reflection;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("CSharpAnalytics.Sample.WindowsStore")]
-[assembly: AssemblyDescription("CSharpAnalytics sample WindowsStore application.")]
+[assembly: AssemblyTitle("CSharpAnalytics.Sample.Windows8")]
+[assembly: AssemblyDescription("CSharpAnalytics sample Windows 8 application.")]
 [assembly: AssemblyCompany("Attack Pattern")]
 [assembly: AssemblyProduct("CSharpAnalytics")]
 [assembly: AssemblyCopyright("Copyright © 2012-2013 Attack Pattern LLC.")]

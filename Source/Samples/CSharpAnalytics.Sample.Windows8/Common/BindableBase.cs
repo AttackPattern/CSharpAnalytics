@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace CSharpAnalytics.Sample.WindowsStore.Common
+namespace CSharpAnalytics.Sample.Windows8.Common
 {
     /// <summary>
     /// Implementation of <see cref="INotifyPropertyChanged"/> to simplify models.
