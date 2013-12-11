@@ -1,15 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharpAnalytics.WindowsStore", "CSharpAnalytics\CSharpAnalytics.WindowsStore.csproj", "{31872BEA-1F8A-4FF0-B796-7768A0CDF256}"
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharpAnalytics.Windows8", "CSharpAnalytics\CSharpAnalytics.Windows8.csproj", "{31872BEA-1F8A-4FF0-B796-7768A0CDF256}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharpAnalytics.Test.WindowsStore", "CSharpAnalytics.Tests\CSharpAnalytics.Test.WindowsStore.csproj", "{830EA2C1-A706-4194-A9A4-9318C67C09DB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharpAnalytics.Test.Windows8", "CSharpAnalytics.Tests\CSharpAnalytics.Test.Windows8.csproj", "{830EA2C1-A706-4194-A9A4-9318C67C09DB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharpAnalytics.Net45", "CSharpAnalytics\CSharpAnalytics.Net45.csproj", "{0334B071-1FB1-4372-B500-4BC58A11EE59}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".NET 4.5", ".NET 4.5", "{B6D30B2A-B2CC-4BAD-A5AB-8ABD7B665EE7}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Windows8", "Windows8", "{941B2A0F-9D93-4B3A-951E-1C447496DEAD}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Windows 8.0", "Windows 8.0", "{941B2A0F-9D93-4B3A-951E-1C447496DEAD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharpAnalytics.Test.Net45", "CSharpAnalytics.Tests\CSharpAnalytics.Test.Net45.csproj", "{0BCC678D-7C68-4A6F-AE96-E1EEE2C217DA}"
 EndProject

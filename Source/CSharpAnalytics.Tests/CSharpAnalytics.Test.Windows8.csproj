@@ -10,7 +10,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>CSharpAnalytics.Test</RootNamespace>
-    <AssemblyName>CSharpAnalytics.Test.WindowsStore</AssemblyName>
+    <AssemblyName>CSharpAnalytics.Test.Windows8</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{BC8A1FFA-BEE3-4634-8014-F334798102B3};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -160,13 +160,13 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CSharpAnalytics\CSharpAnalytics.WindowsStore.csproj">
-      <Project>{31872bea-1f8a-4ff0-b796-7768a0cdf256}</Project>
-      <Name>CSharpAnalytics.WindowsStore</Name>
-    </ProjectReference>
+    <None Include="Packaging\CSharpAnalytics.Test.WindowsStore_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Packaging\CSharpAnalytics.Test.WindowsStore_TemporaryKey.pfx" />
+    <ProjectReference Include="..\CSharpAnalytics\CSharpAnalytics.Windows8.csproj">
+      <Project>{31872bea-1f8a-4ff0-b796-7768a0cdf256}</Project>
+      <Name>CSharpAnalytics.Windows8</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '11.0' ">
     <VisualStudioVersion>11.0</VisualStudioVersion>
