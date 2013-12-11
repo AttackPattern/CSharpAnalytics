@@ -1,5 +1,4 @@
-﻿using CSharpAnalytics.Protocols.Measurement;
-using CSharpAnalytics.Sample.Windows8.Common;
+﻿using CSharpAnalytics.Sample.Windows8.Common;
 using System;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
@@ -32,8 +31,8 @@ namespace CSharpAnalytics.Sample.Windows8
         /// <param name="args">Details about the launch request and process.</param>
         protected override async void OnLaunched(LaunchActivatedEventArgs args)
         {
-            // AutoMeasurement uses the Measurement Protocol API that Google's Native SDKs for iOS and Android use
-            var analyticsTask = AutoMeasurement.StartAsync(new MeasurementConfiguration("UA-319000-8"), args);
+            // CSharpAnalytics initialization
+            var analyticsTask = CSharpAnalytics.AutoMeasurement.StartAsync(new CSharpAnalytics.Protocols.Measurement.MeasurementConfiguration("UA-319000-8"), args);
 
             var rootFrame = Window.Current.Content as Frame;
 
@@ -75,8 +74,8 @@ namespace CSharpAnalytics.Sample.Windows8
                 }
             }
 
-            // Makes it now hook into the screen and navigation events given the splash screen should now be gone
-            AutoMeasurement.Attach(rootFrame);
+            // CSharpAnalytics init complete
+            CSharpAnalytics.AutoMeasurement.Attach(rootFrame);
 
             // Ensure the current window is active
             Window.Current.Activate();

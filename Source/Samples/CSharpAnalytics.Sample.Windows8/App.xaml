@@ -8,7 +8,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Common/StandardStyles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
-            <x:String x:Key="AppName">CSharpAnalytics sample for Windows 8 applications</x:String>
+            <x:String x:Key="AppName">CSharpAnalytics sample for Windows 8 apps</x:String>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

@@ -3,12 +3,12 @@
   <metadata>
     <id>CSharpAnalytics</id>
     <version>1.0.0</version>
-    <authors>damieng</authors>
+    <authors>Damien Guard</authors>
     <owners>Attack Pattern</owners>
     <licenseUrl>https://raw.github.com/AttackPattern/CSharpAnalytics/master/Source/LICENCE.txt</licenseUrl>
     <projectUrl>https://github.com/AttackPattern/CSharpAnalytics</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Google Analytics client for C# applications with automatic wire-up for Windows 8 store applications.</description>
+    <description>Google Analytics client for C# applications with automatic wire-up for Windows 8 and 8.1 store applications.</description>
     <releaseNotes>First public release.</releaseNotes>
     <copyright>Copyright 2013 Attack Pattern LLC</copyright>
     <tags>google analytics</tags>
@@ -16,5 +16,6 @@
   <files>
     <file src="..\Binaries\Release\Net45\CSharpAnalytics.Net45.dll" target="lib\net45\CSharpAnalytics.dll" />
     <file src="..\Binaries\Release\Windows8\CSharpAnalytics.Windows8.dll" target="lib\windows8\CSharpAnalytics.dll" />
+    <file src="..\Binaries\Release\Windows81\CSharpAnalytics.Windows81.dll" target="lib\windows81\CSharpAnalytics.dll" />
   </files>
 </package>

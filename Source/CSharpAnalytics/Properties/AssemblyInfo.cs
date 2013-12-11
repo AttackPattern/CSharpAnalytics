@@ -12,5 +12,6 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyFileVersion("1.0.0.0")]
 [assembly: ComVisible(false)]
 
-[assembly: InternalsVisibleTo("CSharpAnalytics.Test.Windows8")]
 [assembly: InternalsVisibleTo("CSharpAnalytics.Test.Net45")]
+[assembly: InternalsVisibleTo("CSharpAnalytics.Test.Windows8")]
+[assembly: InternalsVisibleTo("CSharpAnalytics.Test.Windows81")]

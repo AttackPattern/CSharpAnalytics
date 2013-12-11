@@ -27,9 +27,10 @@ Still not convinced? Check out [how we compare to the alternatives](https://gith
 Our goal is to support all major C# platforms. Right now we have project files for:
 
 * Windows 8 Store applications (Visual Studio 2012, Measurement Protocol, AutoMeasurement)
+* Windows 8.1 Store applications (Visual Studio 2013, Measurement Protocol, AutoMeasurement)
 * .NET 4.5 applications (Visual Studio 2012, Measurement Protocol)
 
-Windows Store support is the most complete as it includes a sample app and an AutoMeasurement implementation that provides a plug-in-and-go solution.
+Windows 8 and 8.1 Store support are the most complete as they each includes a sample app and an AutoMeasurement implementation that provides a plug-in-and-go solution.
 
 ## Important notes
 
@@ -49,7 +50,7 @@ In short **it is up to you to ensure the suitability of this project for your pu
 * Manages visitor and session state
 * Built-in debug output window support (ga_debug.js style)
 
-Additionally on Windows 8 there is an automatic mode that wires up a lot of things for you, see Automatic analytics for Windows 8 below.
+Additionally on Windows 8/8.1 there is an automatic mode that wires up a lot of things for you, see Automatic analytics for Windows 8/8.1 below.
 
 ## Getting started
 
@@ -60,7 +61,7 @@ You will need:
 
 Download or clone the source and add a reference to CSharpAnalytics.WindowsStore from your application.
 
-### Automatic analytics for Windows 8
+### Automatic analytics for Windows 8/8.1 Store apps
 
 The easiest way to start is to use the AutoMeasurement helper class. It hooks into a few events and will automatically give you:
 
@@ -75,7 +76,9 @@ Simply add two lines to your App.xaml.cs.
 
 At the start of the OnLaunched method add (replacing UA-319000-8 with your own Google Analytics property ID):
 
-`var analyticsTask = CSharpAnalytics.AutoMeasurement.StartAsync(new MeasurementConfiguration("UA-319000-8"), args);`
+`var analyticsTask = AutoMeasurement.StartAsync(new CSharpAnalytics.Protocols.Measurement.MeasurementConfiguration("UA-319000-8"), e);`
+
+(where e is the name of your OnLaunched event argument method signature. It is 'args' by default in the Windows 8 templates and 'e' in Windows 8.1 templates).
 
 At the end of the OnLaunched method add:
 
