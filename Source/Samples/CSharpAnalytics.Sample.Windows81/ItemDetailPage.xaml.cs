@@ -21,7 +21,7 @@ namespace CSharpAnalytics.Sample.Windows81
     /// <summary>
     /// A page that displays details for a single item within a group.
     /// </summary>
-    public sealed partial class ItemDetailPage : Page
+    public sealed partial class ItemDetailPage : Page, ITrackOwnView
     {
         private NavigationHelper navigationHelper;
         private ObservableDictionary defaultViewModel = new ObservableDictionary();
@@ -66,6 +66,7 @@ namespace CSharpAnalytics.Sample.Windows81
             // TODO: Create an appropriate data model for your problem domain to replace the sample data
             var item = await SampleDataSource.GetItemAsync((String)e.NavigationParameter);
             this.DefaultViewModel["Item"] = item;
+            AutoMeasurement.Client.TrackAppView(item.Title);
         }
 
         #region NavigationHelper registration
