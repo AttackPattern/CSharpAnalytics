@@ -76,7 +76,7 @@ Simply add two lines to your App.xaml.cs.
 
 At the start of the OnLaunched method add (replacing UA-319000-8 with your own Google Analytics property ID):
 
-`var analyticsTask = AutoMeasurement.StartAsync(new CSharpAnalytics.Protocols.Measurement.MeasurementConfiguration("UA-319000-8"), e);`
+`CSharpAnalytics.AutoMeasurement.StartAsync(new CSharpAnalytics.MeasurementConfiguration("UA-319000-8"), e);`
 
 (where e is the name of your OnLaunched event argument method signature. It is 'args' by default in the Windows 8 templates and 'e' in Windows 8.1 templates).
 
