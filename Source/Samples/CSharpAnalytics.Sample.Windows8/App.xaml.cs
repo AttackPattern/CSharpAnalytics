@@ -32,7 +32,7 @@ namespace CSharpAnalytics.Sample.Windows8
         protected override async void OnLaunched(LaunchActivatedEventArgs args)
         {
             // CSharpAnalytics initialization
-            var analyticsTask = CSharpAnalytics.AutoMeasurement.StartAsync(new CSharpAnalytics.Protocols.Measurement.MeasurementConfiguration("UA-319000-8"), args);
+            AutoMeasurement.StartAsync(new MeasurementConfiguration("UA-319000-8"), args);
 
             var rootFrame = Window.Current.Content as Frame;
 
@@ -75,7 +75,7 @@ namespace CSharpAnalytics.Sample.Windows8
             }
 
             // CSharpAnalytics init complete
-            CSharpAnalytics.AutoMeasurement.Attach(rootFrame);
+            AutoMeasurement.Attach(rootFrame);
 
             // Ensure the current window is active
             Window.Current.Activate();

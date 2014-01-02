@@ -5,7 +5,7 @@
 using System;
 using System.Text.RegularExpressions;
 
-namespace CSharpAnalytics.Protocols.Measurement
+namespace CSharpAnalytics
 {
     /// <summary>
     /// Configuration settings for analytics.
