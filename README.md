@@ -84,6 +84,8 @@ At the end of the OnLaunched method add:
 
 `CSharpAnalytics.AutoMeasurement.Attach(rootFrame);`
 
+If your app only has a single page this line is not necessary as it only attaches to the page navigation events.
+
 Check out the CSharpAnalytics.Sample.WindowsStore application if still unsure of usage.
 
 NOTE: There is no need to await for the analyticsTask to complete. In fact doing so will slow down your app start-up!

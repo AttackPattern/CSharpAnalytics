@@ -43,7 +43,7 @@ namespace CSharpAnalytics.Sample.Windows81
         protected override async void OnLaunched(LaunchActivatedEventArgs e)
         {
             // CSharpAnalytics initialization
-            AutoMeasurement.StartAsync(new MeasurementConfiguration("UA-319000-8"), e);
+            AutoMeasurement.Start(new MeasurementConfiguration("UA-319000-8"), e);
 
 #if DEBUG
             // Show graphics profiling information while debugging.

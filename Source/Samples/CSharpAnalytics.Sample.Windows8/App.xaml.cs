@@ -32,7 +32,7 @@ namespace CSharpAnalytics.Sample.Windows8
         protected override async void OnLaunched(LaunchActivatedEventArgs args)
         {
             // CSharpAnalytics initialization
-            AutoMeasurement.StartAsync(new MeasurementConfiguration("UA-319000-8"), args);
+            AutoMeasurement.Start(new MeasurementConfiguration("UA-319000-8"), args);
 
             var rootFrame = Window.Current.Content as Frame;
 
