@@ -29,7 +29,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\Binaries\Release\Windows8\</OutputPath>
+    <OutputPath>..\..\Binaries\Release\Windows81\</OutputPath>
     <DefineConstants>TRACE;NETFX_CORE;WINDOWS_STORE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
