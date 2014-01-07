@@ -59,7 +59,10 @@ You will need:
 * Google Analytics account - [Sign up](http://analytics.google.com) if you don't have one
 * An analytics property set-up as an app ("Track interactions within Android and iOS apps")
 
-Download or clone the source and add a reference to CSharpAnalytics.WindowsStore from your application.
+You can either:
+
+1. Get a more stable release via NuGet
+2. Clone the source code and add a reference to CSharpAnalytics.Windows81.csproj (or Windows8, .NET45 depending on your environment)
 
 ### Automatic analytics for Windows 8/8.1 Store apps
 
@@ -115,7 +118,7 @@ In summary: **Do not share personally identifyable information**
 1. Configurable session management modes
 1. In-app purchase tracking integration
 
-If you want to contribute please consider the CSharpAnalytics.sln which will load all platforms and unit tests (if you get any project load failures you're probably missing an SDK)
+If you want to contribute please consider the CSharpAnalytics.sln which will load all platforms and unit tests (if you get any project load failures you're probably missing an SDK). Please ignore any messages about upgrading or retargeting to Windows 8.1 - the solution contains both 8.0 and 8.1 projects and we want to support 8.0 for a while.
 
 ## Licence
 
