@@ -22,6 +22,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\..\Binaries\Debug\Windows81\</OutputPath>
+    <IntermediateOutputPath>obj\Debug\Windows81\</IntermediateOutputPath>
     <DefineConstants>TRACE;DEBUG;NETFX_CORE;WINDOWS_STORE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -30,6 +31,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>..\..\Binaries\Release\Windows81\</OutputPath>
+    <IntermediateOutputPath>obj\Release\Windows81\</IntermediateOutputPath>
     <DefineConstants>TRACE;NETFX_CORE;WINDOWS_STORE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
