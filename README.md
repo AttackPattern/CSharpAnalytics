@@ -72,27 +72,29 @@ The easiest way to start is to use the AutoMeasurement helper class. It hooks in
 * Operating system, window resolution, CPU type identification
 * Save/persist last 60 hits for offline/online support
 
-Simply add two lines to your App.xaml.cs.
+Simply add one or two lines to your App.xaml.cs.
 
-At the start of the OnLaunched method add (replacing UA-319000-8 with your own Google Analytics property ID):
+At the start of the OnLaunched method add (replacing UA-319000-8 with your own Google Analytics property ID and 'e' with 'args' if using a Windows 8.0 template):
 
-`CSharpAnalytics.AutoMeasurement.StartAsync(new CSharpAnalytics.MeasurementConfiguration("UA-319000-8"), e);`
+`CSharpAnalytics.AutoMeasurement.Start(new CSharpAnalytics.MeasurementConfiguration("UA-319000-8"), e);`
 
-(where e is the name of your OnLaunched event argument method signature. It is 'args' by default in the Windows 8 templates and 'e' in Windows 8.1 templates).
-
-At the end of the OnLaunched method add:
+If your app is not a single page but uses Frames to navigate you can automatically track page navigation events by adding this line to the end of OnLaunched:
 
 `CSharpAnalytics.AutoMeasurement.Attach(rootFrame);`
-
-If your app only has a single page this line is not necessary as it only attaches to the page navigation events.
-
-Check out the CSharpAnalytics.Sample.WindowsStore application if still unsure of usage.
-
-NOTE: There is no need to await for the analyticsTask to complete. In fact doing so will slow down your app start-up!
 
 ### Going further
 
 See [going further with CSharpAnalytics](https://github.com/AttackPattern/CSharpAnalytics/wiki/Going-further)
+
+## Seeing data
+
+Once you have launched your app with your Google Analytics 'UA' property ID set correctly and signed into Google Analytics you should be able to start seeing metrics.
+
+### Real-Time
+The real-time overview displays information as soon as it is received by Google. CSharpAnalytics buffers requests and sends them every 5 seconds so it should appear quickly. You can specify a different delay by passing the optional uploadInterval parameter on the Start method. Higher values increase the amount of time it takes an event to show in the real-time views but lets tablets, phones and laptops save power by not using the networking radio as often. Setting this value higher than your session timeout will likely cause issues.
+
+### Reports
+There is an unspecified delay between events being sent to Google Analytics and appearing in the regular (non-real-time) reports. You should also remember to set the date range at the top right to include today's date. By default it only includes data up to yesterday.
 
 ## Privacy
 
