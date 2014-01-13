@@ -26,11 +26,11 @@ Still not convinced? Check out [how we compare to the alternatives](https://gith
 
 Our goal is to support all major C# platforms. Right now we have project files for:
 
-* Windows 8 Store applications (Visual Studio 2012, Measurement Protocol, AutoMeasurement)
-* Windows 8.1 Store applications (Visual Studio 2013, Measurement Protocol, AutoMeasurement)
-* .NET 4.5 applications (Visual Studio 2012, Measurement Protocol)
+* Windows 8 Store applications
+* Windows 8.1 Store applications (VS 2013 required)
+* WinForms .NET 4.5 applications
 
-Windows 8 and 8.1 Store support are the most complete as they each includes a sample app and an AutoMeasurement implementation that provides a plug-in-and-go solution.
+All of these platforms include the AutoMeasurement class that let you get up and running with only a few lines of code.
 
 ## Important notes
 
@@ -68,7 +68,7 @@ You can either:
 
 The easiest way to start is to use the AutoMeasurement helper class. It hooks into a few events and will automatically give you:
 
-* Application launch, suspend, resume events
+* Application launch and reason
 * Visitor, session activity, time-spent
 * Social sharing events
 * Screen navigation activity
