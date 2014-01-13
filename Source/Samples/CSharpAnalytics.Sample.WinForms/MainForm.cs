@@ -13,7 +13,7 @@ namespace CSharpAnalytics.Sample.WinForms
 
         private async void MainFormLoad(object sender, EventArgs e)
         {
-            await AutoMeasurement.Start(new MeasurementConfiguration("UA-47064205-1", "My WinForms App", "1.0.0.0"));
+            await AutoMeasurement.Start(new MeasurementConfiguration("UA-319000-8", "My WinForms App", "1.0.0.0"));
 
             AllowUsageDataCollectionCheckBox.Checked = AutoMeasurement.VisitorStatus == VisitorStatus.Active;
         }
