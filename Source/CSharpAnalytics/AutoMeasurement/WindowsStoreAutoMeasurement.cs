@@ -69,7 +69,7 @@ namespace CSharpAnalytics
         /// <param name="launchArgs">Launch arguments from your Application OnLaunched to determine how the app was launched.</param>
         /// <param name="uploadInterval">How often to upload to the server. Lower times = more traffic but realtime. Defaults to 5 seconds.</param>
         /// <example>var analyticsTask = AutoMeasurement.StartAsync(new MeasurementConfiguration("UA-123123123-1", "MyApp", "1.0.0.0"));</example>
-        public static async Task StartAsync(MeasurementConfiguration configuration, IActivatedEventArgs launchArgs, TimeSpan? uploadInterval = null)
+        public static async void Start(MeasurementConfiguration configuration, IActivatedEventArgs launchArgs, TimeSpan? uploadInterval = null)
         {
             if (!isStarted)
             {

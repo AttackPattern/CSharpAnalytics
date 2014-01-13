@@ -26,10 +26,11 @@ Still not convinced? Check out [how we compare to the alternatives](https://gith
 
 Our goal is to support all major C# platforms. Right now we have project files for:
 
-* Windows 8 Store applications (Visual Studio 2012, Measurement Protocol, AutoMeasurement)
-* .NET 4.5 applications (Visual Studio 2012, Measurement Protocol)
+* Windows 8 Store applications
+* Windows 8.1 Store applications (VS 2013 required)
+* WinForms .NET 4.5 applications
 
-Windows Store support is the most complete as it includes a sample app and an AutoMeasurement implementation that provides a plug-in-and-go solution.
+All of these platforms include the AutoMeasurement class that let you get up and running with only a few lines of code.
 
 ## Important notes
 
@@ -49,7 +50,7 @@ In short **it is up to you to ensure the suitability of this project for your pu
 * Manages visitor and session state
 * Built-in debug output window support (ga_debug.js style)
 
-Additionally on Windows 8 there is an automatic mode that wires up a lot of things for you, see Automatic analytics for Windows 8 below.
+Additionally on Windows 8/8.1 there is an automatic mode that wires up a lot of things for you, see Automatic analytics for Windows 8/8.1 below.
 
 ## Getting started
 
@@ -58,36 +59,45 @@ You will need:
 * Google Analytics account - [Sign up](http://analytics.google.com) if you don't have one
 * An analytics property set-up as an app ("Track interactions within Android and iOS apps")
 
-Download or clone the source and add a reference to CSharpAnalytics.WindowsStore from your application.
+You can either:
 
-### Automatic analytics for Windows 8
+1. Get a more stable release via NuGet
+2. Clone the source code and add a reference to CSharpAnalytics.Windows81.csproj (or Windows8, .NET45 depending on your environment)
+
+### Automatic analytics for Windows 8/8.1 Store apps
 
 The easiest way to start is to use the AutoMeasurement helper class. It hooks into a few events and will automatically give you:
 
-* Application launch, suspend, resume events
+* Application launch and reason
 * Visitor, session activity, time-spent
 * Social sharing events
 * Screen navigation activity
 * Operating system, window resolution, CPU type identification
 * Save/persist last 60 hits for offline/online support
 
-Simply add two lines to your App.xaml.cs.
+Simply add one or two lines to your App.xaml.cs.
 
-At the start of the OnLaunched method add (replacing UA-319000-8 with your own Google Analytics property ID):
+At the start of the OnLaunched method add (replacing UA-319000-8 with your own Google Analytics property ID and 'e' with 'args' if using a Windows 8.0 template):
 
-`var analyticsTask = CSharpAnalytics.AutoMeasurement.StartAsync(new MeasurementConfiguration("UA-319000-8"), args);`
+`CSharpAnalytics.AutoMeasurement.Start(new CSharpAnalytics.MeasurementConfiguration("UA-319000-8"), e);`
 
-At the end of the OnLaunched method add:
+If your app is not a single page but uses Frames to navigate you can automatically track page navigation events by adding this line to the end of OnLaunched:
 
 `CSharpAnalytics.AutoMeasurement.Attach(rootFrame);`
-
-Check out the CSharpAnalytics.Sample.WindowsStore application if still unsure of usage.
-
-NOTE: There is no need to await for the analyticsTask to complete. In fact doing so will slow down your app start-up!
 
 ### Going further
 
 See [going further with CSharpAnalytics](https://github.com/AttackPattern/CSharpAnalytics/wiki/Going-further)
+
+## Seeing data
+
+Once you have launched your app with your Google Analytics 'UA' property ID set correctly and signed into Google Analytics you should be able to start seeing metrics.
+
+### Real-Time
+The real-time overview displays information as soon as it is received by Google. CSharpAnalytics buffers requests and sends them every 5 seconds so it should appear quickly. You can specify a different delay by passing the optional uploadInterval parameter on the Start method. Higher values increase the amount of time it takes an event to show in the real-time views but lets tablets, phones and laptops save power by not using the networking radio as often. Setting this value higher than your session timeout will likely cause issues.
+
+### Reports
+There is an unspecified delay between events being sent to Google Analytics and appearing in the regular (non-real-time) reports. You should also remember to set the date range at the top right to include today's date. By default it only includes data up to yesterday.
 
 ## Privacy
 
@@ -108,11 +118,11 @@ In summary: **Do not share personally identifyable information**
 1. Configurable session management modes
 1. In-app purchase tracking integration
 
-If you want to contribute please consider the CSharpAnalytics.sln which will load all platforms and unit tests (if you get any project load failures you're probably missing an SDK)
+If you want to contribute please consider the CSharpAnalytics.sln which will load all platforms and unit tests (if you get any project load failures you're probably missing an SDK). Please ignore any messages about upgrading or retargeting to Windows 8.1 - the solution contains both 8.0 and 8.1 projects and we want to support 8.0 for a while.
 
 ## Licence
 
-Copyright 2012-2013 Attack Pattern LLC
+Copyright 2012-2014 Attack Pattern LLC
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
