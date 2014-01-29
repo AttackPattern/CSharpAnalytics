@@ -2,10 +2,14 @@
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
+using CSharpAnalytics.Activities;
 using CSharpAnalytics.Network;
 using CSharpAnalytics.Protocols;
 using CSharpAnalytics.Protocols.Measurement;
 using CSharpAnalytics.Sessions;
+using CSharpAnalytics.WindowsPhone8;
+using Microsoft.Phone.Controls;
+using Microsoft.Phone.Info;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +17,8 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Reflection;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Navigation;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.DataTransfer;
@@ -39,6 +45,7 @@ namespace CSharpAnalytics
         private static readonly ProductInfoHeaderValue clientUserAgent = new ProductInfoHeaderValue("CSharpAnalytics", "0.2");
 
         private static DataTransferManager attachedDataTransferManager;
+        private static PhoneApplicationFrame attachedFrame;
         private static bool? delayedOptOut;
         private static TimeSpan lastUploadInterval;
         private static BackgroundHttpRequester requester;
@@ -70,14 +77,14 @@ namespace CSharpAnalytics
             {
                 isStarted = true;
                 lastUploadInterval = uploadInterval ?? TimeSpan.FromSeconds(5);
-                systemUserAgent = await WindowsStoreSystemInformation.GetSystemUserAgent();
+                systemUserAgent = GetSystemUserAgent();
                 await StartRequesterAsync();
 
                 var sessionState = await LoadSessionState();
                 sessionManager = new SessionManager(sessionState, configuration.SampleRate);
                 if (delayedOptOut != null) SetOptOut(delayedOptOut.Value);
 
-                Client.Configure(configuration, sessionManager, new WindowsStoreEnvironment(), Add);
+                Client.Configure(configuration, sessionManager, new WindowsPhoneEnvironment(), Add);
                 HookEvents();
             }
 
@@ -113,6 +120,28 @@ namespace CSharpAnalytics
         }
 
         /// <summary>
+        /// Attach to the root frame, hook into the navigation event and track initial page appview.
+        /// Call this just before Window.Current.Activate() in your App.OnLaunched method.
+        /// </summary>
+        public static void Attach(PhoneApplicationFrame frame)
+        {
+            if (frame == null)
+                throw new ArgumentNullException("frame");
+
+            if (frame != attachedFrame)
+            {
+                if (attachedFrame != null)
+                    attachedFrame.Navigated -= FrameNavigated;
+                frame.Navigated += FrameNavigated;
+                attachedFrame = frame;
+            }
+
+            var content = frame.Content;
+            if (content != null)
+                TrackFrameNavigate(content.GetType());
+        }
+
+        /// <summary>
         /// Internal status of this visitor.
         /// </summary>
         internal static VisitorStatus VisitorStatus
@@ -134,8 +163,8 @@ namespace CSharpAnalytics
         private static void HookEvents()
         {
             var application = Application.Current;
-            application.Resuming += ApplicationOnResuming;
-            application.Suspending += ApplicationOnSuspending;
+            application.Startup += ApplicationOnStartup;
+            application.Exit += ApplicationOnExit;
 
             attachedDataTransferManager = DataTransferManager.GetForCurrentView();
             attachedDataTransferManager.TargetApplicationChosen += socialShare;
@@ -146,9 +175,10 @@ namespace CSharpAnalytics
         /// </summary>
         /// <param name="sender">Sender of the event.</param>
         /// <param name="o">Undocumented event parameter that is null.</param>
-        private static async void ApplicationOnResuming(object sender, object o)
+        private static async void ApplicationOnStartup(object sender, StartupEventArgs e)
         {
             await StartRequesterAsync();
+            Client.TrackEvent("Start", ApplicationLifecycleEvent);
         }
 
         /// <summary>
@@ -156,11 +186,10 @@ namespace CSharpAnalytics
         /// </summary>
         /// <param name="sender">Sender of the event.</param>
         /// <param name="suspendingEventArgs">Details about the suspending event.</param>
-        private static async void ApplicationOnSuspending(object sender, SuspendingEventArgs suspendingEventArgs)
+        private static async void ApplicationOnExit(object sender, EventArgs e)
         {
-            var deferral = suspendingEventArgs.SuspendingOperation.GetDeferral();
+            Client.Track(new EventActivity("Exit", ApplicationLifecycleEvent), true); // Stop the session
             await SuspendRequesterAsync();
-            deferral.Complete();
         }
 
         /// <summary>
@@ -172,9 +201,28 @@ namespace CSharpAnalytics
         private static void UnhookEvents()
         {
             var application = Application.Current;
-            application.Resuming -= ApplicationOnResuming;
-            application.Suspending -= ApplicationOnSuspending;
+            application.Startup -= ApplicationOnStartup;
+            application.Exit -= ApplicationOnExit;
+
+            if (attachedFrame != null)
+                attachedFrame.Navigated -= FrameNavigated;
+            attachedFrame = null;
+
             attachedDataTransferManager.TargetApplicationChosen -= socialShare;
+        }
+
+        /// <summary>
+        /// Receive navigation events to translate them into analytics page views.
+        /// </summary>
+        /// <remarks>
+        /// Implement IAnalyticsPageView if your pages look up content so you can
+        /// track better detail from the end of your LoadState method.
+        /// </remarks>
+        /// <param name="sender">Sender of the event.</param>
+        /// <param name="e">NavigationEventArgs for the event.</param>
+        private static void FrameNavigated(object sender, NavigationEventArgs e)
+        {
+            TrackFrameNavigate(e.Content.GetType());
         }
 
         /// <summary>
@@ -254,7 +302,7 @@ namespace CSharpAnalytics
             }
 
             requestMessage.RequestUri = client.AdjustUriBeforeRequest(requestMessage.RequestUri);
-//            AddUserAgent(requestMessage.Headers.UserAgent);
+            //            AddUserAgent(requestMessage.Headers.UserAgent);
             DebugRequest(requestMessage);
         }
 
@@ -326,6 +374,32 @@ namespace CSharpAnalytics
             var safeRequester = requester;
             if (safeRequester != null)
                 safeRequester.Add(uri);
+        }
+
+        /// <summary>
+        /// Get the Windows version number and processor architecture and cache it
+        /// as a user agent string so it can be sent with HTTP requests.
+        /// </summary>
+        /// <returns>String containing formatted system parts of the user agent.</returns>
+        private static string GetSystemUserAgent()
+        {
+            try
+            {
+                var osVersion = System.Environment.OSVersion.Version;
+                var parts = new[] {
+                    "Windows Phone " + osVersion.Major + "." + osVersion.MajorRevision,
+                    "ARM",
+                    "Touch",
+                    DeviceStatus.DeviceManufacturer,
+                    DeviceStatus.DeviceName
+                };
+
+                return "(" + String.Join("; ", parts.Where(e => !String.IsNullOrEmpty(e))) + ")";
+            }
+            catch
+            {
+                return "";
+            }
         }
     }
 }

@@ -95,13 +95,16 @@
     <Compile Include="Activities\TransactionItemActivity.cs" />
     <Compile Include="AutoMeasurement\AnalyticsScreenNameAttribute.cs" />
     <Compile Include="AutoMeasurement\AnalyticsUserOptions.cs" />
-    <Compile Include="AutoMeasurement\Implementation\AppDataContractSerializer.cs" />
+    <Compile Include="AutoMeasurement\Implementation\WindowsPhoneConcurrent.cs" />
     <Compile Include="AutoMeasurement\Implementation\LocalFolderContractSerializer.cs" />
     <Compile Include="AutoMeasurement\ITrackOwnView.cs" />
     <Compile Include="AutoMeasurement\WindowsPhoneAutoMeasurement.cs" />
     <Compile Include="Environment\Environment.cs" />
     <Compile Include="Environment\IEnvironment.cs" />
     <Compile Include="Environment\WindowsPhoneEnvironment.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Network\BackgroundHttpClientRequester.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Network\BackgroundHttpFuncRequester.cs" />

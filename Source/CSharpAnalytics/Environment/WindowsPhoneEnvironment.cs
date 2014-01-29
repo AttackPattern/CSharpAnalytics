@@ -25,22 +25,22 @@ namespace CSharpAnalytics.WindowsPhone8
 
         public uint ScreenHeight
         {
-            get { return (uint)Application.Current.Host.Content.ActualHeight; }
+            get { return (uint)(ViewportHeight * (Application.Current.Host.Content.ScaleFactor / 100)); }
         }
 
         public uint ScreenWidth
         {
-            get { return (uint)Application.Current.Host.Content.ActualWidth; }
+            get { return (uint)(ViewportWidth * (Application.Current.Host.Content.ScaleFactor / 100)); }
         }
 
         public uint ViewportHeight
         {
-            get { return ScreenHeight; }
+            get { return (uint)Application.Current.Host.Content.ActualHeight; }
         }
 
         public uint ViewportWidth
         {
-            get { return ScreenWidth; }
+            get { return (uint)Application.Current.Host.Content.ActualWidth; }
         }
     }
 }
