@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using CSharpAnalytics.Protocols.Measurement;
-#if WINDOWS_STORE
+#if WINDOWS_STORE || WINDOWS_PHONE
 using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
 #else
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -25,7 +25,7 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
             StringAssert.Contains(list[0].OriginalString, "t=appview");
         }
 
-#if WINDOWS_STORE
+#if WINDOWS_STORE || WINDOWS_PHONE
         [TestMethod]
         public void AppViewExtension_Throws_If_AnalyticsClient_Null()
         {

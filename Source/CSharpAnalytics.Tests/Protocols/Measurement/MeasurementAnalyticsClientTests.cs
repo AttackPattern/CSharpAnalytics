@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using CSharpAnalytics.Activities;
 using CSharpAnalytics.Protocols;
 using CSharpAnalytics.Protocols.Measurement;
-#if WINDOWS_STORE
+#if WINDOWS_STORE || WINDOWS_PHONE
 using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
 #else
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -165,7 +165,7 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
             SomeValue
         }
 
-#if WINDOWS_STORE
+#if WINDOWS_STORE || WINDOWS_PHONE
         [TestMethod]
         public void MeasurementAnalyticsClient_SetCustomDimension_Throws_ArgumentException_If_Enum_Not_Underlying_Int_Type()
         {
