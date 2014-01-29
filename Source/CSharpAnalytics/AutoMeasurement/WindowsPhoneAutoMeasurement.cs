@@ -7,7 +7,7 @@ using CSharpAnalytics.Network;
 using CSharpAnalytics.Protocols;
 using CSharpAnalytics.Protocols.Measurement;
 using CSharpAnalytics.Sessions;
-using CSharpAnalytics.WindowsPhone8;
+using CSharpAnalytics.WindowsPhone;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Info;
 using System;
@@ -19,11 +19,8 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Navigation;
-using Windows.ApplicationModel;
-using Windows.ApplicationModel.Activation;
-using Windows.ApplicationModel.DataTransfer;
-using Windows.Foundation;
 using Windows.Networking.Connectivity;
+using Microsoft.Phone.Shell;
 
 namespace CSharpAnalytics
 {
@@ -40,11 +37,9 @@ namespace CSharpAnalytics
         private const int MaximumRequestsToPersist = 60;
 
         private static readonly ProtocolDebugger protocolDebugger = new ProtocolDebugger(MeasurementParameterDefinitions.All);
-        private static readonly TypedEventHandler<DataTransferManager, TargetApplicationChosenEventArgs> socialShare = (sender, e) => Client.TrackEvent("Share", "Charms", e.ApplicationName);
         private static readonly MeasurementAnalyticsClient client = new MeasurementAnalyticsClient();
         private static readonly ProductInfoHeaderValue clientUserAgent = new ProductInfoHeaderValue("CSharpAnalytics", "0.2");
 
-        private static DataTransferManager attachedDataTransferManager;
         private static PhoneApplicationFrame attachedFrame;
         private static bool? delayedOptOut;
         private static TimeSpan lastUploadInterval;
@@ -71,7 +66,7 @@ namespace CSharpAnalytics
         /// <param name="launchArgs">Launch arguments from your Application OnLaunched to determine how the app was launched.</param>
         /// <param name="uploadInterval">How often to upload to the server. Lower times = more traffic but realtime. Defaults to 5 seconds.</param>
         /// <example>var analyticsTask = AutoMeasurement.StartAsync(new MeasurementConfiguration("UA-123123123-1", "MyApp", "1.0.0.0"));</example>
-        public static async void Start(MeasurementConfiguration configuration, IActivatedEventArgs launchArgs, TimeSpan? uploadInterval = null)
+        public static async void Start(MeasurementConfiguration configuration, LaunchingEventArgs launchArgs, TimeSpan? uploadInterval = null)
         {
             if (!isStarted)
             {
@@ -88,7 +83,7 @@ namespace CSharpAnalytics
                 HookEvents();
             }
 
-            Client.TrackEvent("Start", ApplicationLifecycleEvent, launchArgs.Kind.ToString());
+            Client.TrackEvent("Start", ApplicationLifecycleEvent);
         }
 
         /// <summary>
@@ -165,16 +160,13 @@ namespace CSharpAnalytics
             var application = Application.Current;
             application.Startup += ApplicationOnStartup;
             application.Exit += ApplicationOnExit;
-
-            attachedDataTransferManager = DataTransferManager.GetForCurrentView();
-            attachedDataTransferManager.TargetApplicationChosen += socialShare;
         }
 
         /// <summary>
-        /// Handle application resuming from suspend without shutdown.
+        /// Handle application starting up.
         /// </summary>
         /// <param name="sender">Sender of the event.</param>
-        /// <param name="o">Undocumented event parameter that is null.</param>
+        /// <param name="e">Startup event parameter.</param>
         private static async void ApplicationOnStartup(object sender, StartupEventArgs e)
         {
             await StartRequesterAsync();
@@ -185,7 +177,7 @@ namespace CSharpAnalytics
         /// Handle application suspending.
         /// </summary>
         /// <param name="sender">Sender of the event.</param>
-        /// <param name="suspendingEventArgs">Details about the suspending event.</param>
+        /// <param name="e">Empty event information.</param>
         private static async void ApplicationOnExit(object sender, EventArgs e)
         {
             Client.Track(new EventActivity("Exit", ApplicationLifecycleEvent), true); // Stop the session
@@ -207,8 +199,6 @@ namespace CSharpAnalytics
             if (attachedFrame != null)
                 attachedFrame.Navigated -= FrameNavigated;
             attachedFrame = null;
-
-            attachedDataTransferManager.TargetApplicationChosen -= socialShare;
         }
 
         /// <summary>
@@ -222,7 +212,8 @@ namespace CSharpAnalytics
         /// <param name="e">NavigationEventArgs for the event.</param>
         private static void FrameNavigated(object sender, NavigationEventArgs e)
         {
-            TrackFrameNavigate(e.Content.GetType());
+            if (e.Content != null)
+                TrackFrameNavigate(e.Content.GetType());
         }
 
         /// <summary>
@@ -274,14 +265,9 @@ namespace CSharpAnalytics
             var internetProfile = NetworkInformation.GetInternetConnectionProfile();
             if (internetProfile == null) return false;
 
-            switch (internetProfile.GetNetworkConnectivityLevel())
-            {
-                case NetworkConnectivityLevel.None:
-                case NetworkConnectivityLevel.LocalAccess:
-                    return false;
-                default:
-                    return true;
-            }
+            // Don't send analytics if data limit is close/over or they are roaming
+            var cost = internetProfile.GetConnectionCost();
+            return !cost.ApproachingDataLimit && !cost.OverDataLimit && !cost.Roaming;
         }
 
         /// <summary>
@@ -302,10 +288,21 @@ namespace CSharpAnalytics
             }
 
             requestMessage.RequestUri = client.AdjustUriBeforeRequest(requestMessage.RequestUri);
-            //            AddUserAgent(requestMessage.Headers.UserAgent);
+            AddUserAgent(requestMessage.Headers.UserAgent);
             DebugRequest(requestMessage);
         }
 
+        /// <summary>
+        /// Figure out the user agent and add it to the header collection.
+        /// </summary>
+        /// <param name="userAgents">User agent header collection.</param>
+        private static void AddUserAgent(ICollection<ProductInfoHeaderValue> userAgents)
+        {
+            userAgents.Add(clientUserAgent);
+
+            if (!String.IsNullOrEmpty(systemUserAgent))
+                userAgents.Add(new ProductInfoHeaderValue(systemUserAgent));
+        }
 
         /// <summary>
         /// Send the HttpRequestMessage with the protocol debugger for examination.

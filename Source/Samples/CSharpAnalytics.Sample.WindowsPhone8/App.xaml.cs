@@ -61,6 +61,9 @@ namespace CSharpAnalytics.Sample.WindowsPhone8
         // This code will not execute when the application is reactivated
         private void Application_Launching(object sender, LaunchingEventArgs e)
         {
+            AutoMeasurement.DebugWriter = d => Debug.WriteLine(d);
+            AutoMeasurement.Start(new MeasurementConfiguration("UA-319000-8"), e);
+            AutoMeasurement.Attach(RootFrame);
         }
 
         // Code to execute when the application is activated (brought to foreground)

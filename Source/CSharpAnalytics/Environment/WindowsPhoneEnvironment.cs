@@ -5,7 +5,7 @@
 using System.Globalization;
 using System.Windows;
 
-namespace CSharpAnalytics.WindowsPhone8
+namespace CSharpAnalytics.WindowsPhone
 {
     /// <summary>
     /// Implements the IEnvironment interface required by analytics to track details of the machine

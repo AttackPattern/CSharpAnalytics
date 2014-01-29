@@ -95,8 +95,9 @@
     <Compile Include="Activities\TransactionItemActivity.cs" />
     <Compile Include="AutoMeasurement\AnalyticsScreenNameAttribute.cs" />
     <Compile Include="AutoMeasurement\AnalyticsUserOptions.cs" />
-    <Compile Include="AutoMeasurement\Implementation\WindowsPhoneConcurrent.cs" />
+    <Compile Include="AutoMeasurement\Implementation\ConcurrentCollectionsSubstitute.cs" />
     <Compile Include="AutoMeasurement\Implementation\LocalFolderContractSerializer.cs" />
+    <Compile Include="AutoMeasurement\Implementation\WindowsPhoneSystemInformation.cs" />
     <Compile Include="AutoMeasurement\ITrackOwnView.cs" />
     <Compile Include="AutoMeasurement\WindowsPhoneAutoMeasurement.cs" />
     <Compile Include="Environment\Environment.cs" />
