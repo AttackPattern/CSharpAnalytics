@@ -122,6 +122,8 @@
     <Compile Include="Activities\TransactionItemActivity.cs" />
     <Compile Include="AutoMeasurement\AnalyticsScreenNameAttribute.cs" />
     <Compile Include="AutoMeasurement\WindowsStoreAutoMeasurement.cs" />
+    <Compile Include="Collections\LockingDictionary.cs" />
+    <Compile Include="Collections\LockingQueue.cs" />
     <Compile Include="Network\BackgroundHttpClientRequester.cs" />
     <Compile Include="Network\BackgroundHttpFuncRequester.cs" />
     <Compile Include="Protocols\Measurement\IMeasurementActivity.cs" />

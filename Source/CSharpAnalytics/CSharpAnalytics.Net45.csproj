@@ -53,6 +53,8 @@
     <Compile Include="Activities\TransactionActivity.cs" />
     <Compile Include="AutoMeasurement\AnalyticsScreenNameAttribute.cs" />
     <Compile Include="AutoMeasurement\ITrackOwnView.cs" />
+    <Compile Include="Collections\LockingDictionary.cs" />
+    <Compile Include="Collections\LockingQueue.cs" />
     <Compile Include="Environment\Environment.cs" />
     <Compile Include="Environment\IEnvironment.cs" />
     <Compile Include="Network\BackgroundHttpRequester.cs" />

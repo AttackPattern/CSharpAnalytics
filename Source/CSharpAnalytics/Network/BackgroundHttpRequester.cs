@@ -2,8 +2,8 @@
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
+using CSharpAnalytics.Collections;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -20,10 +20,10 @@ namespace CSharpAnalytics.Network
         protected static readonly TimeSpan NetworkRetryWaitStep = TimeSpan.FromSeconds(5);
         protected static readonly TimeSpan NetworkRetryWaitMax = TimeSpan.FromMinutes(10);
 
-        private readonly ConcurrentQueue<Uri> currentRequests = new ConcurrentQueue<Uri>();
+        private readonly LockingQueue<Uri> currentRequests = new LockingQueue<Uri>();
 
         private CancellationTokenSource cancellationTokenSource;
-        private ConcurrentQueue<Uri> priorRequests = new ConcurrentQueue<Uri>();
+        private LockingQueue<Uri> priorRequests = new LockingQueue<Uri>();
         private Task backgroundSender;
         private TimeSpan currentUploadInterval;
         private Uri currentlySending;
@@ -53,7 +53,7 @@ namespace CSharpAnalytics.Network
                 throw new InvalidOperationException(String.Format("Cannot start a {0} when already started", GetType().Name));
 
             if (previouslyUnrequested != null)
-                priorRequests = new ConcurrentQueue<Uri>(previouslyUnrequested);
+                priorRequests = new LockingQueue<Uri>(previouslyUnrequested);
 
             cancellationTokenSource = new CancellationTokenSource();
             currentUploadInterval = uploadInterval;
@@ -73,9 +73,11 @@ namespace CSharpAnalytics.Network
             cancellationTokenSource.Cancel();
             await backgroundSender;
 
-            return priorRequests
-                .Concat(new[] { currentlySending })
-                .Concat(currentRequests)
+            var allRequests = priorRequests.ToList();
+            allRequests.Add(currentlySending);
+            allRequests.AddRange(currentRequests.ToList());
+
+            return allRequests
                 .Where(r => r != null)
                 .ToList();
         }

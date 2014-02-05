@@ -2,8 +2,8 @@
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
-using System.Collections.Concurrent;
 using CSharpAnalytics.Activities;
+using CSharpAnalytics.Collections;
 using CSharpAnalytics.Sessions;
 using System;
 using System.Collections.Generic;
@@ -18,8 +18,8 @@ namespace CSharpAnalytics.Protocols.Measurement
     /// </summary>
     public class MeasurementAnalyticsClient
     {
-        private readonly ConcurrentDictionary<int, string> customDimensions = new ConcurrentDictionary<int, string>();
-        private readonly ConcurrentDictionary<int, object> customMetrics = new ConcurrentDictionary<int, object>();
+        private readonly LockingDictionary<int, string> customDimensions = new LockingDictionary<int, string>();
+        private readonly LockingDictionary<int, object> customMetrics = new LockingDictionary<int, object>();
         private readonly Queue<MeasurementActivityEntry> queue = new Queue<MeasurementActivityEntry>();
 
         private MeasurementTracker tracker;
