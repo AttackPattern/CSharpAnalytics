@@ -113,6 +113,10 @@ namespace CSharpAnalytics.Protocols.Measurement
             new ParameterDefinition("cd([0-9]+)", "Custom Dimension $1", isRegexMatch:true),
             new ParameterDefinition("cm([0-9]+)", "Custom Metric $1", isRegexMatch:true),
 
+            // Experiments
+            new ParameterDefinition("xid",      "Experiment ID"),
+            new ParameterDefinition("xvar",     "Experiment Variant"),
+
             // Undocumented
             new ParameterDefinition("_v",       "Library Version")
         };
