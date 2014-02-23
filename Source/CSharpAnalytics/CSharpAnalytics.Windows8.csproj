@@ -124,6 +124,8 @@
     <Compile Include="AutoMeasurement\WindowsStoreAutoMeasurement.cs" />
     <Compile Include="Network\BackgroundHttpClientRequester.cs" />
     <Compile Include="Network\BackgroundHttpFuncRequester.cs" />
+    <Compile Include="Protocols\Measurement\CustomDimension.cs" />
+    <Compile Include="Protocols\Measurement\CustomMetric.cs" />
     <Compile Include="Protocols\Measurement\IMeasurementActivity.cs" />
     <Compile Include="Protocols\Measurement\MeasurementActivityEntry.cs" />
     <Compile Include="Protocols\Measurement\MeasurementActivityExtensions.cs" />

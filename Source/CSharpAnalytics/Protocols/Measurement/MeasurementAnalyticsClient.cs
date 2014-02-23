@@ -2,7 +2,6 @@
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
-using System.Collections.Concurrent;
 using CSharpAnalytics.Activities;
 using CSharpAnalytics.Sessions;
 using System;
@@ -18,8 +17,8 @@ namespace CSharpAnalytics.Protocols.Measurement
     /// </summary>
     public class MeasurementAnalyticsClient
     {
-        private readonly ConcurrentDictionary<int, string> customDimensions = new ConcurrentDictionary<int, string>();
-        private readonly ConcurrentDictionary<int, object> customMetrics = new ConcurrentDictionary<int, object>();
+        private readonly Dictionary<int, string> customDimensions = new Dictionary<int, string>();
+        private readonly Dictionary<int, object> customMetrics = new Dictionary<int, object>();
         private readonly Queue<MeasurementActivityEntry> queue = new Queue<MeasurementActivityEntry>();
 
         private MeasurementTracker tracker;
@@ -59,18 +58,28 @@ namespace CSharpAnalytics.Protocols.Measurement
 
             var entry = new MeasurementActivityEntry(activity)
             {
-                CustomDimensions = customDimensions.ToArray(),
-                CustomMetrics = customMetrics.ToArray(),
+                CustomDimensions = Pull(customDimensions),
+                CustomMetrics = Pull(customMetrics),
                 EndSession = endSession
             };
-
-            customDimensions.Clear();
-            customMetrics.Clear();
 
             if (tracker == null)
                 queue.Enqueue(entry);
             else
                 tracker.Track(entry);
+        }
+
+        private static KeyValuePair<TKey, TValue>[] Pull<TKey, TValue>(IDictionary<TKey, TValue> dictionary)
+        {
+            lock (dictionary)
+            {
+                var results = dictionary.ToArray();
+
+                foreach (var dimension in dictionary)
+                    dictionary.Remove(dimension);
+
+                return results;
+            }
         }
 
         /// <summary>

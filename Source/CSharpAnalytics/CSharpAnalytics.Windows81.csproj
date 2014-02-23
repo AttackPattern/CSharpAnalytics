@@ -130,6 +130,8 @@
     <Compile Include="Network\BackgroundHttpRequester.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Protocols\KeyValuePair.cs" />
+    <Compile Include="Protocols\Measurement\CustomDimension.cs" />
+    <Compile Include="Protocols\Measurement\CustomMetric.cs" />
     <Compile Include="Protocols\Measurement\IMeasurementActivity.cs" />
     <Compile Include="Protocols\Measurement\MeasurementActivityEntry.cs" />
     <Compile Include="Protocols\Measurement\MeasurementActivityExtensions.cs" />

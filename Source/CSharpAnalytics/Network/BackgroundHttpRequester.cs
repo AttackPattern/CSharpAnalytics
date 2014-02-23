@@ -3,7 +3,6 @@
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -20,10 +19,11 @@ namespace CSharpAnalytics.Network
         protected static readonly TimeSpan NetworkRetryWaitStep = TimeSpan.FromSeconds(5);
         protected static readonly TimeSpan NetworkRetryWaitMax = TimeSpan.FromMinutes(10);
 
-        private readonly ConcurrentQueue<Uri> currentRequests = new ConcurrentQueue<Uri>();
+        private readonly Queue<Uri> priorRequests = new Queue<Uri>();
+        private readonly Queue<Uri> currentRequests = new Queue<Uri>();
 
         private CancellationTokenSource cancellationTokenSource;
-        private ConcurrentQueue<Uri> priorRequests = new ConcurrentQueue<Uri>();
+
         private Task backgroundSender;
         private TimeSpan currentUploadInterval;
         private Uri currentlySending;
@@ -53,7 +53,8 @@ namespace CSharpAnalytics.Network
                 throw new InvalidOperationException(String.Format("Cannot start a {0} when already started", GetType().Name));
 
             if (previouslyUnrequested != null)
-                priorRequests = new ConcurrentQueue<Uri>(previouslyUnrequested);
+                foreach (var request in previouslyUnrequested)
+                    priorRequests.Enqueue(request);
 
             cancellationTokenSource = new CancellationTokenSource();
             currentUploadInterval = uploadInterval;
@@ -121,8 +122,20 @@ namespace CSharpAnalytics.Network
         /// <returns>True if an entry was available, false otherwise.</returns>
         private bool GetNextQueueEntry(out Uri entry)
         {
-            var requestQueue = priorRequests.Count > 0 ? priorRequests : currentRequests;
-            return requestQueue.TryDequeue(out entry);
+            if (priorRequests.Count > 0)
+            {
+                entry = priorRequests.Dequeue();
+                return true;
+            }
+
+            if (currentRequests.Count > 0)
+            {
+                entry = currentRequests.Dequeue();
+                return true;
+            }
+
+            entry = null;
+            return false;
         }
 
         /// <summary>
