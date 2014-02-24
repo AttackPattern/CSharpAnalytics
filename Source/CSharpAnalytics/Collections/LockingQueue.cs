@@ -13,6 +13,7 @@ namespace CSharpAnalytics.Collections
 
         public LockingQueue()
         {
+            queue = new Queue<T>();
         }
 
         public LockingQueue(IEnumerable<T> collection)
