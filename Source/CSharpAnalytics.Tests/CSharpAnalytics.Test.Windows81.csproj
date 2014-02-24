@@ -9,7 +9,7 @@
     <ProjectGuid>{4FD70215-C708-4BB1-AD8A-758BA038F3F6}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CSharpAnalytics.Test.Windows81</RootNamespace>
+    <RootNamespace>CSharpAnalytics.Test</RootNamespace>
     <AssemblyName>CSharpAnalytics.Test.Windows81</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformVersion>8.1</TargetPlatformVersion>
