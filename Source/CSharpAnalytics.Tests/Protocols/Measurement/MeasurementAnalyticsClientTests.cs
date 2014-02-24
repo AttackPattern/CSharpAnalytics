@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using CSharpAnalytics.Activities;
-using CSharpAnalytics.Protocols;
 using CSharpAnalytics.Protocols.Measurement;
 #if WINDOWS_STORE
 using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;

@@ -1,5 +1,4 @@
-﻿using CSharpAnalytics;
-#if WINDOWS_STORE
+﻿#if WINDOWS_STORE
 using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
 #else
 using Microsoft.VisualStudio.TestTools.UnitTesting;

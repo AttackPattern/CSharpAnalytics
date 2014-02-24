@@ -59,8 +59,6 @@ namespace CSharpAnalytics.Test.Sessions
         {
             var sessionManager = new SessionManager(null);
 
-            var starting = DateTimeOffset.Now;
-
             sessionManager.StartNewSession();
             Assert.AreEqual(SessionStatus.Starting, sessionManager.SessionStatus);
         }
