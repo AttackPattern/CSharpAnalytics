@@ -1,4 +1,4 @@
-﻿using CSharpAnalytics;
+using CSharpAnalytics;
 #if WINDOWS_STORE || WINDOWS_PHONE
 using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
 #else

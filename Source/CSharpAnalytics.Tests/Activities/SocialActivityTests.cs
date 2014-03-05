@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using CSharpAnalytics.Activities;
 #if WINDOWS_STORE || WINDOWS_PHONE
 using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
@@ -26,7 +26,7 @@ namespace CSharpAnalytics.Test.Activities
         [TestMethod]
         public void SocialActivity_Constructor_With_All_Parameters_Sets_Correct_Properties()
         {
-            var activity = new SocialActivity("action", "network", pagePath: "pagePath", target: "target");
+            var activity = new SocialActivity("action", "network", target: "target", pagePath: "pagePath");
 
             Assert.AreEqual("network", activity.Network);
             Assert.AreEqual("action", activity.Action);

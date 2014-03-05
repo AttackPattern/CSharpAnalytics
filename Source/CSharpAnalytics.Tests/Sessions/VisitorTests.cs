@@ -12,8 +12,6 @@ namespace CSharpAnalytics.Test.Sessions
     [TestClass]
     public class VisitorTests
     {
-        private readonly Random random = new Random();
-
         [TestMethod]
         public void New_Default_Visitor_Has_Random_Id()
         {

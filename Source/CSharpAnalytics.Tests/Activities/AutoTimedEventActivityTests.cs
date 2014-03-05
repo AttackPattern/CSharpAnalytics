@@ -54,8 +54,8 @@ namespace CSharpAnalytics.Test.Activities
             var latest = DateTimeOffset.Now;
 
             Assert.IsNotNull(activity.EndedAt);
-            Assert.IsTrue(activity.EndedAt.Value >= earliest, "EndedAt too early expected after {0} found {1}", earliest, activity.EndedAt.Value);
-            Assert.IsTrue(activity.EndedAt.Value <= latest, "EndedAt too late expected before {0} found {1}", latest, activity.EndedAt.Value);
+            Assert.IsTrue(activity.EndedAt >= earliest, "EndedAt too early expected after {0} found {1}", earliest, activity.EndedAt);
+            Assert.IsTrue(activity.EndedAt <= latest, "EndedAt too late expected before {0} found {1}", latest, activity.EndedAt);
         }
 
         [TestMethod]

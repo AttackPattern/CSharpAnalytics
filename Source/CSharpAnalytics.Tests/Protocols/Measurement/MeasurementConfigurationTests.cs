@@ -1,5 +1,4 @@
 ﻿using System;
-using CSharpAnalytics.Protocols.Measurement;
 #if WINDOWS_STORE || WINDOWS_PHONE
 using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
 using Windows.ApplicationModel;
@@ -88,30 +87,28 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
         [ExpectedException(typeof(ArgumentException))]
         public void CustomVariable_Constructor_Throws_ArgumentOutOfRange_If_Enum_Undefined()
         {
-            var configuration = new MeasurementConfiguration("NO-1234-5", "ApplicationName", "1.2.3.4");
+            new MeasurementConfiguration("NO-1234-5", "ApplicationName", "1.2.3.4");
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void MeasurementConfiguration_Constructor_Throws_ArgumentException_If_AccountID_Does_Not_Have_Two_Numeric_Parts()
         {
-            var configuration = new MeasurementConfiguration("UA-1234", "ApplicationName", "1.2.3.4");
+            new MeasurementConfiguration("UA-1234", "ApplicationName", "1.2.3.4");
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void MeasurementConfiguration_SampleRate_Property_Throws_ArgumentOutOfRangeException_If_Below_0()
         {
-            var configuration = new MeasurementConfiguration("UA-1234-5", "ApplicationName", "1.2.3.4");
-            configuration.SampleRate = -0.01;
+            new MeasurementConfiguration("UA-1234-5", "ApplicationName", "1.2.3.4") { SampleRate = -0.01 };
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void MeasurementConfiguration_SampleRate_Property_Throws_ArgumentOutOfRangeException_If_Above_100()
         {
-            var configuration = new MeasurementConfiguration("UA-1234-5", "ApplicationName", "1.2.3.4");
-            configuration.SampleRate = 100.01;
+            new MeasurementConfiguration("UA-1234-5", "ApplicationName", "1.2.3.4") { SampleRate = 100.01 };
         }
 #endif
     }

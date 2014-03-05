@@ -62,6 +62,8 @@ namespace CSharpAnalytics.Protocols.Measurement
             new ParameterDefinition("dp",       "Document Path"),
             new ParameterDefinition("dt",       "Document Title"),
             new ParameterDefinition("cd",       "Content Description"),
+            new ParameterDefinition("linkid",   "Link ID"),
+
 
             // App Tracking
             new ParameterDefinition("an",       "Application Name"),
@@ -80,10 +82,10 @@ namespace CSharpAnalytics.Protocols.Measurement
             new ParameterDefinition("ts",       "Transaction Shipping"),
             new ParameterDefinition("tt",       "Transaction Tax"),
 
+            new ParameterDefinition("in",       "Item Name"),
             new ParameterDefinition("ip",       "Item Price"),
             new ParameterDefinition("iq",       "Item Quantity"),
             new ParameterDefinition("ic",       "Item Code"),
-            new ParameterDefinition("in",       "Item Name"),
             new ParameterDefinition("iv",       "Item Category"),
             new ParameterDefinition("cu",       "Currency Code"),
 
@@ -112,6 +114,10 @@ namespace CSharpAnalytics.Protocols.Measurement
             // Custom Dimensions / Metrics
             new ParameterDefinition("cd([0-9]+)", "Custom Dimension $1", isRegexMatch:true),
             new ParameterDefinition("cm([0-9]+)", "Custom Metric $1", isRegexMatch:true),
+
+            // Experiments
+            new ParameterDefinition("xid",      "Experiment ID"),
+            new ParameterDefinition("xvar",     "Experiment Variant"),
 
             // Undocumented
             new ParameterDefinition("_v",       "Library Version")
