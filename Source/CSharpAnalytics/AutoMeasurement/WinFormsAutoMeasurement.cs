@@ -69,6 +69,9 @@ namespace CSharpAnalytics
                 if (delayedOptOut != null) SetOptOut(delayedOptOut.Value);
 
                 Client.Configure(configuration, sessionManager, new WinFormsEnvironment(), Add);
+
+                // Sometimes apps crash so preserve at least session number and visitor id on launch
+                await SaveSessionState(sessionManager.GetState());
             }
 
             client.TrackEvent("Start", ApplicationLifecycleEvent, "Launch");
