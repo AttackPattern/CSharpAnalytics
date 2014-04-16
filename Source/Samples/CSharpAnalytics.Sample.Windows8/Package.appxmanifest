@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest">
-  <Identity Name="CSharpAnalytics.Sample.Windows8" Publisher="CN=Attack Pattern" Version="1.0.0.0" />
+  <Identity Name="CSharpAnalytics.Sample.Windows8" Publisher="CN=Attack Pattern" Version="1.0.1.0" />
   <Properties>
     <DisplayName>CSharpAnalytics.Sample.Windows8</DisplayName>
     <PublisherDisplayName>Attack Pattern</PublisherDisplayName>
@@ -14,8 +14,15 @@
     <Resource Language="x-generate" />
   </Resources>
   <Applications>
-    <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="CSharpAnalytics.Sample.Windows8.App">
-      <VisualElements DisplayName="CSharpAnalyticsWindow8Sample" Logo="Assets\Logo.png" SmallLogo="Assets\SmallLogo.png" Description="CSharpAnalytics sample Windows 8 application." ForegroundText="light" BackgroundColor="#464646">
+    <Application Id="App"
+        Executable="$targetnametoken$.exe"
+        EntryPoint="CSharpAnalytics.Sample.Windows8.App">
+      <VisualElements
+        DisplayName="CSharpAnalyticsWindow8Sample"
+        Logo="Assets\Logo.png"
+        SmallLogo="Assets\SmallLogo.png"
+        Description="CSharpAnalytics sample Windows 8 application."
+        ForegroundText="light" BackgroundColor="#464646">
         <DefaultTile ShowName="allLogos" />
         <SplashScreen Image="Assets\SplashScreen.png" />
       </VisualElements>

@@ -53,7 +53,7 @@ namespace CSharpAnalytics
         /// </summary>
         /// <param name="configuration">Configuration to use, must at a minimum specify your Google Analytics ID and app name.</param>
         /// <param name="uploadInterval">How often to upload to the server. Lower times = more traffic but realtime. Defaults to 5 seconds.</param>
-        /// <example>var analyticsTask = AutoMeasurement.Start(new MeasurementConfiguration("UA-123123123-1", "MyApp", "1.0.0.0"));</example>
+        /// <example>var analyticsTask = AutoMeasurement.Start(new MeasurementConfiguration("UA-123123123-1", "MyApp", "1.0.1.0"));</example>
         public static async Task Start(MeasurementConfiguration configuration, TimeSpan? uploadInterval = null)
         {
             if (!isStarted)
