@@ -79,11 +79,15 @@ Simply add one or two lines to your App.xaml.cs.
 
 At the start of the OnLaunched method add (replacing UA-319000-8 with your own Google Analytics property ID and 'e' with 'args' if using a Windows 8.0 template):
 
-`CSharpAnalytics.AutoMeasurement.Start(new CSharpAnalytics.MeasurementConfiguration("UA-319000-8"), e);`
+```csharp
+CSharpAnalytics.AutoMeasurement.Start(new CSharpAnalytics.MeasurementConfiguration("UA-319000-8"), e);
+```
 
 If your app is not a single page but uses Frames to navigate you can automatically track page navigation events by adding this line to the end of OnLaunched:
 
-`CSharpAnalytics.AutoMeasurement.Attach(rootFrame);`
+```csharp
+CSharpAnalytics.AutoMeasurement.Attach(rootFrame);
+```
 
 ### Going further
 
