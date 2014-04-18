@@ -13,7 +13,7 @@
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{BC8A1FFA-BEE3-4634-8014-F334798102B3};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <PackageCertificateKeyFile>CSharpAnalytics.Sample.Windows8_TemporaryKey.pfx</PackageCertificateKeyFile>
-    <PackageCertificateThumbprint>E7BD0B3BD83261ED0B83CEB235B86EEECEAD5EFC</PackageCertificateThumbprint>
+    <PackageCertificateThumbprint>2044B0F448AE2065CD000FCF70F7DB853FAF43D4</PackageCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
