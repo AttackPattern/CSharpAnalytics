@@ -83,7 +83,10 @@ namespace CSharpAnalytics
                 HookEvents();
             }
 
-            Client.TrackEvent("Start", ApplicationLifecycleEvent);
+            var launchReason = launchArgs == null
+                ? ""
+                : launchArgs.GetType().Name.Replace("LaunchingEventArgs", "");
+            Client.TrackEvent("Start", ApplicationLifecycleEvent, launchReason);
         }
 
         /// <summary>
