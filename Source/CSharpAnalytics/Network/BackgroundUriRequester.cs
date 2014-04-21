@@ -2,9 +2,9 @@
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
-using CSharpAnalytics.Collections;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,21 +12,30 @@ using System.Threading.Tasks;
 namespace CSharpAnalytics.Network
 {
     /// <summary>
-    /// Responsible for requesting a queue of URIs over HTTP or HTTPS in background.
+    /// Responsible for requesting a queue of URIs in background.
     /// </summary>
-    public abstract class BackgroundHttpRequester : IDisposable
+    public class BackgroundUriRequester : IDisposable
     {
-        private const int MaxUriLength = 2000;
         protected static readonly TimeSpan NetworkRetryWaitStep = TimeSpan.FromSeconds(5);
         protected static readonly TimeSpan NetworkRetryWaitMax = TimeSpan.FromMinutes(10);
 
-        private readonly LockingQueue<Uri> currentRequests = new LockingQueue<Uri>();
+        private readonly Queue<Uri> priorRequests = new Queue<Uri>();
+        private readonly Queue<Uri> currentRequests = new Queue<Uri>();
 
         private CancellationTokenSource cancellationTokenSource;
-        private LockingQueue<Uri> priorRequests = new LockingQueue<Uri>();
-        private Task backgroundSender;
+
+        private Task backgroundTask;
         private TimeSpan currentUploadInterval;
         private Uri currentlySending;
+
+        private readonly Func<bool> checkInternetAvailable;
+        private readonly Func<Uri, CancellationToken, bool> requester; 
+
+        public BackgroundUriRequester(Func<Uri, CancellationToken, bool> requester, Func<bool> checkInternetAvailable = null)
+        {
+            this.requester = requester;
+            this.checkInternetAvailable = checkInternetAvailable ?? (() => true);
+        }
 
         /// <summary>
         /// Determines whether the BackgroundHttpRequester is currently started.
@@ -53,12 +62,13 @@ namespace CSharpAnalytics.Network
                 throw new InvalidOperationException(String.Format("Cannot start a {0} when already started", GetType().Name));
 
             if (previouslyUnrequested != null)
-                priorRequests = new LockingQueue<Uri>(previouslyUnrequested);
+                foreach (var request in previouslyUnrequested)
+                    priorRequests.Enqueue(request);
 
             cancellationTokenSource = new CancellationTokenSource();
             currentUploadInterval = uploadInterval;
 
-            backgroundSender = Task.Factory.StartNew(RequestLoop, cancellationTokenSource.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+            backgroundTask = Task.Factory.StartNew(RequestLoop, cancellationTokenSource.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
         }
 
         /// <summary>
@@ -71,13 +81,11 @@ namespace CSharpAnalytics.Network
                 throw new InvalidOperationException(String.Format("Cannot stop a {0} when already stopped", GetType().Name));
 
             cancellationTokenSource.Cancel();
-            await backgroundSender;
+            await backgroundTask;
 
-            var allRequests = priorRequests.ToList();
-            allRequests.Add(currentlySending);
-            allRequests.AddRange(currentRequests.ToList());
-
-            return allRequests
+            return priorRequests
+                .Concat(new[] { currentlySending })
+                .Concat(currentRequests)
                 .Where(r => r != null)
                 .ToList();
         }
@@ -93,7 +101,7 @@ namespace CSharpAnalytics.Network
                 {
                     try
                     {
-                        if (IsInternetAvailable)
+                        if (checkInternetAvailable())
                         {
                             while (GetNextQueueEntry(out currentlySending))
                             {
@@ -104,17 +112,44 @@ namespace CSharpAnalytics.Network
 
                         queueEmptyWait.Wait(currentUploadInterval, cancellationTokenSource.Token);
                     }
-                    catch
+                    catch(Exception ex)
                     {
+                        Debug.WriteLine("RequestLoop failing with {0}", ex.Message);
                     }
                 }
             }
         }
 
         /// <summary>
-        /// Determines if the internet is currently available without having to send requests.
+        /// Request the URI with retry logic using HttpClient.
         /// </summary>
-        protected virtual bool IsInternetAvailable { get { return true; } }
+        /// <param name="requestUri">URI to request.</param>
+        /// <param name="cancellationToken">Cancellation token that indicates if a request should be cancelled.</param>
+        private void RequestWithFailureRetry(Uri requestUri, CancellationToken cancellationToken)
+        {
+            var retryDelay = TimeSpan.Zero;
+            var successfullySent = false;
+
+            do
+            {
+                try
+                {
+                    successfullySent = requester(requestUri, cancellationToken);
+                }
+                catch (Exception ex)
+                {
+                    if (ex is AggregateException)
+                        ex = ex.GetInnermostException();
+
+                    Debug.WriteLine("RequestWithFailureRetry failing with {0}", ex.Message);
+                }
+                finally
+                {
+                    if (!successfullySent)
+                        WaitBetweenFailedRequests(ref retryDelay);
+                }
+            } while (!successfullySent);
+        }
 
         /// <summary>
         /// Get the next entry from the queue.
@@ -123,8 +158,20 @@ namespace CSharpAnalytics.Network
         /// <returns>True if an entry was available, false otherwise.</returns>
         private bool GetNextQueueEntry(out Uri entry)
         {
-            var requestQueue = priorRequests.Count > 0 ? priorRequests : currentRequests;
-            return requestQueue.TryDequeue(out entry);
+            if (priorRequests.Count > 0)
+            {
+                entry = priorRequests.Dequeue();
+                return true;
+            }
+
+            if (currentRequests.Count > 0)
+            {
+                entry = currentRequests.Dequeue();
+                return true;
+            }
+
+            entry = null;
+            return false;
         }
 
         /// <summary>
@@ -142,13 +189,6 @@ namespace CSharpAnalytics.Network
         }
 
         /// <summary>
-        /// Request the URI retrying as appropriate if a failure occurs.
-        /// </summary>
-        /// <param name="requestUri">URI to requqest.</param>
-        /// <param name="cancellationToken">CancellationToken used to stop the request.</param>
-        protected abstract void RequestWithFailureRetry(Uri requestUri, CancellationToken cancellationToken);
-
-        /// <summary>
         /// Total count of all remaining items in the queue.
         /// </summary>
         internal int QueueCount
@@ -162,29 +202,8 @@ namespace CSharpAnalytics.Network
         }
 
         /// <summary>
-        /// Whether a URI request is too long to be sent as a GET and instead the query
-        /// parameters should be sent as the body of a POST instead.
+        /// Dispose this instance and release any resources.
         /// </summary>
-        /// <param name="requestUri">URI request being considered.</param>
-        /// <returns>True if a POST should be used, false if GET should be used.</returns>
-        internal static bool ShouldUsePostForRequest(Uri requestUri)
-        {
-            return requestUri.AbsoluteUri.Length > MaxUriLength;
-        }
-
-        /// <summary>
-        /// Obtain the innermost Exception from within an Exception.
-        /// </summary>
-        /// <param name="ex">Exception to obtain the innermost exception from.</param>
-        /// <returns>Innermost exception that could be obtained.</returns>
-        protected static Exception GetInnermostException(Exception ex)
-        {
-            var nextException = ex;
-            while (nextException.InnerException != null)
-                nextException = nextException.InnerException;
-            return nextException;
-        }
-
         public void Dispose()
         {
             Dispose(true);

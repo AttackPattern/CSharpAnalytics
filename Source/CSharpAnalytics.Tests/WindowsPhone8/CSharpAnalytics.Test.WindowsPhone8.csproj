@@ -106,12 +106,6 @@
     <Compile Include="..\Environment\EnvironmentTests.cs">
       <Link>Environment\EnvironmentTests.cs</Link>
     </Compile>
-    <Compile Include="..\Network\BackgroundHttpClientRequesterTests.cs">
-      <Link>Network\BackgroundHttpClientRequesterTests.cs</Link>
-    </Compile>
-    <Compile Include="..\Network\BackgroundHttpRequesterTests.cs">
-      <Link>Network\BackgroundHttpRequesterTests.cs</Link>
-    </Compile>
     <Compile Include="..\Properties\AssemblyInfo.cs">
       <Link>Properties\AssemblyInfo.cs</Link>
     </Compile>
@@ -225,6 +219,12 @@
     <Reference Include="System.Net.Http.Primitives">
       <HintPath>..\..\packages\Microsoft.Net.Http.2.2.18\lib\sl4-windowsphone71\System.Net.Http.Primitives.dll</HintPath>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Network\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).$(TargetFrameworkVersion).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).CSharp.targets" />

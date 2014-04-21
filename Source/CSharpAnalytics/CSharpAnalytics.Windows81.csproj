@@ -127,11 +127,13 @@
     <Compile Include="Environment\Environment.cs" />
     <Compile Include="Environment\IEnvironment.cs" />
     <Compile Include="Environment\WindowsStoreEnvironment.cs" />
-    <Compile Include="Network\BackgroundHttpClientRequester.cs" />
-    <Compile Include="Network\BackgroundHttpFuncRequester.cs" />
-    <Compile Include="Network\BackgroundHttpRequester.cs" />
+    <Compile Include="Network\BackgroundUriRequester.cs" />
+    <Compile Include="Network\ExtensionMethods.cs" />
+    <Compile Include="Network\HttpClientRequester.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Protocols\KeyValuePair.cs" />
+    <Compile Include="Protocols\Measurement\CustomDimension.cs" />
+    <Compile Include="Protocols\Measurement\CustomMetric.cs" />
     <Compile Include="Protocols\Measurement\IMeasurementActivity.cs" />
     <Compile Include="Protocols\Measurement\MeasurementActivityEntry.cs" />
     <Compile Include="Protocols\Measurement\MeasurementActivityExtensions.cs" />

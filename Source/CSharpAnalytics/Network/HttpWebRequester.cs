@@ -3,27 +3,28 @@
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
 using System;
-using System.Diagnostics;
+using System.IO;
 using System.Net;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace CSharpAnalytics.Network
 {
     /// <summary>
     /// Responsible for requesting a queue of URIs over HTTP or HTTPS in background using HttpWebRequest.
     /// </summary>
-    public class BackgroundHttpWebRequester : BackgroundHttpRequester
+    public class HttpWebRequester
     {
-        private readonly Action<HttpWebRequest> preprocessor;
+        private readonly string userAgent;
 
         /// <summary>
-        /// Create a new BackgroundHttpWebRequester.
+        /// Create a new HttpWebRequester.
         /// </summary>
-        /// <param name="preprocessor">Optional preprocessor for setting user agents, debugging etc.</param>
-        public BackgroundHttpWebRequester(Action<HttpWebRequest> preprocessor = null)
+        /// <param name="userAgent">User agent string.</param>
+        public HttpWebRequester(string userAgent)
         {
-            this.preprocessor = preprocessor;
+            this.userAgent = userAgent;
         }
 
         /// <summary>
@@ -31,41 +32,12 @@ namespace CSharpAnalytics.Network
         /// </summary>
         /// <param name="requestUri">URI to request.</param>
         /// <param name="cancellationToken">CancellationToken to indicate if the request should be cancelled.</param>
-        protected override void RequestWithFailureRetry(Uri requestUri, CancellationToken cancellationToken)
+        public bool Request(Uri requestUri, CancellationToken cancellationToken)
         {
-            var retryDelay = TimeSpan.Zero;
-            var successfullySent = false;
-
-            do
-            {
-                var request = CreateRequest(requestUri);
-                if (preprocessor != null)
-                    preprocessor(request);
-
-                HttpWebResponse response = null;
-                try
-                {
-                    response = (HttpWebResponse)request.GetResponse();
-                }
-                catch (Exception ex)
-                {
-                    if (ex is AggregateException)
-                        ex = GetInnermostException(ex);
-
-                    Debug.WriteLine("{0} failing with {1}", GetType().Name, ex.Message);
-                }
-                finally
-                {
-                    if (response == null || response.StatusCode != HttpStatusCode.OK)
-                    {
-                        WaitBetweenFailedRequests(ref retryDelay);
-                    }
-                    else
-                    {
-                        successfullySent = true;
-                    }
-                }
-            } while (!successfullySent);
+            var request = CreateRequest(requestUri);
+            request.Headers.Add(HttpRequestHeader.UserAgent, userAgent);
+            var response = (HttpWebResponse)request.GetResponse();
+            return response.StatusCode == HttpStatusCode.OK;
         }
 
         /// <summary>
@@ -78,7 +50,7 @@ namespace CSharpAnalytics.Network
         /// <returns>HttpWebRequest for this URI.</returns>
         internal static HttpWebRequest CreateRequest(Uri requestUri, bool writePostBody = true)
         {
-            return ShouldUsePostForRequest(requestUri)
+            return requestUri.ShouldUsePostForRequest()
                        ? CreatePostRequest(requestUri, writePostBody)
                        : CreateGetRequest(requestUri);
         }
@@ -122,4 +94,66 @@ namespace CSharpAnalytics.Network
             return postRequest;
         }
     }
+
+#if WINDOWS_PHONE
+
+    internal static class HttpWebRequestExtensions
+    {
+        internal static void Add(this WebHeaderCollection collection, HttpRequestHeader header, string value)
+        {
+            collection[header] = value;
+        }
+
+        internal static HttpWebResponse GetResponse(this HttpWebRequest request)
+        {
+            return request.GetResponseAsync().GetAwaiter().GetResult();
+        }
+
+        internal static Stream GetRequestStream(this HttpWebRequest request)
+        {
+            return request.GetRequestStreamAsync().GetAwaiter().GetResult();
+        }
+
+        internal static Task<HttpWebResponse> GetResponseAsync(this HttpWebRequest request)
+        {
+            var tcs = new TaskCompletionSource<HttpWebResponse>();
+            request.BeginGetResponse(asyncResponse =>
+            {
+                try
+                {
+                    var asyncState = (HttpWebRequest)asyncResponse.AsyncState;
+                    var response = (HttpWebResponse)asyncState.EndGetResponse(asyncResponse);
+                    tcs.TrySetResult(response);
+                }
+                catch (WebException ex)
+                {
+                    var failedResponse = (HttpWebResponse)ex.Response;
+                    tcs.TrySetResult(failedResponse);
+                }
+            }, request);
+            return tcs.Task;
+        }
+
+        internal static Task<Stream> GetRequestStreamAsync(this HttpWebRequest request)
+        {
+            var tcs = new TaskCompletionSource<Stream>();
+            request.BeginGetRequestStream(asyncResponse =>
+            {
+                try
+                {
+                    var asyncState = (HttpWebRequest)asyncResponse.AsyncState;
+                    var stream = asyncState.EndGetRequestStream(asyncResponse);
+                    tcs.TrySetResult(stream);
+                }
+                catch (WebException ex)
+                {
+                    tcs.SetException(ex);
+                }
+            }, request);
+            return tcs.Task;
+        }
+        
+    }
+
+#endif
 }
