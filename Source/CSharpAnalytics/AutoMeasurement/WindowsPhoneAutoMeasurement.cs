@@ -387,7 +387,7 @@ namespace CSharpAnalytics
             {
                 var osVersion = System.Environment.OSVersion.Version;
                 var parts = new[] {
-                    "Windows Phone " + osVersion.Major + "." + osVersion.MajorRevision,
+                    "Windows Phone " + osVersion.Major + "." + osVersion.Minor,
                     "ARM",
                     "Touch",
                     DeviceStatus.DeviceManufacturer,
