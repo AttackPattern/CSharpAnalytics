@@ -13,7 +13,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace CSharpAnalytics.Test.Network
 {
     [TestClass]
-    public class BackgroundHttpRequesterTests
+    public class BackgroundUriRequesterTests
     {
         [TestMethod]
         public void BackgroundHttpRequester_Start_Uses_Previous_List()
@@ -22,7 +22,7 @@ namespace CSharpAnalytics.Test.Network
             var actualList = new List<Uri>();
             Func<Uri, CancellationToken, bool> processor = (u, c) => { actualList.Add(u); return true; };
 
-            var requester = new BackgroundHttpFuncRequester(processor);
+            var requester = new BackgroundUriRequester(processor);
             requester.Start(TimeSpan.FromMilliseconds(10), expectedList);
 
             TestHelpers.WaitForQueueToEmpty(requester);
@@ -37,7 +37,7 @@ namespace CSharpAnalytics.Test.Network
             var actualList = new List<Uri>();
             Func<Uri, CancellationToken, bool> processor = (u, c) => { actualList.Add(u); return true; };
 
-            var requester = new BackgroundHttpFuncRequester(processor);
+            var requester = new BackgroundUriRequester(processor);
             requester.Start(TimeSpan.FromMilliseconds(10), expectedList.Take(5));
             foreach (var uri in expectedList.Skip(5))
                 requester.Add(uri);
@@ -53,9 +53,9 @@ namespace CSharpAnalytics.Test.Network
             var actualList = new List<Uri>();
             Func<Uri, CancellationToken, bool> processor = (u, c) => { actualList.Add(u); return true; };
 
-            var requester = new BackgroundHttpFuncRequester(processor);
+            var requester = new BackgroundUriRequester(processor);
             requester.Start(TimeSpan.FromMilliseconds(10));
-            requester.StopAsync().Wait();
+            requester.StopAsync().Wait(CancellationToken.None);
             foreach (var uri in TestHelpers.CreateRequestList(3))
                 requester.Add(uri);
 
@@ -69,7 +69,7 @@ namespace CSharpAnalytics.Test.Network
             var cancelled = false;
             Func<Uri, CancellationToken, bool> processor = (u, c) => DoProcessing(c, out cancelled);
 
-            var requester = new BackgroundHttpFuncRequester(processor);
+            var requester = new BackgroundUriRequester(processor);
             requester.Add(TestHelpers.CreateRequestList(1)[0]);
             requester.Start(TimeSpan.FromMilliseconds(10));
 

@@ -10,9 +10,9 @@ using CSharpAnalytics.WindowsStore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
@@ -38,7 +38,8 @@ namespace CSharpAnalytics
         private const int MaximumRequestsToPersist = 60;
 
         private static readonly ProtocolDebugger protocolDebugger = new ProtocolDebugger(MeasurementParameterDefinitions.All);
-        private static readonly TypedEventHandler<DataTransferManager, TargetApplicationChosenEventArgs> socialShare = (sender, e) => Client.TrackEvent("Share", "Charms", e.ApplicationName);
+        private static readonly TypedEventHandler<DataTransferManager, TargetApplicationChosenEventArgs> socialShare =
+            (sender, e) => Client.TrackEvent("Share", "Charms", e.ApplicationName);
         private static readonly MeasurementAnalyticsClient client = new MeasurementAnalyticsClient();
         private static readonly ProductInfoHeaderValue clientUserAgent = new ProductInfoHeaderValue("CSharpAnalytics", "0.2");
 
@@ -46,7 +47,8 @@ namespace CSharpAnalytics
         private static Frame attachedFrame;
         private static bool? delayedOptOut;
         private static TimeSpan lastUploadInterval;
-        private static BackgroundHttpRequester requester;
+        private static BackgroundUriRequester backgroundRequester;
+        private static HttpClientRequester requester;
         private static SessionManager sessionManager;
         private static string systemUserAgent;
         private static bool isStarted;
@@ -190,7 +192,7 @@ namespace CSharpAnalytics
         private static async void ApplicationOnSuspending(object sender, SuspendingEventArgs suspendingEventArgs)
         {
             var deferral = suspendingEventArgs.SuspendingOperation.GetDeferral();
-            await SuspendRequesterAsync();
+            await StopRequesterAsync();
             deferral.Complete();
         }
 
@@ -261,9 +263,16 @@ namespace CSharpAnalytics
         /// <returns>Task that completes when the requester is ready.</returns>
         private static async Task StartRequesterAsync()
         {
-            requester = new BackgroundHttpClientRequester(PreprocessHttpRequest, IsInternetAvailable);
+            requester = new HttpClientRequester();
+
+            requester.HttpClient.DefaultRequestHeaders.UserAgent.Add(clientUserAgent);
+            if (!String.IsNullOrEmpty(systemUserAgent))
+                requester.HttpClient.DefaultRequestHeaders.UserAgent.ParseAdd(systemUserAgent);
+
+            backgroundRequester = new BackgroundUriRequester(Request, IsInternetAvailable);
+
             var previousRequests = await LocalFolderContractSerializer<List<Uri>>.RestoreAsync(RequestQueueFileName);
-            requester.Start(lastUploadInterval, previousRequests);
+            backgroundRequester.Start(lastUploadInterval, previousRequests);
         }
 
         /// <summary>
@@ -286,78 +295,48 @@ namespace CSharpAnalytics
         }
 
         /// <summary>
-        /// Pre-process the HttpRequestMessage before it is sent. This includes adding the user agent for tracking
-        /// and for debug builds writing out the debug information to the console log.
+        /// Act as a middleman between the background sender and the actual http client sender
+        /// so we can drop opt-out or sampled out requests already in the queue, adjust the uri
+        /// for queue times and optionally debug them.
         /// </summary>
-        /// <param name="requestMessage">HttpRequestMessage to modify or inspect before it is sent.</param>
+        /// <param name="uri">Uri to modify or inspect before it is sent.</param>
+        /// <param name="token">CancellationToken to cancel any network request, e.g. if shutting down.</param>
         /// <remarks>
         /// Because user agent is not persisted unsent URIs that are saved and then sent after an upgrade
         /// will have the new user agent string not the actual one that generated them.
         /// </remarks>
-        private static void PreprocessHttpRequest(HttpRequestMessage requestMessage)
+        private static bool Request(Uri uri, CancellationToken token)
         {
             if (sessionManager.VisitorStatus != VisitorStatus.Active)
-            {
-                requestMessage.RequestUri = null;
-                return;
-            }
+                return true;
 
-            requestMessage.RequestUri = client.AdjustUriBeforeRequest(requestMessage.RequestUri);
-            AddUserAgent(requestMessage.Headers.UserAgent);
-            DebugRequest(requestMessage);
-        }
+            uri = client.AdjustUriBeforeRequest(uri);
+            protocolDebugger.Dump(uri, DebugWriter);
 
-        /// <summary>
-        /// Figure out the user agent and add it to the header collection.
-        /// </summary>
-        /// <param name="userAgents">User agent header collection.</param>
-        private static void AddUserAgent(ICollection<ProductInfoHeaderValue> userAgents)
-        {
-            userAgents.Add(clientUserAgent);
-
-            if (!String.IsNullOrEmpty(systemUserAgent))
-                userAgents.Add(new ProductInfoHeaderValue(systemUserAgent));
-        }
-
-        /// <summary>
-        /// Send the HttpRequestMessage with the protocol debugger for examination.
-        /// </summary>
-        /// <param name="requestMessage">HttpRequestMessage to examine with the protocol debugger.</param>
-        private async static void DebugRequest(HttpRequestMessage requestMessage)
-        {
-            var payloadUri = await RejoinPayload(requestMessage);
-            protocolDebugger.Dump(payloadUri, DebugWriter);
-        }
-
-        /// <summary>
-        /// Rejoin the POST body payload with the Uri parameter if necessary so it can be sent to the
-        /// protocol debugger.
-        /// </summary>
-        /// <param name="requestMessage">HttpRequestMessage to obtain complete payload for.</param>
-        /// <returns>Uri with final payload to be sent.</returns>
-        private async static Task<Uri> RejoinPayload(HttpRequestMessage requestMessage)
-        {
-            if (requestMessage.Content == null)
-                return requestMessage.RequestUri;
-
-            var bodyPayload = await requestMessage.Content.ReadAsStringAsync();
-            return new UriBuilder(requestMessage.RequestUri) { Query = bodyPayload }.Uri;
+            return requester.Request(uri, token);
         }
 
         /// <summary>
         /// Suspend the requester and preserve any unsent URIs.
         /// </summary>
         /// <returns>Task that completes when the requester has been suspended.</returns>
-        private static async Task SuspendRequesterAsync()
+        private static async Task StopRequesterAsync()
         {
+            var safeBackgroundRequester = backgroundRequester;
+            if (safeBackgroundRequester == null) return;
+
             var recentRequestsToPersist = new List<Uri>();
-            if (requester.IsStarted)
+            if (safeBackgroundRequester.IsStarted)
             {
-                var pendingRequests = await requester.StopAsync();
+                var pendingRequests = await safeBackgroundRequester.StopAsync();
                 recentRequestsToPersist = pendingRequests.Skip(pendingRequests.Count - MaximumRequestsToPersist).ToList();
             }
             await LocalFolderContractSerializer<List<Uri>>.SaveAsync(recentRequestsToPersist, RequestQueueFileName);
             await SaveSessionState(sessionManager.GetState());
+
+
+            safeBackgroundRequester.Dispose();
+            backgroundRequester = null;
         }
 
         /// <summary>
@@ -383,7 +362,7 @@ namespace CSharpAnalytics
         /// </summary>
         private static void Add(Uri uri)
         {
-            var safeRequester = requester;
+            var safeRequester = backgroundRequester;
             if (safeRequester != null)
                 safeRequester.Add(uri);
         }

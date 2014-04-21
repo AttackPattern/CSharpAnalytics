@@ -127,8 +127,8 @@
     <Compile Include="Activities\TransactionItemActivityTests.cs" />
     <Compile Include="AutoMeasurement\AnalyticsScreenNameAttributeTests.cs" />
     <Compile Include="Environment\EnvironmentTests.cs" />
-    <Compile Include="Network\BackgroundHttpClientRequesterTests.cs" />
-    <Compile Include="Network\BackgroundHttpRequesterTests.cs" />
+    <Compile Include="Network\BackgroundUriRequesterTests.cs" />
+    <Compile Include="Network\HttpClientRequesterTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Protocols\Measurement\MeasurementActivityExtensionTests.cs" />
     <Compile Include="Protocols\Measurement\MeasurementActivityParameterBuilderTrackerTests.cs" />

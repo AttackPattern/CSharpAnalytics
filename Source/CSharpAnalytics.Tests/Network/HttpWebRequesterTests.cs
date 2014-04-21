@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Net;
 using CSharpAnalytics.Network;
 #if WINDOWS_STORE
 using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
@@ -10,30 +9,15 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace CSharpAnalytics.Test.Network
 {
     [TestClass]
-    public class BackgroundHttpWebRequesterTests
+    public class HttpWebRequesterTests
     {
         private const string BaseUriString = "http://localhost/csharpanalytics";
 
         [TestMethod]
-        public void BackgroundHttpWebRequester_Calls_Preprocessor()
-        {
-            const int expected = 19743587;
-            var actual = 0;
-            Action<HttpWebRequest> preprocessor = m => actual = expected;
-
-            var requester = new BackgroundHttpWebRequester(preprocessor);
-            requester.Start(TimeSpan.FromMilliseconds(10));
-            requester.Add(new Uri(TestHelpers.Utm));
-            
-            TestHelpers.WaitForQueueToEmpty(requester);
-            Assert.AreEqual(expected, actual);
-        }
-
-        [TestMethod]
-        public void BackgroundHttpWebRequester_CreateRequest_Uses_Get_Under_2000_Bytes()
+        public void HttpWebRequester_CreateRequest_Uses_Get_Under_2000_Bytes()
         {
             var shortUri = new Uri(BaseUriString);
-            var request = BackgroundHttpWebRequester.CreateRequest(shortUri);
+            var request = HttpWebRequester.CreateRequest(shortUri);
 
             Assert.AreEqual("GET", request.Method);
             Assert.AreEqual(shortUri.AbsoluteUri, request.RequestUri.AbsoluteUri);
@@ -41,12 +25,12 @@ namespace CSharpAnalytics.Test.Network
         }
 
         [TestMethod]
-        public void BackgroundHttpWebRequester_CreateRequest_Uses_Get_When_2000_Bytes()
+        public void HttpWebRequester_CreateRequest_Uses_Get_When_2000_Bytes()
         {
             var longUri = new Uri(BaseUriString + "?" + TestHelpers.RandomChars(2000));
             var borderlineUri = new Uri(longUri.AbsoluteUri.Substring(0, 2000));
 
-            var request = BackgroundHttpWebRequester.CreateRequest(borderlineUri);
+            var request = HttpWebRequester.CreateRequest(borderlineUri);
 
             Assert.AreEqual("GET", request.Method);
             Assert.AreEqual(borderlineUri.AbsoluteUri, request.RequestUri.AbsoluteUri);
@@ -54,12 +38,12 @@ namespace CSharpAnalytics.Test.Network
         }
 
         [TestMethod]
-        public void BackgroundHttpWebRequester_CreateMessage_Uses_Post_Over_2000_Bytes()
+        public void HttpWebRequester_CreateMessage_Uses_Post_Over_2000_Bytes()
         {
             var baseUri = new Uri(BaseUriString);
             var longUri = new Uri(baseUri.AbsoluteUri + "?" + TestHelpers.RandomChars(2000));
 
-            var request = BackgroundHttpWebRequester.CreateRequest(longUri, false);
+            var request = HttpWebRequester.CreateRequest(longUri, false);
 
             Assert.AreEqual("POST", request.Method);
             Assert.AreEqual(baseUri.AbsoluteUri, request.RequestUri.AbsoluteUri);

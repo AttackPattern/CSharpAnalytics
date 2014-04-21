@@ -122,8 +122,8 @@
     <Compile Include="Activities\TransactionItemActivity.cs" />
     <Compile Include="AutoMeasurement\AnalyticsScreenNameAttribute.cs" />
     <Compile Include="AutoMeasurement\WindowsStoreAutoMeasurement.cs" />
-    <Compile Include="Network\BackgroundHttpClientRequester.cs" />
-    <Compile Include="Network\BackgroundHttpFuncRequester.cs" />
+    <Compile Include="Network\ExtensionMethods.cs" />
+    <Compile Include="Network\HttpClientRequester.cs" />
     <Compile Include="Protocols\Measurement\CustomDimension.cs" />
     <Compile Include="Protocols\Measurement\CustomMetric.cs" />
     <Compile Include="Protocols\Measurement\IMeasurementActivity.cs" />
@@ -135,7 +135,7 @@
     <Compile Include="Protocols\Measurement\MeasurementParameterDefinitions.cs" />
     <Compile Include="Protocols\Measurement\MeasurementTracker.cs" />
     <Compile Include="Protocols\Measurement\MeasurementUriBuilder.cs" />
-    <Compile Include="Network\BackgroundHttpRequester.cs" />
+    <Compile Include="Network\BackgroundUriRequester.cs" />
     <Compile Include="Environment\IEnvironment.cs" />
     <Compile Include="Protocols\ProtocolDebugger.cs" />
     <Compile Include="Protocols\ParameterDefinition.cs" />
