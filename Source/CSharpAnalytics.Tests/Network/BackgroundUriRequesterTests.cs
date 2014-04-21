@@ -1,11 +1,11 @@
-﻿using System;
+﻿using CSharpAnalytics.Network;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using CSharpAnalytics.Network;
+using System.Threading.Tasks;
 #if WINDOWS_STORE || WINDOWS_PHONE
 using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
-using System.Threading.Tasks;
 #else
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 #endif
@@ -16,7 +16,7 @@ namespace CSharpAnalytics.Test.Network
     public class BackgroundUriRequesterTests
     {
         [TestMethod]
-        public void BackgroundHttpRequester_Start_Uses_Previous_List()
+        public void BackgroundUriRequester_Start_Uses_Previous_List()
         {
             var expectedList = TestHelpers.CreateRequestList(4);
             var actualList = new List<Uri>();
@@ -31,7 +31,7 @@ namespace CSharpAnalytics.Test.Network
         }
 
         [TestMethod]
-        public void BackgroundHttpRequester_Start_Uses_Previous_List_First()
+        public void BackgroundUriRequester_Start_Uses_Previous_List_First()
         {
             var expectedList = TestHelpers.CreateRequestList(10);
             var actualList = new List<Uri>();
@@ -48,7 +48,7 @@ namespace CSharpAnalytics.Test.Network
         }
 
         [TestMethod]
-        public void BackgroundHttpRequester_StopAsync_Stops_Requesting()
+        public void BackgroundUriRequester_StopAsync_Stops_Requesting()
         {
             var actualList = new List<Uri>();
             Func<Uri, CancellationToken, bool> processor = (u, c) => { actualList.Add(u); return true; };
@@ -64,7 +64,7 @@ namespace CSharpAnalytics.Test.Network
         }
 
         [TestMethod]
-        public async void BackgroundHttpRequester_StopAsync_Stops_Current_Active_Request()
+        public async Task BackgroundUriRequester_StopAsync_Stops_Current_Active_Request()
         {
             var cancelled = false;
             Func<Uri, CancellationToken, bool> processor = (u, c) => DoProcessing(c, out cancelled);
@@ -72,6 +72,8 @@ namespace CSharpAnalytics.Test.Network
             var requester = new BackgroundUriRequester(processor);
             requester.Add(TestHelpers.CreateRequestList(1)[0]);
             requester.Start(TimeSpan.FromMilliseconds(10));
+
+            await Task.Delay(TimeSpan.FromSeconds(1), CancellationToken.None);
 
             Assert.IsFalse(cancelled);
             await requester.StopAsync();
