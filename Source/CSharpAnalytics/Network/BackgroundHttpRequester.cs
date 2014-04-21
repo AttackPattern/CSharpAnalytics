@@ -28,6 +28,13 @@ namespace CSharpAnalytics.Network
         private TimeSpan currentUploadInterval;
         private Uri currentlySending;
 
+        private readonly Func<bool> checkInternetAvailable; 
+
+        protected BackgroundHttpRequester(Func<bool> checkInternetAvailable)
+        {
+            this.checkInternetAvailable = checkInternetAvailable ?? (() => true);
+        }
+
         /// <summary>
         /// Determines whether the BackgroundHttpRequester is currently started.
         /// </summary>
@@ -92,7 +99,7 @@ namespace CSharpAnalytics.Network
                 {
                     try
                     {
-                        if (IsInternetAvailable)
+                        if (checkInternetAvailable())
                         {
                             while (GetNextQueueEntry(out currentlySending))
                             {
@@ -109,11 +116,6 @@ namespace CSharpAnalytics.Network
                 }
             }
         }
-
-        /// <summary>
-        /// Determines if the internet is currently available without having to send requests.
-        /// </summary>
-        protected virtual bool IsInternetAvailable { get { return true; } }
 
         /// <summary>
         /// Get the next entry from the queue.
@@ -196,6 +198,9 @@ namespace CSharpAnalytics.Network
             return nextException;
         }
 
+        /// <summary>
+        /// Dispose this instance and release any resources.
+        /// </summary>
         public void Dispose()
         {
             Dispose(true);

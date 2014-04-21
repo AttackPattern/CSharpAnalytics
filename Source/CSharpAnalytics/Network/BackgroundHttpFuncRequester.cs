@@ -20,6 +20,7 @@ namespace CSharpAnalytics.Network
         /// </summary>
         /// <param name="requester">Func to perform the request that will return true if successful.</param>
         public BackgroundHttpFuncRequester(Func<Uri, CancellationToken, bool> requester)
+            : base(null)
         {
             this.requester = requester;
         }

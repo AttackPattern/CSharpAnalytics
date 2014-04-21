@@ -22,6 +22,7 @@ namespace CSharpAnalytics.Network
         /// </summary>
         /// <param name="preprocessor">Optional preprocessor for setting user agents, debugging etc.</param>
         public BackgroundHttpWebRequester(Action<HttpWebRequest> preprocessor = null)
+            : base(null)
         {
             this.preprocessor = preprocessor;
         }
