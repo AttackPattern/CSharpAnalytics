@@ -17,8 +17,8 @@ namespace CSharpAnalytics.Protocols.Measurement
     /// </summary>
     public class MeasurementAnalyticsClient
     {
-        private readonly Dictionary<int, string> customDimensions = new Dictionary<int, string>();
-        private readonly Dictionary<int, object> customMetrics = new Dictionary<int, object>();
+        private readonly SafeDictionary<int, string> customDimensions = new SafeDictionary<int, string>();
+        private readonly SafeDictionary<int, object> customMetrics = new SafeDictionary<int, object>();
         private readonly Queue<MeasurementActivityEntry> queue = new Queue<MeasurementActivityEntry>();
 
         private MeasurementTracker tracker;
@@ -58,8 +58,8 @@ namespace CSharpAnalytics.Protocols.Measurement
 
             var entry = new MeasurementActivityEntry(activity)
             {
-                CustomDimensions = Pull(customDimensions),
-                CustomMetrics = Pull(customMetrics),
+                CustomDimensions = customDimensions.Pull(),
+                CustomMetrics = customMetrics.Pull(),
                 EndSession = endSession
             };
 
@@ -67,19 +67,6 @@ namespace CSharpAnalytics.Protocols.Measurement
                 queue.Enqueue(entry);
             else
                 tracker.Track(entry);
-        }
-
-        private static KeyValuePair<TKey, TValue>[] Pull<TKey, TValue>(IDictionary<TKey, TValue> dictionary)
-        {
-            lock (dictionary)
-            {
-                var results = dictionary.ToArray();
-
-                foreach (var dimension in dictionary)
-                    dictionary.Remove(dimension);
-
-                return results;
-            }
         }
 
         /// <summary>
@@ -217,6 +204,35 @@ namespace CSharpAnalytics.Protocols.Measurement
         private static string GetQueryString(IEnumerable<KeyValuePair<string, string>> queryParameters)
         {
             return String.Join("&", queryParameters.Select(p => p.Key + "=" + p.Value));
+        }
+
+        /// <summary>
+        /// Wrap a dictionary with locks to ensure thread-concurrency for the custom dimensions and metrics.
+        /// </summary>
+        /// <typeparam name="TKey">Type to be used as the key for the dictionary.</typeparam>
+        /// <typeparam name="TValue">Type to be used as the value for the dictionary.</typeparam>
+        private class SafeDictionary<TKey, TValue>
+        {
+            private readonly Dictionary<TKey, TValue> dictionary = new Dictionary<TKey, TValue>();
+
+            public KeyValuePair<TKey, TValue>[] Pull()
+            {
+                lock (dictionary)
+                {
+                    var results = dictionary.ToArray();
+                    dictionary.Clear();
+                    return results;
+                }
+            }
+
+            public TValue this[TKey index]
+            {
+                set
+                {
+                    lock (dictionary)
+                        dictionary[index] = value;
+                }
+            }
         }
     }
 }
