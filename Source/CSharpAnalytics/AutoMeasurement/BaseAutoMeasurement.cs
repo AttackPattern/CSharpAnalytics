@@ -23,12 +23,8 @@ namespace CSharpAnalytics
     /// </summary>
     public abstract class BaseAutoMeasurement
     {
-        protected Dictionary<Type, string> Filenames = new Dictionary<Type, string>
-        {
-            { typeof(SessionState), "CSharpAnalytics-MeasurementSession" },
-            { typeof(List<Uri>),  "CSharpAnalytics-MeasurementQueue"}
-        };
-
+        private const string SessionStorageName = "CSharpAnalytics-MeasurementSession";
+        private const string QueueStorageName = "CSharpAnalytics-MeasurementQueue";
         private const string ApplicationLifecycleEvent = "ApplicationLifecycle";
         private const int MaximumRequestsToPersist = 60;
 
@@ -70,14 +66,14 @@ namespace CSharpAnalytics
                 lastUploadInterval = uploadInterval ?? TimeSpan.FromSeconds(5);
                 await StartRequesterAsync();
 
-                var sessionState = await Load<SessionState>();
+                var sessionState = await Load<SessionState>(SessionStorageName);
                 sessionManager = new SessionManager(sessionState, configuration.SampleRate);
                 if (delayedOptOut != null) SetOptOut(delayedOptOut.Value);
 
                 Client.Configure(configuration, sessionManager, GetEnvironment(), Add);
 
                 // Sometimes apps crash so preserve at least session number and visitor id on launch
-                await Save(sessionManager.GetState());
+                await Save(sessionManager.GetState(), SessionStorageName);
 
                 HookEvents();
             }
@@ -94,26 +90,43 @@ namespace CSharpAnalytics
         /// <summary>
         /// Unhook events that were wired up in HookEvents.
         /// </summary>
-        /// <remarks>
-        /// Not actually used in AutoMeasurement but here to show you what to do if you wanted to.
-        /// </remarks>
         protected abstract void UnhookEvents();
 
+        /// <summary>
+        /// Get the environment details for this system.
+        /// </summary>
+        /// <returns>
+        /// IEnvironment implementation for getting screen, language and other system details.
+        /// </returns>
         protected abstract IEnvironment GetEnvironment();
 
         /// <summary>
-        /// Load the session state from storage if it exists, null if it does not.
+        /// Load the data object from storage with the given name.
         /// </summary>
-        /// <returns>Task that completes when the SessionState is available.</returns>
-        protected abstract Task<T> Load<T>();
+        /// <typeparam name="T">Type of data to load from storage.</typeparam>
+        /// <param name="name">Name of the data in storage.</param>
+        /// <returns>Instance of T containing the loaded data or null if did not exist.</returns>
+        protected abstract Task<T> Load<T>(string name);
 
         /// <summary>
-        /// Save the session state to preserve state between application launches.
+        /// Save the data object to storage with the given name overwriting if required.
         /// </summary>
-        /// <returns>Task that completes when the session state has been saved.</returns>
-        protected abstract Task Save<T>(T data);
+        /// <typeparam name="T">Type of data object to persist.</typeparam>
+        /// <param name="data">Data object to persist.</param>
+        /// <param name="name">Name to give to the object in storage.</param>
+        /// <returns>Task that is complete when the data has been saved to storage.</returns>
+        protected abstract Task Save<T>(T data, string name);
 
+        /// <summary>
+        /// Setup the Uri requester complete with user agent etc.
+        /// </summary>
+        /// <returns>Task that completes when the requester is ready to use.</returns>
         protected abstract Task SetupRequesterAsync();
+
+        /// <summary>
+        /// Indicates if internet connectivity is available.
+        /// </summary>
+        /// <returns>True if the internet is available to use, false otherwise.</returns>
         protected abstract bool IsInternetAvailable();
 
         /// <summary>
@@ -140,7 +153,7 @@ namespace CSharpAnalytics
             {
                 System.Diagnostics.Debug.WriteLine("Switching VisitorStatus from {0} to {1}", sessionManager.VisitorStatus, newVisitorStatus);
                 sessionManager.VisitorStatus = newVisitorStatus;
-                await Save(sessionManager.GetState());
+                await Save(sessionManager.GetState(), SessionStorageName);
             }
         }
 
@@ -172,9 +185,45 @@ namespace CSharpAnalytics
         }
 
         /// <summary>
+        /// Start the requester with any unsent URIs from the last application run.
+        /// </summary>
+        /// <returns>Task that completes when the requester is ready.</returns>
+        protected async Task StartRequesterAsync()
+        {
+            await SetupRequesterAsync();
+            backgroundRequester = new BackgroundUriRequester(Request, IsInternetAvailable);
+
+            var previousRequests = await Load<List<Uri>>(QueueStorageName);
+            backgroundRequester.Start(lastUploadInterval, previousRequests);
+        }
+
+        /// <summary>
+        /// Suspend the requester and preserve any unsent URIs.
+        /// </summary>
+        /// <returns>Task that completes when the requester has been suspended.</returns>
+        protected async Task StopRequesterAsync()
+        {
+            var safeBackgroundRequester = backgroundRequester;
+            if (safeBackgroundRequester == null) return;
+
+            var recentRequestsToPersist = new List<Uri>();
+            if (safeBackgroundRequester.IsStarted)
+            {
+                var pendingRequests = await safeBackgroundRequester.StopAsync();
+                recentRequestsToPersist = pendingRequests.Skip(pendingRequests.Count - MaximumRequestsToPersist).ToList();
+            }
+
+            await Save(recentRequestsToPersist, QueueStorageName);
+            await Save(sessionManager.GetState(), SessionStorageName);
+
+            safeBackgroundRequester.Dispose();
+            backgroundRequester = null;
+        }
+
+        /// <summary>
         /// Determine the screen name of a page to track.
         /// </summary>
-        /// <param name="page">Page within the application to track.</param>
+        /// <param name="page">Type of page within the application to track.</param>
         /// <returns>String for the screen name in analytics.</returns>
         private static string GetScreenName(Type page)
         {
@@ -186,19 +235,6 @@ namespace CSharpAnalytics
             if (screenName.EndsWith("Page"))
                 screenName = screenName.Substring(0, screenName.Length - 4);
             return screenName;
-        }
-
-        /// <summary>
-        /// Start the requester with any unsent URIs from the last application run.
-        /// </summary>
-        /// <returns>Task that completes when the requester is ready.</returns>
-        protected async Task StartRequesterAsync()
-        {
-            await SetupRequesterAsync();
-            backgroundRequester = new BackgroundUriRequester(Request, IsInternetAvailable);
-
-            var previousRequests = await Load<List<Uri>>();
-            backgroundRequester.Start(lastUploadInterval, previousRequests);
         }
 
         /// <summary>
@@ -221,29 +257,6 @@ namespace CSharpAnalytics
             protocolDebugger.Dump(uri, DebugWriter);
 
             return Requester(uri, token);
-        }
-
-        /// <summary>
-        /// Suspend the requester and preserve any unsent URIs.
-        /// </summary>
-        /// <returns>Task that completes when the requester has been suspended.</returns>
-        protected async Task StopRequesterAsync()
-        {
-            var safeBackgroundRequester = backgroundRequester;
-            if (safeBackgroundRequester == null) return;
-
-            var recentRequestsToPersist = new List<Uri>();
-            if (safeBackgroundRequester.IsStarted)
-            {
-                var pendingRequests = await safeBackgroundRequester.StopAsync();
-                recentRequestsToPersist = pendingRequests.Skip(pendingRequests.Count - MaximumRequestsToPersist).ToList();
-            }
-
-            await Save(recentRequestsToPersist);
-            await Save(sessionManager.GetState());
-
-            safeBackgroundRequester.Dispose();
-            backgroundRequester = null;
         }
 
         /// <summary>

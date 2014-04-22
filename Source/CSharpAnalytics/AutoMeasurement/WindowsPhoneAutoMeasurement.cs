@@ -49,6 +49,12 @@ namespace CSharpAnalytics
                 TrackScreenView(content.GetType());
         }
 
+        /// <summary>
+        /// Get the environment details for this system.
+        /// </summary>
+        /// <returns>
+        /// IEnvironment implementation for getting screen, language and other system details.
+        /// </returns>
         protected override IEnvironment GetEnvironment()
         {
             return new WindowsPhoneEnvironment();
@@ -63,27 +69,6 @@ namespace CSharpAnalytics
             var application = Application.Current;
             application.Startup += ApplicationOnStartup;
             application.Exit += ApplicationOnExit;
-        }
-
-        /// <summary>
-        /// Handle application starting up.
-        /// </summary>
-        /// <param name="sender">Sender of the event.</param>
-        /// <param name="e">Startup event parameter.</param>
-        private async void ApplicationOnStartup(object sender, StartupEventArgs e)
-        {
-            await StartRequesterAsync();
-        }
-
-        /// <summary>
-        /// Handle application suspending.
-        /// </summary>
-        /// <param name="sender">Sender of the event.</param>
-        /// <param name="e">Empty event information.</param>
-        private async void ApplicationOnExit(object sender, EventArgs e)
-        {
-            UnhookEvents();
-            await StopRequesterAsync();
         }
 
         /// <summary>
@@ -104,20 +89,9 @@ namespace CSharpAnalytics
         }
 
         /// <summary>
-        /// Receive navigation events to translate them into analytics page views.
+        /// Setup the Uri requester complete with user agent etc.
         /// </summary>
-        /// <remarks>
-        /// Implement IAnalyticsPageView if your pages look up content so you can
-        /// track better detail from the end of your LoadState method.
-        /// </remarks>
-        /// <param name="sender">Sender of the event.</param>
-        /// <param name="e">NavigationEventArgs for the event.</param>
-        private void FrameNavigated(object sender, NavigationEventArgs e)
-        {
-            if (e.Content != null)
-                TrackScreenView(e.Content.GetType());
-        }
-
+        /// <returns>Task that completes when the requester is ready to use.</returns>
         protected override async Task SetupRequesterAsync()
         {
             var webRequester = new HttpWebRequester(ClientUserAgent + " " + WindowsPhoneSystemInfo.GetSystemUserAgent());
@@ -142,21 +116,60 @@ namespace CSharpAnalytics
         /// Load the session state from storage if it exists, null if it does not.
         /// </summary>
         /// <returns>Task that completes when the SessionState is available.</returns>
-        protected override async Task<T> Load<T>()
+        protected override async Task<T> Load<T>(string name)
         {
-            return await LocalFolderContractSerializer<T>.RestoreAsync(Filenames[typeof(T)]);
+            return await LocalFolderContractSerializer<T>.RestoreAsync(name);
         }
 
         /// <summary>
         /// Save the session state to preserve state between application launches.
         /// </summary>
         /// <returns>Task that completes when the session state has been saved.</returns>
-        protected override async Task Save<T>(T data)
+        protected override async Task Save<T>(T data, string name)
         {
-            await LocalFolderContractSerializer<T>.SaveAsync(data, Filenames[typeof(T)]);
+            await LocalFolderContractSerializer<T>.SaveAsync(data, name);
+        }
+
+        /// <summary>
+        /// Receive navigation events to translate them into analytics page views.
+        /// </summary>
+        /// <remarks>
+        /// Implement IAnalyticsPageView if your pages look up content so you can
+        /// track better detail from the end of your LoadState method.
+        /// </remarks>
+        /// <param name="sender">Sender of the event.</param>
+        /// <param name="e">NavigationEventArgs for the event.</param>
+        private void FrameNavigated(object sender, NavigationEventArgs e)
+        {
+            if (e.Content != null)
+                TrackScreenView(e.Content.GetType());
+        }
+
+        /// <summary>
+        /// Handle application starting up.
+        /// </summary>
+        /// <param name="sender">Sender of the event.</param>
+        /// <param name="e">Startup event parameter.</param>
+        private async void ApplicationOnStartup(object sender, StartupEventArgs e)
+        {
+            await StartRequesterAsync();
+        }
+
+        /// <summary>
+        /// Handle application suspending.
+        /// </summary>
+        /// <param name="sender">Sender of the event.</param>
+        /// <param name="e">Empty event information.</param>
+        private async void ApplicationOnExit(object sender, EventArgs e)
+        {
+            UnhookEvents();
+            await StopRequesterAsync();
         }
     }
 
+    /// <summary>
+    /// AutoMeasurement static wrapper to make it easier to use across a Windows Phone "Silverlight" application.
+    /// </summary>
     public static class AutoMeasurement
     {
         private static readonly WindowsPhoneAutoMeasurement instance = new WindowsPhoneAutoMeasurement();

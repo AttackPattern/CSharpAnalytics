@@ -52,6 +52,12 @@ namespace CSharpAnalytics
                 TrackScreenView(content.GetType());
         }
 
+        /// <summary>
+        /// Get the environment details for this system.
+        /// </summary>
+        /// <returns>
+        /// IEnvironment implementation for getting screen, language and other system details.
+        /// </returns>
         protected override IEnvironment GetEnvironment()
         {
             return new WindowsStoreEnvironment();
@@ -90,6 +96,65 @@ namespace CSharpAnalytics
         }
 
         /// <summary>
+        /// Setup the Uri requester complete with user agent etc.
+        /// </summary>
+        /// <returns>Task that completes when the requester is ready to use.</returns>
+        protected override async Task SetupRequesterAsync()
+        {
+            var systemUserAgent = await WindowsStoreSystemInfo.GetSystemUserAgentAsync();
+
+            var httpClientRequester = new HttpClientRequester();
+            httpClientRequester.HttpClient.DefaultRequestHeaders.UserAgent.ParseAdd(ClientUserAgent);
+
+            if (!String.IsNullOrEmpty(systemUserAgent))
+                httpClientRequester.HttpClient.DefaultRequestHeaders.UserAgent.ParseAdd(systemUserAgent);
+
+            Requester = httpClientRequester.Request;
+        }
+
+        /// <summary>
+        /// Determine if the Internet is available at this point in time.
+        /// </summary>
+        /// <returns>True if the Internet is available, false otherwise.</returns>
+        protected override bool IsInternetAvailable()
+        {
+            var internetProfile = NetworkInformation.GetInternetConnectionProfile();
+            if (internetProfile == null) return false;
+
+            switch (internetProfile.GetNetworkConnectivityLevel())
+            {
+                case NetworkConnectivityLevel.None:
+                case NetworkConnectivityLevel.LocalAccess:
+                    return false;
+                default:
+                    return true;
+            }
+        }
+
+        /// <summary>
+        /// Load the data object from storage with the given name.
+        /// </summary>
+        /// <typeparam name="T">Type of data to load from storage.</typeparam>
+        /// <param name="name">Name of the data in storage.</param>
+        /// <returns>Instance of T containing the loaded data or null if did not exist.</returns>
+        protected override async Task<T> Load<T>(string name)
+        {
+            return await LocalFolderContractSerializer<T>.RestoreAsync(name);
+        }
+
+        /// <summary>
+        /// Save the data object to storage with the given name overwriting if required.
+        /// </summary>
+        /// <typeparam name="T">Type of data object to persist.</typeparam>
+        /// <param name="data">Data object to persist.</param>
+        /// <param name="name">Name to give to the object in storage.</param>
+        /// <returns>Task that is complete when the data has been saved to storage.</returns>
+        protected override async Task Save<T>(T data, string name)
+        {
+            await LocalFolderContractSerializer<T>.SaveAsync(data, name);
+        }
+
+        /// <summary>
         /// Handle application resuming from suspend without shutdown.
         /// </summary>
         /// <param name="sender">Sender of the event.</param>
@@ -125,62 +190,21 @@ namespace CSharpAnalytics
             TrackScreenView(e.SourcePageType);
         }
 
+        /// <summary>
+        /// Record an event that the social sharing charm has been completed and
+        /// which application data was shared with.
+        /// </summary>
+        /// <param name="sender">DataTransferManager responsible for the share.</param>
+        /// <param name="e">Event containing details of which target application was chosen.</param>
         private void SocialShare(DataTransferManager sender, TargetApplicationChosenEventArgs e)
         {
             Client.TrackEvent("Share", "Charms", e.ApplicationName);
         }
-
-        protected override async Task SetupRequesterAsync()
-        {
-            var systemUserAgent = await WindowsStoreSystemInfo.GetSystemUserAgentAsync();
-
-            var httpClientRequester = new HttpClientRequester();
-            httpClientRequester.HttpClient.DefaultRequestHeaders.UserAgent.ParseAdd(ClientUserAgent);
-
-            if (!String.IsNullOrEmpty(systemUserAgent))
-                httpClientRequester.HttpClient.DefaultRequestHeaders.UserAgent.ParseAdd(systemUserAgent);
-
-            Requester = httpClientRequester.Request;
-        }
-
-        /// <summary>
-        /// Determine if the Internet is available at this point in time.
-        /// </summary>
-        /// <returns>True if the Internet is available, false otherwise.</returns>
-        protected override bool IsInternetAvailable()
-        {
-            var internetProfile = NetworkInformation.GetInternetConnectionProfile();
-            if (internetProfile == null) return false;
-
-            switch (internetProfile.GetNetworkConnectivityLevel())
-            {
-                case NetworkConnectivityLevel.None:
-                case NetworkConnectivityLevel.LocalAccess:
-                    return false;
-                default:
-                    return true;
-            }
-        }
-
-        /// <summary>
-        /// Load the session state from storage if it exists, null if it does not.
-        /// </summary>
-        /// <returns>Task that completes when the SessionState is available.</returns>
-        protected override async Task<T> Load<T>()
-        {
-            return await LocalFolderContractSerializer<T>.RestoreAsync(Filenames[typeof(T)]);
-        }
-
-        /// <summary>
-        /// Save the session state to preserve state between application launches.
-        /// </summary>
-        /// <returns>Task that completes when the session state has been saved.</returns>
-        protected override async Task Save<T>(T data)
-        {
-            await LocalFolderContractSerializer<T>.SaveAsync(data, Filenames[typeof(T)]);
-        }
     }
 
+    /// <summary>
+    /// AutoMeasurement static wrapper to make it easier to use across a Windows Store application.
+    /// </summary>
     public static class AutoMeasurement
     {
         private static readonly WindowsStoreAutoMeasurement instance = new WindowsStoreAutoMeasurement();
