@@ -5,6 +5,7 @@
 using CSharpAnalytics.Network;
 using CSharpAnalytics.Protocols.Measurement;
 using CSharpAnalytics.Sessions;
+using CSharpAnalytics.SystemInfo;
 using CSharpAnalytics.WindowsPhone;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Info;
@@ -119,7 +120,7 @@ namespace CSharpAnalytics
 
         protected override void SetupRequester()
         {
-            var webRequester = new HttpWebRequester(CreateUserAgent());
+            var webRequester = new HttpWebRequester(ClientUserAgent + " " + WindowsPhoneSystemInfo.GetSystemUserAgent());
             Requester = webRequester.Request;
         }
 
@@ -135,35 +136,6 @@ namespace CSharpAnalytics
             // Don't send analytics if data limit is close/over or they are roaming
             var cost = internetProfile.GetConnectionCost();
             return !cost.ApproachingDataLimit && !cost.OverDataLimit && !cost.Roaming;
-        }
-
-        /// <summary>
-        /// Get the Windows version number and processor architecture and cache it
-        /// as a user agent string so it can be sent with HTTP requests.
-        /// </summary>
-        /// <returns>String containing formatted system parts of the user agent.</returns>
-        private static string CreateUserAgent()
-        {
-            try
-            {
-                var osVersion = System.Environment.OSVersion.Version;
-                var minor = osVersion.Minor;
-                if (minor > 9) minor /= 10;
-
-                var parts = new[] {
-                    "Windows Phone " + osVersion.Major + "." + minor,
-                    "ARM",
-                    "Touch",
-                    DeviceStatus.DeviceManufacturer,
-                    DeviceStatus.DeviceName
-                };
-
-                return ClientUserAgent + " (" + String.Join("; ", parts.Where(e => !String.IsNullOrEmpty(e))) + ")";
-            }
-            catch
-            {
-                return ClientUserAgent;
-            }
         }
 
         /// <summary>

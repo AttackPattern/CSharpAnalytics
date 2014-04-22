@@ -5,6 +5,7 @@
 using CSharpAnalytics.Network;
 using CSharpAnalytics.Protocols.Measurement;
 using CSharpAnalytics.Sessions;
+using CSharpAnalytics.SystemInfo;
 using CSharpAnalytics.WindowsStore;
 using System;
 using System.Threading.Tasks;
@@ -130,7 +131,7 @@ namespace CSharpAnalytics
 
         protected override void SetupRequester()
         {
-            var systemUserAgent = WindowsStoreSystemInformation.GetSystemUserAgent().GetAwaiter().GetResult();
+            var systemUserAgent = WindowsStoreSystemInfo.GetSystemUserAgent().GetAwaiter().GetResult();
 
             var httpClientRequester = new HttpClientRequester();
             httpClientRequester.HttpClient.DefaultRequestHeaders.UserAgent.ParseAdd(ClientUserAgent);

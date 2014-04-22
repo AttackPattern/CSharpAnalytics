@@ -149,9 +149,9 @@
     <Compile Include="Sessions\Visitor.cs" />
     <Compile Include="AutoMeasurement\ITrackOwnView.cs" />
     <Compile Include="AutoMeasurement\AnalyticsUserOptions.cs" />
-    <Compile Include="AutoMeasurement\Implementation\WindowsStoreSystemInformation.cs" />
     <Compile Include="Environment\WindowsStoreEnvironment.cs" />
     <Compile Include="AutoMeasurement\Implementation\LocalFolderContractSerializer.cs" />
+    <Compile Include="SystemInfo\WindowsStoreSystemInfo.cs" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' ">
     <VisualStudioVersion>11.0</VisualStudioVersion>

@@ -9,6 +9,7 @@ using System;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using CSharpAnalytics.SystemInfo;
 
 namespace CSharpAnalytics
 {
@@ -27,6 +28,7 @@ namespace CSharpAnalytics
 
         private async void ApplicationOnApplicationExit(object sender, EventArgs eventArgs)
         {
+            UnhookEvents();
             await StopRequesterAsync();
         }
 
@@ -55,7 +57,7 @@ namespace CSharpAnalytics
             var httpClientRequester = new HttpClientRequester();
             httpClientRequester.HttpClient.DefaultRequestHeaders.UserAgent.ParseAdd(ClientUserAgent);
 
-            var systemUserAgent = WinFormsSystemInformation.GetSystemUserAgent();
+            var systemUserAgent = WindowsSystemInfo.GetSystemUserAgent();
             if (!String.IsNullOrEmpty(systemUserAgent))
                 httpClientRequester.HttpClient.DefaultRequestHeaders.UserAgent.ParseAdd(systemUserAgent);
 

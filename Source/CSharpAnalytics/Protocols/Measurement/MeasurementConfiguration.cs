@@ -112,7 +112,7 @@ namespace CSharpAnalytics
         /// </summary>
         /// <param name="accountId">Google Analytics provided property id in the format UA-XXXX-Y.</param>
         public MeasurementConfiguration(string accountId)
-            : this(accountId, WindowsPhone.WindowsPhoneSystemInformation.ApplicationName, WindowsPhone.WindowsPhoneSystemInformation.ApplicationVersion)
+            : this(accountId, SystemInfo.WindowsPhoneSystemInfo.ApplicationName, SystemInfo.WindowsPhoneSystemInfo.ApplicationVersion)
         {
         }
 #endif

@@ -120,7 +120,6 @@
     <Compile Include="AutoMeasurement\AnalyticsUserOptions.cs" />
     <Compile Include="AutoMeasurement\BaseAutoMeasurement.cs" />
     <Compile Include="AutoMeasurement\Implementation\LocalFolderContractSerializer.cs" />
-    <Compile Include="AutoMeasurement\Implementation\WindowsStoreSystemInformation.cs" />
     <Compile Include="AutoMeasurement\ITrackOwnView.cs" />
     <Compile Include="AutoMeasurement\WindowsStoreAutoMeasurement.cs" />
     <Compile Include="Environment\Environment.cs" />
@@ -148,6 +147,7 @@
     <Compile Include="Sessions\SessionState.cs" />
     <Compile Include="Sessions\TimeoutSessionManager.cs" />
     <Compile Include="Sessions\Visitor.cs" />
+    <Compile Include="SystemInfo\WindowsStoreSystemInfo.cs" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '12.0' ">
     <VisualStudioVersion>12.0</VisualStudioVersion>

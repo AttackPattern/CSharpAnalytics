@@ -55,7 +55,6 @@
     <Compile Include="AutoMeasurement\AnalyticsScreenNameAttribute.cs" />
     <Compile Include="AutoMeasurement\BaseAutoMeasurement.cs" />
     <Compile Include="AutoMeasurement\Implementation\AppDataContractSerializer.cs" />
-    <Compile Include="AutoMeasurement\Implementation\WinFormsSystemInformation.cs" />
     <Compile Include="AutoMeasurement\ITrackOwnView.cs" />
     <Compile Include="AutoMeasurement\WinFormsAutoMeasurement.cs" />
     <Compile Include="Environment\Environment.cs" />
@@ -84,6 +83,7 @@
     <Compile Include="Sessions\SessionState.cs" />
     <Compile Include="Sessions\TimeoutSessionManager.cs" />
     <Compile Include="Sessions\Visitor.cs" />
+    <Compile Include="SystemInfo\WindowsSystemInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
