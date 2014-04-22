@@ -3,13 +3,13 @@
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
 using CSharpAnalytics.Activities;
-using CSharpAnalytics.Collections;
 using CSharpAnalytics.Sessions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Threading;
 
 namespace CSharpAnalytics.Protocols.Measurement
 {
@@ -18,8 +18,8 @@ namespace CSharpAnalytics.Protocols.Measurement
     /// </summary>
     public class MeasurementAnalyticsClient
     {
-        private readonly LockingDictionary<int, string> customDimensions = new LockingDictionary<int, string>();
-        private readonly LockingDictionary<int, object> customMetrics = new LockingDictionary<int, object>();
+        private readonly string[] customDimensions = new string[200];
+        private readonly object[] customMetrics = new object[200];
         private readonly Queue<MeasurementActivityEntry> queue = new Queue<MeasurementActivityEntry>();
 
         private MeasurementTracker tracker;
@@ -59,13 +59,10 @@ namespace CSharpAnalytics.Protocols.Measurement
 
             var entry = new MeasurementActivityEntry(activity)
             {
-                CustomDimensions = customDimensions.ToArray(),
-                CustomMetrics = customMetrics.ToArray(),
+                CustomDimensions = SafePullArray(customDimensions),
+                CustomMetrics = SafePullArray(customMetrics),
                 EndSession = endSession
             };
-
-            customDimensions.Clear();
-            customMetrics.Clear();
 
             if (tracker == null)
                 queue.Enqueue(entry);
@@ -164,6 +161,30 @@ namespace CSharpAnalytics.Protocols.Measurement
             var parameters = GetQueryParameters(uri.GetComponents(UriComponents.Query, UriFormat.Unescaped));
             AddQueueTimeFromFragment(uri, parameters);
             return new UriBuilder(uri) { Query = GetQueryString(parameters), Fragment = "" }.Uri;
+        }
+
+        /// <summary>
+        /// Pull the values out of an array by copying the values and their original index into a new list and
+        /// clearing the existing values as it goes.
+        /// </summary>
+        /// <typeparam name="T">Type of the array.</typeparam>
+        /// <param name="array">Array to pull from.</param>
+        /// <returns>List of KeyValuePairs containing the original index number and item from that array </returns>
+        private static List<KeyValuePair<int, T>> SafePullArray<T>(T[] array)
+            where T : class
+        {
+            var list = new List<KeyValuePair<int, T>>();
+
+            for (var i = 0; i < array.Length; i++)
+            {
+                if (array[i] == null) continue;
+
+                var custom = Interlocked.Exchange(ref array[i], null);
+                if (custom != null)
+                    list.Add(KeyValuePair.Create(i, custom));
+            }
+
+            return list;
         }
 
         /// <summary>

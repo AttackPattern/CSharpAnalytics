@@ -19,12 +19,12 @@ namespace CSharpAnalytics.Protocols.Measurement
         /// <summary>
         /// Any custom dimensions associated with this activity.
         /// </summary>
-        public IEnumerable<KeyValuePair<int, string>> CustomDimensions;
+        public List<KeyValuePair<int, string>> CustomDimensions;
 
         /// <summary>
         /// Any custom metrics associated with this activity.
         /// </summary>
-        public IEnumerable<KeyValuePair<int, object>> CustomMetrics;
+        public List<KeyValuePair<int, object>> CustomMetrics;
 
         /// <summary>
         /// Whether the session should end with this activity.

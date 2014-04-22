@@ -123,8 +123,6 @@
     <Compile Include="AutoMeasurement\Implementation\WindowsStoreSystemInformation.cs" />
     <Compile Include="AutoMeasurement\ITrackOwnView.cs" />
     <Compile Include="AutoMeasurement\WindowsStoreAutoMeasurement.cs" />
-    <Compile Include="Collections\LockingDictionary.cs" />
-    <Compile Include="Collections\LockingQueue.cs" />
     <Compile Include="Environment\Environment.cs" />
     <Compile Include="Environment\IEnvironment.cs" />
     <Compile Include="Environment\WindowsStoreEnvironment.cs" />
