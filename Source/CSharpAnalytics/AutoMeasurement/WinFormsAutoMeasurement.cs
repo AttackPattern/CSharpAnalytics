@@ -53,7 +53,7 @@ namespace CSharpAnalytics
             await AppDataContractSerializer.Save(data, Filenames[typeof(T)]);
         }
 
-        protected override void SetupRequester()
+        protected override async Task SetupRequesterAsync()
         {
             var httpClientRequester = new HttpClientRequester();
             httpClientRequester.HttpClient.DefaultRequestHeaders.UserAgent.ParseAdd(ClientUserAgent);

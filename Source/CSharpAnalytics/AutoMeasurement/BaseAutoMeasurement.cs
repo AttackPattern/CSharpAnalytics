@@ -112,7 +112,7 @@ namespace CSharpAnalytics
         /// <returns>Task that completes when the session state has been saved.</returns>
         protected abstract Task Save<T>(T data);
 
-        protected abstract void SetupRequester();
+        protected abstract Task SetupRequesterAsync();
         protected abstract bool IsInternetAvailable();
 
         /// <summary>
@@ -193,7 +193,7 @@ namespace CSharpAnalytics
         /// <returns>Task that completes when the requester is ready.</returns>
         protected async Task StartRequesterAsync()
         {
-            SetupRequester();
+            await SetupRequesterAsync();
             backgroundRequester = new BackgroundUriRequester(Request, IsInternetAvailable);
 
             var previousRequests = await Load<List<Uri>>();

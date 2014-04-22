@@ -36,7 +36,7 @@ namespace CSharpAnalytics.SystemInfo
         /// and CPU architecture.
         /// </summary>
         /// <returns>String containing formatted system parts of the user agent.</returns>
-        public static async Task<string> GetSystemUserAgent()
+        public static async Task<string> GetSystemUserAgentAsync()
         {
             try
             {

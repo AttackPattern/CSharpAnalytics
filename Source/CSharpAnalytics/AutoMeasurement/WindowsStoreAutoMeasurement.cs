@@ -130,9 +130,9 @@ namespace CSharpAnalytics
             Client.TrackEvent("Share", "Charms", e.ApplicationName);
         }
 
-        protected override void SetupRequester()
+        protected override async Task SetupRequesterAsync()
         {
-            var systemUserAgent = WindowsStoreSystemInfo.GetSystemUserAgent().GetAwaiter().GetResult();
+            var systemUserAgent = await WindowsStoreSystemInfo.GetSystemUserAgentAsync();
 
             var httpClientRequester = new HttpClientRequester();
             httpClientRequester.HttpClient.DefaultRequestHeaders.UserAgent.ParseAdd(ClientUserAgent);

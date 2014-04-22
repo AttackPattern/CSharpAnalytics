@@ -82,6 +82,7 @@ namespace CSharpAnalytics
         /// <param name="e">Empty event information.</param>
         private async void ApplicationOnExit(object sender, EventArgs e)
         {
+            UnhookEvents();
             await StopRequesterAsync();
         }
 
@@ -117,7 +118,7 @@ namespace CSharpAnalytics
                 TrackAppView(e.Content.GetType());
         }
 
-        protected override void SetupRequester()
+        protected override async Task SetupRequesterAsync()
         {
             var webRequester = new HttpWebRequester(ClientUserAgent + " " + WindowsPhoneSystemInfo.GetSystemUserAgent());
             Requester = webRequester.Request;
