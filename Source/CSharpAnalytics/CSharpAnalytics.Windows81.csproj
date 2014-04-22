@@ -121,7 +121,6 @@
     <Compile Include="AutoMeasurement\BaseAutoMeasurement.cs" />
     <Compile Include="AutoMeasurement\ITrackOwnView.cs" />
     <Compile Include="AutoMeasurement\WindowsStoreAutoMeasurement.cs" />
-    <Compile Include="Environment\Environment.cs" />
     <Compile Include="Environment\IEnvironment.cs" />
     <Compile Include="Environment\WindowsStoreEnvironment.cs" />
     <Compile Include="Network\BackgroundUriRequester.cs" />

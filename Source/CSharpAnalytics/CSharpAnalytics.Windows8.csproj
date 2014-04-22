@@ -140,7 +140,6 @@
     <Compile Include="Environment\IEnvironment.cs" />
     <Compile Include="Protocols\ProtocolDebugger.cs" />
     <Compile Include="Protocols\ParameterDefinition.cs" />
-    <Compile Include="Environment\Environment.cs" />
     <Compile Include="Protocols\KeyValuePair.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Serializers\LocalFolderContractSerializer.cs" />

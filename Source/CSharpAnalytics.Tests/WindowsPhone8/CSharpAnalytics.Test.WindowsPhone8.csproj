@@ -106,6 +106,9 @@
     <Compile Include="..\Environment\EnvironmentTests.cs">
       <Link>Environment\EnvironmentTests.cs</Link>
     </Compile>
+    <Compile Include="..\Environment\TestableEnvironment.cs">
+      <Link>Environment\TestableEnvironment.cs</Link>
+    </Compile>
     <Compile Include="..\Network\BackgroundUriRequesterTests.cs">
       <Link>Network\BackgroundUriRequesterTests.cs</Link>
     </Compile>

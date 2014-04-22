@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using CSharpAnalytics.Activities;
 using CSharpAnalytics.Protocols.Measurement;
+using CSharpAnalytics.Test.Environment;
 #if WINDOWS_STORE || WINDOWS_PHONE
 using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
 #else
@@ -35,7 +36,7 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
         [TestMethod]
         public void MeasurementUriBuilderTests_GetParameters_For_Environment_Returns_Correct_Values()
         {
-            var environment = new Environment("en-gb")
+            var environment = new TestableEnvironment("en-gb")
                 {
                     CharacterSet = "ISO-8550-1",
                     FlashVersion = "11.0.1b",
@@ -61,7 +62,7 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
         [TestMethod]
         public void MeasurementUriBuilderTests_GetParameters_For_Environment_Returns_Correct_Je_Value()
         {
-            var environment = new Environment("en-gb") { JavaEnabled = false };
+            var environment = new TestableEnvironment("en-gb") { JavaEnabled = false };
 
             var jeValue = MeasurementUriBuilder.GetParameters(environment).First(f => f.Key == "je").Value;
 

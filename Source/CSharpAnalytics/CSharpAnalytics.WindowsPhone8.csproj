@@ -100,7 +100,6 @@
     <Compile Include="SystemInfo\WindowsPhoneSystemInfo.cs" />
     <Compile Include="AutoMeasurement\ITrackOwnView.cs" />
     <Compile Include="AutoMeasurement\WindowsPhoneAutoMeasurement.cs" />
-    <Compile Include="Environment\Environment.cs" />
     <Compile Include="Environment\IEnvironment.cs" />
     <Compile Include="Environment\WindowsPhoneEnvironment.cs">
       <SubType>Code</SubType>

@@ -3,6 +3,7 @@
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
 using CSharpAnalytics.Activities;
+using CSharpAnalytics.Environment;
 using CSharpAnalytics.Sessions;
 using System;
 

@@ -1,6 +1,6 @@
 ﻿using System.Windows.Forms;
 
-namespace CSharpAnalytics
+namespace CSharpAnalytics.Environment
 {
     /// <summary>
     /// Implements the IEnvironment interface required by analytics to track details of the machine

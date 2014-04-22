@@ -64,6 +64,7 @@
     <Compile Include="Activities\TimedEventActivityTests.cs" />
     <Compile Include="Activities\TransactionActivityTests.cs" />
     <Compile Include="AutoMeasurement\AnalyticsScreenNameAttributeTests.cs" />
+    <Compile Include="Environment\TestableEnvironment.cs" />
     <Compile Include="Environment\EnvironmentTests.cs" />
     <Compile Include="Network\BackgroundUriRequesterTests.cs" />
     <Compile Include="Network\HttpClientRequesterTests.cs" />

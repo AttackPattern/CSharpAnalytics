@@ -2,12 +2,14 @@
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
-namespace CSharpAnalytics
+using CSharpAnalytics.Environment;
+
+namespace CSharpAnalytics.Test.Environment
 {
     /// <summary>
     /// Captures details of the environment to be recorded by analytics.
     /// </summary>
-    public class Environment : IEnvironment
+    public class TestableEnvironment : IEnvironment
     {
         /// <summary>
         /// Current character set of the system.
@@ -73,7 +75,7 @@ namespace CSharpAnalytics
         /// Create a new environment with a given language code.
         /// </summary>
         /// <param name="languageCode">Language code, e.g. en-us</param>
-        public Environment(string languageCode)
+        public TestableEnvironment(string languageCode)
         {
             LanguageCode = languageCode;
         }

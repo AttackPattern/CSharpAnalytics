@@ -127,6 +127,7 @@
     <Compile Include="Activities\TransactionItemActivityTests.cs" />
     <Compile Include="AutoMeasurement\AnalyticsScreenNameAttributeTests.cs" />
     <Compile Include="Environment\EnvironmentTests.cs" />
+    <Compile Include="Environment\TestableEnvironment.cs" />
     <Compile Include="Network\BackgroundUriRequesterTests.cs" />
     <Compile Include="Network\HttpClientRequesterTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

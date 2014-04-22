@@ -4,15 +4,15 @@ using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 #endif
 
-namespace CSharpAnalytics.Test
+namespace CSharpAnalytics.Test.Environment
 {
     [TestClass]
     public class EnvironmentTests
     {
         [TestMethod]
-        public void Environment_Constructor_Sets_Properties_Correctly()
+        public void TestableEnvironment_Constructor_Sets_Properties_Correctly()
         {
-            var environment = new Environment("en-gb")
+            var environment = new TestableEnvironment("en-gb")
             {
                 CharacterSet = "iso-8550-1",
                 FlashVersion = "11.0.1b",

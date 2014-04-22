@@ -57,7 +57,6 @@
     <Compile Include="Serializers\AppDataContractSerializer.cs" />
     <Compile Include="AutoMeasurement\ITrackOwnView.cs" />
     <Compile Include="AutoMeasurement\WinFormsAutoMeasurement.cs" />
-    <Compile Include="Environment\Environment.cs" />
     <Compile Include="Environment\IEnvironment.cs" />
     <Compile Include="Environment\WinFormsEnvironment.cs" />
     <Compile Include="Network\HttpWebRequester.cs" />
