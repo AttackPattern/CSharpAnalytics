@@ -69,6 +69,7 @@ namespace CSharpAnalytics.Protocols.Measurement
 
             // App Tracking
             new ParameterDefinition("an",       "Application Name"),
+            new ParameterDefinition("aid",      "Application ID"),
             new ParameterDefinition("av",       "Application Version"),
             new ParameterDefinition("aiid",     "Application Installer ID"),
 
