@@ -55,6 +55,9 @@ namespace CSharpAnalytics.Test.Network
 
             var requester = new BackgroundUriRequester(processor);
             requester.Start(TimeSpan.FromMilliseconds(10));
+
+            Task.Delay(1000, CancellationToken.None).GetAwaiter().GetResult();
+
             requester.StopAsync().Wait(CancellationToken.None);
             foreach (var uri in TestHelpers.CreateRequestList(3))
                 requester.Add(uri);
