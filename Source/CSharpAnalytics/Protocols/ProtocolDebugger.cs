@@ -18,12 +18,7 @@ namespace CSharpAnalytics.Protocols
     internal class ProtocolDebugger
     {
         private readonly ParameterDefinition[] parameterDefinitions;
-        private static readonly Action<string> defaultWriter = s =>
-        {
-#if DEBUG
-            System.Diagnostics.Debug.WriteLine(s);
-#endif
-        };
+        private static readonly Action<string> defaultWriter = s => { };
 
         /// <summary>
         /// Create a new ProtocolDebugger with a given action to receive debugger output.
@@ -40,7 +35,7 @@ namespace CSharpAnalytics.Protocols
         /// </summary>
         /// <param name="uri">Analytics tracking URI to examine.</param>
         /// <param name="writer">Action that takes a string to receive output, defaults to debug window.</param>
-        public void Dump(Uri uri, Action<string> writer = null)
+        public void Dump(Uri uri, Action<string> writer)
         {
             writer = writer ?? defaultWriter;
             writer(uri.ToString());
