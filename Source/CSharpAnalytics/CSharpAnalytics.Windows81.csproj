@@ -119,7 +119,6 @@
     <Compile Include="AutoMeasurement\AnalyticsScreenNameAttribute.cs" />
     <Compile Include="AutoMeasurement\AnalyticsUserOptions.cs" />
     <Compile Include="AutoMeasurement\BaseAutoMeasurement.cs" />
-    <Compile Include="AutoMeasurement\Implementation\LocalFolderContractSerializer.cs" />
     <Compile Include="AutoMeasurement\ITrackOwnView.cs" />
     <Compile Include="AutoMeasurement\WindowsStoreAutoMeasurement.cs" />
     <Compile Include="Environment\Environment.cs" />
@@ -143,6 +142,7 @@
     <Compile Include="Protocols\Measurement\MeasurementUriBuilder.cs" />
     <Compile Include="Protocols\ParameterDefinition.cs" />
     <Compile Include="Protocols\ProtocolDebugger.cs" />
+    <Compile Include="Serializers\LocalFolderContractSerializer.cs" />
     <Compile Include="Sessions\SessionManager.cs" />
     <Compile Include="Sessions\SessionState.cs" />
     <Compile Include="Sessions\TimeoutSessionManager.cs" />

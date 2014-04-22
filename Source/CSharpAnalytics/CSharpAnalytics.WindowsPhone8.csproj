@@ -96,7 +96,7 @@
     <Compile Include="AutoMeasurement\AnalyticsScreenNameAttribute.cs" />
     <Compile Include="AutoMeasurement\AnalyticsUserOptions.cs" />
     <Compile Include="AutoMeasurement\BaseAutoMeasurement.cs" />
-    <Compile Include="AutoMeasurement\Implementation\LocalFolderContractSerializer.cs" />
+    <Compile Include="Serializers\LocalFolderContractSerializer.cs" />
     <Compile Include="SystemInfo\WindowsPhoneSystemInfo.cs" />
     <Compile Include="AutoMeasurement\ITrackOwnView.cs" />
     <Compile Include="AutoMeasurement\WindowsPhoneAutoMeasurement.cs" />

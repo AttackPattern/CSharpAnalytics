@@ -4,18 +4,17 @@
 
 using CSharpAnalytics.Network;
 using CSharpAnalytics.Protocols.Measurement;
+using CSharpAnalytics.Serializers;
 using CSharpAnalytics.Sessions;
 using CSharpAnalytics.SystemInfo;
 using CSharpAnalytics.WindowsPhone;
 using Microsoft.Phone.Controls;
-using Microsoft.Phone.Info;
+using Microsoft.Phone.Shell;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Navigation;
 using Windows.Networking.Connectivity;
-using Microsoft.Phone.Shell;
 
 namespace CSharpAnalytics
 {

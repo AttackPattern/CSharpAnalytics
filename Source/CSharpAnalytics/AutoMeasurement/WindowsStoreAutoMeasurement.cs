@@ -4,6 +4,7 @@
 
 using CSharpAnalytics.Network;
 using CSharpAnalytics.Protocols.Measurement;
+using CSharpAnalytics.Serializers;
 using CSharpAnalytics.Sessions;
 using CSharpAnalytics.SystemInfo;
 using CSharpAnalytics.WindowsStore;

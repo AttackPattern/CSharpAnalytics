@@ -54,7 +54,7 @@
     <Compile Include="Activities\TransactionActivity.cs" />
     <Compile Include="AutoMeasurement\AnalyticsScreenNameAttribute.cs" />
     <Compile Include="AutoMeasurement\BaseAutoMeasurement.cs" />
-    <Compile Include="AutoMeasurement\Implementation\AppDataContractSerializer.cs" />
+    <Compile Include="Serializers\AppDataContractSerializer.cs" />
     <Compile Include="AutoMeasurement\ITrackOwnView.cs" />
     <Compile Include="AutoMeasurement\WinFormsAutoMeasurement.cs" />
     <Compile Include="Environment\Environment.cs" />
