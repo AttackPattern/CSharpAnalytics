@@ -2,7 +2,6 @@
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
-using System.Threading;
 using CSharpAnalytics.Activities;
 using CSharpAnalytics.Network;
 using CSharpAnalytics.Protocols;
@@ -11,15 +10,16 @@ using CSharpAnalytics.Sessions;
 using CSharpAnalytics.WindowsPhone;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Info;
+using Microsoft.Phone.Shell;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Navigation;
 using Windows.Networking.Connectivity;
-using Microsoft.Phone.Shell;
 
 namespace CSharpAnalytics
 {
@@ -30,6 +30,7 @@ namespace CSharpAnalytics
     /// </summary>
     public static class AutoMeasurement
     {
+        private const string ClientUserAgent = "CSharpAnalytics/0.2";
         private const string ApplicationLifecycleEvent = "ApplicationLifecycle";
         private const string RequestQueueFileName = "CSharpAnalytics-MeasurementQueue";
         private const string SessionStateFileName = "CSharpAnalytics-MeasurementSession";
@@ -37,7 +38,6 @@ namespace CSharpAnalytics
 
         private static readonly ProtocolDebugger protocolDebugger = new ProtocolDebugger(MeasurementParameterDefinitions.All);
         private static readonly MeasurementAnalyticsClient client = new MeasurementAnalyticsClient();
-        private static readonly string[] clientUserAgent = { "CSharpAnalytics", "0.2" };
 
         private static PhoneApplicationFrame attachedFrame;
         private static bool? delayedOptOut;
@@ -45,7 +45,7 @@ namespace CSharpAnalytics
         private static BackgroundUriRequester backgroundRequester;
         private static HttpWebRequester requester;
         private static SessionManager sessionManager;
-        private static string systemUserAgent;
+        private static string userAgent;
         private static bool isStarted;
 
         /// <summary>
@@ -72,7 +72,7 @@ namespace CSharpAnalytics
             {
                 isStarted = true;
                 lastUploadInterval = uploadInterval ?? TimeSpan.FromSeconds(5);
-                systemUserAgent = GetSystemUserAgent();
+                userAgent = CreateUserAgent();
                 await StartRequesterAsync();
 
                 var sessionState = await LoadSessionState();
@@ -254,7 +254,7 @@ namespace CSharpAnalytics
         /// <returns>Task that completes when the requester is ready.</returns>
         private static async Task StartRequesterAsync()
         {
-            requester = new HttpWebRequester(systemUserAgent);
+            requester = new HttpWebRequester(userAgent);
 
             backgroundRequester = new BackgroundUriRequester(Request, IsInternetAvailable);
             var previousRequests = await LocalFolderContractSerializer<List<Uri>>.RestoreAsync(RequestQueueFileName);
@@ -346,24 +346,27 @@ namespace CSharpAnalytics
         /// as a user agent string so it can be sent with HTTP requests.
         /// </summary>
         /// <returns>String containing formatted system parts of the user agent.</returns>
-        private static string GetSystemUserAgent()
+        private static string CreateUserAgent()
         {
             try
             {
                 var osVersion = System.Environment.OSVersion.Version;
+                var minor = osVersion.Minor;
+                if (minor > 9) minor /= 10;
+
                 var parts = new[] {
-                    "Windows Phone " + osVersion.Major + "." + osVersion.Minor,
+                    "Windows Phone " + osVersion.Major + "." + minor,
                     "ARM",
                     "Touch",
                     DeviceStatus.DeviceManufacturer,
                     DeviceStatus.DeviceName
                 };
 
-                return "(" + String.Join("; ", parts.Where(e => !String.IsNullOrEmpty(e))) + ")";
+                return ClientUserAgent + " (" + String.Join("; ", parts.Where(e => !String.IsNullOrEmpty(e))) + ")";
             }
             catch
             {
-                return "";
+                return ClientUserAgent;
             }
         }
     }
