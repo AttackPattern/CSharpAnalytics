@@ -30,11 +30,6 @@ namespace CSharpAnalytics.Environment
         bool? JavaEnabled { get; }
 
         /// <summary>
-        /// IP address of this client if available.
-        /// </summary>
-        string IpAddress { get; }
-
-        /// <summary>
         /// Number of bits-per-pixel for this display. e.g. 32, 24 or 8.
         /// </summary>
         uint ScreenColorDepth { get; }

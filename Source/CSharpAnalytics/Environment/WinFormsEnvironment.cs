@@ -17,7 +17,6 @@ namespace CSharpAnalytics.Environment
 
         public string FlashVersion { get { return null; } }
         public bool? JavaEnabled { get { return null; } }
-        public string IpAddress { get { return null; } }
 
         public uint ScreenColorDepth { get { return 32; } }
 

@@ -17,7 +17,6 @@ namespace CSharpAnalytics.Test.Environment
                 CharacterSet = "iso-8550-1",
                 FlashVersion = "11.0.1b",
                 ScreenColorDepth = 32,
-                IpAddress = "127.0.0.1",
                 JavaEnabled = true,
                 ScreenHeight = 1050,
                 ScreenWidth = 1920,
@@ -29,7 +28,6 @@ namespace CSharpAnalytics.Test.Environment
             Assert.AreEqual("en-gb", environment.LanguageCode);
             Assert.AreEqual("11.0.1b", environment.FlashVersion);
             Assert.AreEqual(32u, environment.ScreenColorDepth);
-            Assert.AreEqual("127.0.0.1", environment.IpAddress);
             Assert.AreEqual(true, environment.JavaEnabled);
             Assert.AreEqual(1050u, environment.ScreenHeight);
             Assert.AreEqual(1920u, environment.ScreenWidth);

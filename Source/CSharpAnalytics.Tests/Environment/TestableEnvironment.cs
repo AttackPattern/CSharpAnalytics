@@ -35,12 +35,6 @@ namespace CSharpAnalytics.Test.Environment
         public bool? JavaEnabled { get; set; }
 
         /// <summary>
-        /// IP address of this client if available.
-        /// </summary>
-        /// <example>8.8.4.4</example>
-        public string IpAddress { get; set; }
-
-        /// <summary>
         /// Number of bits-per-pixel for this display.
         /// </summary>
         /// <example>32</example>
