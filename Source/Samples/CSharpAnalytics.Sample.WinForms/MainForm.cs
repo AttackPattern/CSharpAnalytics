@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows.Forms;
 using CSharpAnalytics.Sessions;
 
@@ -13,6 +14,7 @@ namespace CSharpAnalytics.Sample.WinForms
 
         private void MainFormLoad(object sender, EventArgs e)
         {
+            AutoMeasurement.DebugWriter = d => Debug.WriteLine(d);
             AutoMeasurement.Start(new MeasurementConfiguration("UA-319000-8", "My WinForms App", "1.0.1.0"));
 
             AllowUsageDataCollectionCheckBox.Checked = AutoMeasurement.VisitorStatus == VisitorStatus.Active;
