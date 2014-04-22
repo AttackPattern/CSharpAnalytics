@@ -11,16 +11,11 @@ namespace CSharpAnalytics.Sample.WinForms
             InitializeComponent();
         }
 
-        private async void MainFormLoad(object sender, EventArgs e)
+        private void MainFormLoad(object sender, EventArgs e)
         {
-            await AutoMeasurement.Start(new MeasurementConfiguration("UA-319000-8", "My WinForms App", "1.0.1.0"));
+            AutoMeasurement.Start(new MeasurementConfiguration("UA-319000-8", "My WinForms App", "1.0.1.0"));
 
             AllowUsageDataCollectionCheckBox.Checked = AutoMeasurement.VisitorStatus == VisitorStatus.Active;
-        }
-
-        private async void MainFormClosing(object sender, FormClosingEventArgs e)
-        {
-            await AutoMeasurement.End();
         }
 
         private void TrackScreenButtonClick(object sender, EventArgs e)

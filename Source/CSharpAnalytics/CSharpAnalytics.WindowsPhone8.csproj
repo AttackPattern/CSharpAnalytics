@@ -95,6 +95,7 @@
     <Compile Include="Activities\TransactionItemActivity.cs" />
     <Compile Include="AutoMeasurement\AnalyticsScreenNameAttribute.cs" />
     <Compile Include="AutoMeasurement\AnalyticsUserOptions.cs" />
+    <Compile Include="AutoMeasurement\BaseAutoMeasurement.cs" />
     <Compile Include="AutoMeasurement\Implementation\LocalFolderContractSerializer.cs" />
     <Compile Include="AutoMeasurement\Implementation\WindowsPhoneSystemInformation.cs" />
     <Compile Include="AutoMeasurement\ITrackOwnView.cs" />

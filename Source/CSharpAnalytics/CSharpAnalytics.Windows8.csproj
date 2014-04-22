@@ -121,6 +121,7 @@
     <Compile Include="Activities\SocialActivity.cs" />
     <Compile Include="Activities\TransactionItemActivity.cs" />
     <Compile Include="AutoMeasurement\AnalyticsScreenNameAttribute.cs" />
+    <Compile Include="AutoMeasurement\BaseAutoMeasurement.cs" />
     <Compile Include="AutoMeasurement\WindowsStoreAutoMeasurement.cs" />
     <Compile Include="Collections\LockingDictionary.cs" />
     <Compile Include="Collections\LockingQueue.cs" />

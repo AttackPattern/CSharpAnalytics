@@ -53,6 +53,7 @@
     <Compile Include="Activities\SocialActivity.cs" />
     <Compile Include="Activities\TransactionActivity.cs" />
     <Compile Include="AutoMeasurement\AnalyticsScreenNameAttribute.cs" />
+    <Compile Include="AutoMeasurement\BaseAutoMeasurement.cs" />
     <Compile Include="AutoMeasurement\Implementation\AppDataContractSerializer.cs" />
     <Compile Include="AutoMeasurement\Implementation\WinFormsSystemInformation.cs" />
     <Compile Include="AutoMeasurement\ITrackOwnView.cs" />

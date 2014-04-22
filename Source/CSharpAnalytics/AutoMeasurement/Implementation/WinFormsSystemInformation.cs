@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
 using System.Runtime.InteropServices;
+using CSharpAnalytics.Protocols.Measurement;
+using CSharpAnalytics.Sessions;
 
 namespace CSharpAnalytics
 {
