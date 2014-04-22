@@ -32,14 +32,15 @@ namespace CSharpAnalytics
         /// </summary>
         /// <param name="analyticsClient">MeasurementAnalyticsClient object with queue and configuration set-up.</param>
         /// <param name="documentLocation">URI location of the document.</param>
+        /// <param name="documentTitle">Title of the document.</param>
         /// <param name="contentDescription">Description of the content.</param>
         /// <param name="documentPath">Optional path override of the document location.</param>
         /// <param name="documentHostName">Optional host name override of the document location.</param>
-        public static void TrackContentView(this MeasurementAnalyticsClient analyticsClient, Uri documentLocation, string contentDescription,
-            string documentPath = null, string documentHostName = null)
+        public static void TrackContentView(this MeasurementAnalyticsClient analyticsClient, Uri documentLocation, string documentTitle,
+            string contentDescription = null, string documentPath = null, string documentHostName = null)
         {
             if (analyticsClient == null) throw new ArgumentNullException("analyticsClient");
-            analyticsClient.Track(new ContentViewActivity(documentLocation, contentDescription, documentPath, documentHostName));
+            analyticsClient.Track(new ContentViewActivity(documentLocation, documentTitle, contentDescription, documentPath, documentHostName));
         }
 
         /// <summary>
