@@ -15,7 +15,7 @@ namespace CSharpAnalytics.Sample.WinForms
         private void MainFormLoad(object sender, EventArgs e)
         {
             AutoMeasurement.DebugWriter = d => Debug.WriteLine(d);
-            AutoMeasurement.Start(new MeasurementConfiguration("UA-319000-8", "My WinForms App", "1.0.1.0"));
+            AutoMeasurement.Start(new MeasurementConfiguration("UA-319000-8"));
 
             AllowUsageDataCollectionCheckBox.Checked = AutoMeasurement.VisitorStatus == VisitorStatus.Active;
         }
