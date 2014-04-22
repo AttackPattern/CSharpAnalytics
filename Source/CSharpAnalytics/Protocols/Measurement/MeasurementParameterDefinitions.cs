@@ -26,9 +26,12 @@ namespace CSharpAnalytics.Protocols.Measurement
 
             // Visitor
             new ParameterDefinition("cid",      "Client ID"),
+            new ParameterDefinition("uid",      "User ID"),
 
             // Session
             new ParameterDefinition("sc",       "Session Control"),
+            new ParameterDefinition("uip",      "IP Override"),
+            new ParameterDefinition("ua",       "User Agent Override"),
 
             // Traffic Sources
             new ParameterDefinition("dr",       "Document Referrer"),
@@ -61,13 +64,13 @@ namespace CSharpAnalytics.Protocols.Measurement
             new ParameterDefinition("dh",       "Document Host Name"),
             new ParameterDefinition("dp",       "Document Path"),
             new ParameterDefinition("dt",       "Document Title"),
-            new ParameterDefinition("cd",       "Content Description"),
+            new ParameterDefinition("cd",       "Screen Name"),
             new ParameterDefinition("linkid",   "Link ID"),
-
 
             // App Tracking
             new ParameterDefinition("an",       "Application Name"),
             new ParameterDefinition("av",       "Application Version"),
+            new ParameterDefinition("aiid",     "Application Installer ID"),
 
             // Event Tracking
             new ParameterDefinition("ec",       "Event Category"),
