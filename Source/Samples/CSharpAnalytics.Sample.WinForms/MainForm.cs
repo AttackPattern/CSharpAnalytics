@@ -20,7 +20,7 @@ namespace CSharpAnalytics.Sample.WinForms
 
         private void TrackScreenButtonClick(object sender, EventArgs e)
         {
-            AutoMeasurement.Client.TrackAppView("My Shiny Screen");
+            AutoMeasurement.Client.TrackScreenView("My Shiny Screen");
         }
 
         private void TrackEventButtonClick(object sender, EventArgs e)

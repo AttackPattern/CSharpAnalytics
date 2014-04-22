@@ -5,15 +5,15 @@
 namespace CSharpAnalytics.Activities
 {
     /// <summary>
-    /// Captures the details of a view displayed within an application.
+    /// Captures the details of a screen displayed within an application.
     /// </summary>
-    public class AppViewActivity : ContentViewActivity
+    public class ScreenViewActivity : ContentViewActivity
     {
         /// <summary>
-        /// Create a new AppViewActivity to capture details of this application view.
+        /// Create a new ScreenViewActivity to capture details of this screen view.
         /// </summary>
         /// <param name="screenName">Name of the screen being viewed.</param>
-        public AppViewActivity(string screenName)
+        public ScreenViewActivity(string screenName)
             : base(null, null, screenName)
         {
         }
@@ -22,5 +22,14 @@ namespace CSharpAnalytics.Activities
         /// Name of the screen being viewed.
         /// </summary>
         public string ScreenName { get { return ContentDescription; } }
+    }
+
+    // For backward compatibility only
+    public class AppViewActivity : ScreenViewActivity
+    {
+        public AppViewActivity(string screenName)
+            : base(screenName)
+        {
+        }   
     }
 }

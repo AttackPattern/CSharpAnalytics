@@ -24,8 +24,8 @@ namespace CSharpAnalytics.Protocols.Measurement
         /// <returns>Enumerable of key/value pairs representing the activity.</returns>
         internal static IEnumerable<KeyValuePair<string, string>> GetActivityParameters(IMeasurementActivity activity)
         {
-            if (activity is AppViewActivity)
-                return GetParameters((AppViewActivity)activity);
+            if (activity is ScreenViewActivity)
+                return GetParameters((ScreenViewActivity)activity);
             if (activity is ContentViewActivity)
                 return GetParameters((ContentViewActivity)activity);
             if (activity is CampaignActivity)
@@ -48,15 +48,15 @@ namespace CSharpAnalytics.Protocols.Measurement
         }
 
         /// <summary>
-        /// Obtain the key/value pairs for a ContentViewActivity.
+        /// Obtain the key/value pairs for a ScreenViewActivity.
         /// </summary>
-        /// <param name="appView">AppViewActivity to turn into key/value pairs.</param>
+        /// <param name="screenView">ScreenViewActivity to turn into key/value pairs.</param>
         /// <returns>Key/value pairs representing this ContentViewActivity.</returns>
-        internal static IEnumerable<KeyValuePair<string, string>> GetParameters(AppViewActivity appView)
+        internal static IEnumerable<KeyValuePair<string, string>> GetParameters(ScreenViewActivity screenView)
         {
-            yield return KeyValuePair.Create("t", "appview");
+            yield return KeyValuePair.Create("t", "screenview");
 
-            foreach (var pair in GetSharedParameters(appView))
+            foreach (var pair in GetSharedParameters(screenView))
                 yield return pair;
         }
 

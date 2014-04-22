@@ -66,7 +66,7 @@ namespace CSharpAnalytics.Sample.Windows81
             // TODO: Create an appropriate data model for your problem domain to replace the sample data
             var item = await SampleDataSource.GetItemAsync((String)e.NavigationParameter);
             this.DefaultViewModel["Item"] = item;
-            AutoMeasurement.Client.TrackAppView(item.Title);
+            AutoMeasurement.Client.TrackScreenView(item.Title);
         }
 
         #region NavigationHelper registration

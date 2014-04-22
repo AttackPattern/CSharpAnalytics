@@ -28,7 +28,7 @@ namespace CSharpAnalytics
         private static PhoneApplicationFrame attachedFrame;
 
         /// <summary>
-        /// Attach to the root frame, hook into the navigation event and track initial page appview.
+        /// Attach to the root frame, hook into the navigation event and track initial screen view.
         /// Call this just before Window.Current.Activate() in your App.OnLaunched method.
         /// </summary>
         public void Attach(PhoneApplicationFrame frame)
@@ -46,7 +46,7 @@ namespace CSharpAnalytics
 
             var content = frame.Content;
             if (content != null)
-                TrackAppView(content.GetType());
+                TrackScreenView(content.GetType());
         }
 
         protected override IEnvironment GetEnvironment()
@@ -115,7 +115,7 @@ namespace CSharpAnalytics
         private void FrameNavigated(object sender, NavigationEventArgs e)
         {
             if (e.Content != null)
-                TrackAppView(e.Content.GetType());
+                TrackScreenView(e.Content.GetType());
         }
 
         protected override async Task SetupRequesterAsync()

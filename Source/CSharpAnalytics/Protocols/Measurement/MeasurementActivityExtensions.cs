@@ -2,9 +2,9 @@
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
-using System;
 using CSharpAnalytics.Activities;
 using CSharpAnalytics.Protocols.Measurement;
+using System;
 
 namespace CSharpAnalytics
 {
@@ -15,11 +15,16 @@ namespace CSharpAnalytics
         /// </summary>
         /// <param name="analyticsClient"></param>
         /// <param name="screenName"></param>
-        public static void TrackAppView(this MeasurementAnalyticsClient analyticsClient, string screenName)
+        public static void TrackScreenView(this MeasurementAnalyticsClient analyticsClient, string screenName)
         {
             if (analyticsClient == null) throw new ArgumentNullException("analyticsClient");
             if (String.IsNullOrWhiteSpace(screenName)) throw new ArgumentException("Screen name must not be null or blank", "screenName");
-            analyticsClient.Track(new AppViewActivity(screenName));
+            analyticsClient.Track(new ScreenViewActivity(screenName));
+        }
+
+        public static void TrackAppView(this MeasurementAnalyticsClient analyticsClient, string screenName)
+        {
+            TrackScreenView(analyticsClient, screenName);
         }
 
         /// <summary>

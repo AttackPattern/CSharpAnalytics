@@ -53,7 +53,7 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
-    <Compile Include="Activities\AppViewActivityTests.cs" />
+    <Compile Include="Activities\ScreenViewActivityTests.cs" />
     <Compile Include="Activities\CampaignActivityTests.cs" />
     <Compile Include="Activities\AutoTimedEventActivityTests.cs" />
     <Compile Include="Activities\ContentViewActivityTests.cs" />

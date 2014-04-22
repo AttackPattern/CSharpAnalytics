@@ -113,12 +113,12 @@
     <SDKReference Include="TestPlatform, Version=11.0" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Activities\AppViewActivityTests.cs" />
     <Compile Include="Activities\AutoTimedEventActivityTests.cs" />
     <Compile Include="Activities\CampaignActivityTests.cs" />
     <Compile Include="Activities\ContentViewActivityTests.cs" />
     <Compile Include="Activities\EventActivityTests.cs" />
     <Compile Include="Activities\ExceptionActivityTests.cs" />
+    <Compile Include="Activities\ScreenViewActivityTests.cs" />
     <Compile Include="Activities\SocialActivityTests.cs" />
     <Compile Include="Activities\TimedEventActivityTests.cs" />
     <Compile Include="Activities\TransactionActivityTests.cs" />

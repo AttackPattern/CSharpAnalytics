@@ -70,9 +70,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="..\Activities\AppViewActivityTests.cs">
-      <Link>Activities\AppViewActivityTests.cs</Link>
-    </Compile>
     <Compile Include="..\Activities\AutoTimedEventActivityTests.cs">
       <Link>Activities\AutoTimedEventActivityTests.cs</Link>
     </Compile>
@@ -87,6 +84,9 @@
     </Compile>
     <Compile Include="..\Activities\ExceptionActivityTests.cs">
       <Link>Activities\ExceptionActivityTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Activities\ScreenViewActivityTests.cs">
+      <Link>Activities\ScreenViewActivityTests.cs</Link>
     </Compile>
     <Compile Include="..\Activities\SocialActivityTests.cs">
       <Link>Activities\SocialActivityTests.cs</Link>

@@ -42,12 +42,12 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Activities\AppViewActivity.cs" />
     <Compile Include="Activities\AutoTimedEventActivity.cs" />
     <Compile Include="Activities\ContentViewActivity.cs" />
     <Compile Include="Activities\ExceptionActivity.cs" />
     <Compile Include="Activities\CampaignActivity.cs" />
     <Compile Include="Activities\EventActivity.cs" />
+    <Compile Include="Activities\ScreenViewActivity.cs" />
     <Compile Include="Activities\TimedEventActivity.cs" />
     <Compile Include="Activities\TransactionItemActivity.cs" />
     <Compile Include="Activities\SocialActivity.cs" />

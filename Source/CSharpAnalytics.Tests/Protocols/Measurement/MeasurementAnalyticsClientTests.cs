@@ -19,8 +19,8 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
             var actual = new List<Uri>();
 
             var client = new MeasurementAnalyticsClient();
-            client.Track(new AppViewActivity("The Big Screen"));
-            client.Track(new AppViewActivity("Silk Screen"));
+            client.Track(new ScreenViewActivity("The Big Screen"));
+            client.Track(new ScreenViewActivity("Silk Screen"));
 
             MeasurementTestHelpers.ConfigureForTest(client, actual.Add);
 
@@ -46,7 +46,7 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
             MeasurementTestHelpers.ConfigureForTest(client, actual.Add);
 
             client.SetCustomDimension(5, "DimensionFive");
-            client.TrackAppView("Test View");
+            client.TrackScreenView("Test View");
 
             Assert.AreEqual(1, actual.Count);
             StringAssert.Contains(actual[0].Query, "cd5=DimensionFive");
@@ -65,7 +65,7 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
             MeasurementTestHelpers.ConfigureForTest(client, actual.Add);
 
             client.SetCustomDimension(CustomDimensions.Eight, "DimensionEight");
-            client.TrackAppView("Test View");
+            client.TrackScreenView("Test View");
 
             Assert.AreEqual(1, actual.Count);
             StringAssert.Contains(actual[0].Query, "cd8=DimensionEight");
@@ -79,7 +79,7 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
             MeasurementTestHelpers.ConfigureForTest(client, actual.Add);
 
             client.SetCustomMetric(6, 6060);
-            client.TrackAppView("Test View");
+            client.TrackScreenView("Test View");
 
             Assert.AreEqual(1, actual.Count);
             StringAssert.Contains(actual[0].Query, "cm6=6060");
@@ -94,7 +94,7 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
             MeasurementTestHelpers.ConfigureForTest(client, actual.Add);
 
             client.SetCustomMetric(7, actualTimespan);
-            client.TrackAppView("Test View");
+            client.TrackScreenView("Test View");
 
             Assert.AreEqual(1, actual.Count);
             StringAssert.Contains(actual[0].Query, "cm7=" + (int)actualTimespan.TotalSeconds);
@@ -108,7 +108,7 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
             MeasurementTestHelpers.ConfigureForTest(client, actual.Add);
 
             client.SetCustomMetric(8, 123456.78m);
-            client.TrackAppView("Test View");
+            client.TrackScreenView("Test View");
 
             Assert.AreEqual(1, actual.Count);
             StringAssert.Contains(actual[0].Query, "cm8=123456.78");
@@ -151,7 +151,7 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
             var analyticsClient = new MeasurementAnalyticsClient();
             
             analyticsClient.OnTrack += (s, e) => fired = true;
-            analyticsClient.Track(new AppViewActivity("Testing"));
+            analyticsClient.Track(new ScreenViewActivity("Testing"));
 
             Assert.IsTrue(fired);
         }

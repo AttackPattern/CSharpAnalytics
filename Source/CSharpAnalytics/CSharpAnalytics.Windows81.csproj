@@ -106,7 +106,7 @@
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Activities\AppViewActivity.cs" />
+    <Compile Include="Activities\ScreenViewActivity.cs" />
     <Compile Include="Activities\AutoTimedEventActivity.cs" />
     <Compile Include="Activities\CampaignActivity.cs" />
     <Compile Include="Activities\ContentViewActivity.cs" />

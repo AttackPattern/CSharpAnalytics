@@ -22,7 +22,7 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
             var sessionManager = MeasurementTestHelpers.CreateSessionManager();
             var tracker = new MeasurementTracker(MeasurementTestHelpers.Configuration, sessionManager, MeasurementTestHelpers.CreateEnvironment(), actual.Add);
 
-            tracker.Track(new MeasurementActivityEntry(new AppViewActivity("Testing")) { EndSession = true });
+            tracker.Track(new MeasurementActivityEntry(new ScreenViewActivity("Testing")) { EndSession = true });
 
             Assert.AreEqual(SessionStatus.Ending, sessionManager.SessionStatus);
             StringAssert.Contains(actual.Last().OriginalString, "sc=end");
@@ -34,7 +34,7 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
             var actual = new List<Uri>();
             var tracker = new MeasurementTracker(MeasurementTestHelpers.Configuration, MeasurementTestHelpers.CreateSessionManager(), MeasurementTestHelpers.CreateEnvironment(), actual.Add);
 
-            tracker.Track(new MeasurementActivityEntry(new AppViewActivity("Testing")));
+            tracker.Track(new MeasurementActivityEntry(new ScreenViewActivity("Testing")));
 
             Assert.AreEqual(1, actual.Count);
         }
@@ -47,7 +47,7 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
             var tracker = new MeasurementTracker(MeasurementTestHelpers.Configuration, sessionManager, MeasurementTestHelpers.CreateEnvironment(), actual.Add);
 
             sessionManager.VisitorStatus = VisitorStatus.OptedOut;
-            tracker.Track(new MeasurementActivityEntry(new AppViewActivity("Testing")));
+            tracker.Track(new MeasurementActivityEntry(new ScreenViewActivity("Testing")));
 
             Assert.AreEqual(0, actual.Count);
         }
@@ -60,9 +60,9 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
             var tracker = new MeasurementTracker(MeasurementTestHelpers.Configuration, sessionManager, MeasurementTestHelpers.CreateEnvironment(), actual.Add);
 
             sessionManager.VisitorStatus = VisitorStatus.OptedOut;
-            tracker.Track(new MeasurementActivityEntry(new AppViewActivity("OptedOut")));
+            tracker.Track(new MeasurementActivityEntry(new ScreenViewActivity("OptedOut")));
             sessionManager.VisitorStatus = VisitorStatus.Active;
-            tracker.Track(new MeasurementActivityEntry(new AppViewActivity("OptedIn")));
+            tracker.Track(new MeasurementActivityEntry(new ScreenViewActivity("OptedIn")));
 
             Assert.AreEqual(1, actual.Count);
             StringAssert.Contains(actual[0].OriginalString, "cd=OptedIn");

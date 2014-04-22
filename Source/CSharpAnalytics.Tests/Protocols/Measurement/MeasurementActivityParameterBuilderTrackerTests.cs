@@ -14,14 +14,14 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
     public class MeasurementActivityParameterBuilderTrackerTests
     {
         [TestMethod]
-        public void MeasurementActivityParameterBuilder_GetParameter_For_AppViewActivity_Returns_Correct_Values()
+        public void MeasurementActivityParameterBuilder_GetParameter_For_ScreenViewActivity_Returns_Correct_Values()
         {
-            var activity = new AppViewActivity("page");
+            var activity = new ScreenViewActivity("page");
 
             var parameters = MeasurementActivityParameterBuilder.GetParameters(activity).ToDictionary(k => k.Key, v => v.Value);
 
             Assert.AreEqual(2, parameters.Count);
-            Assert.AreEqual("appview", parameters["t"]);
+            Assert.AreEqual("screenview", parameters["t"]);
             Assert.AreEqual("page", parameters["cd"]);
         }
 

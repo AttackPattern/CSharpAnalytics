@@ -43,7 +43,7 @@ namespace CSharpAnalytics.Sample.Windows8
             DefaultViewModel["Group"] = item.Group;
             DefaultViewModel["Items"] = item.Group.Items;
             flipView.SelectedItem = item;
-            AutoMeasurement.Client.TrackAppView(item.Title);
+            AutoMeasurement.Client.TrackScreenView(item.Title);
 
             DataTransferManager.GetForCurrentView().DataRequested += OnDataRequested;
         }

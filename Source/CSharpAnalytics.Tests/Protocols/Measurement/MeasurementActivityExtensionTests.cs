@@ -13,58 +13,58 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
     public class MeasurementActivityExtensionTests
     {
         [TestMethod]
-        public void AppViewExtension_Tracks_AppView()
+        public void ScreenViewExtension_Tracks_ScreenView()
         {
             var list = new List<Uri>();
             var client = new MeasurementAnalyticsClient();
             MeasurementTestHelpers.ConfigureForTest(client, list.Add);
 
-            client.TrackAppView("SomeScreenName");
+            client.TrackScreenView("SomeScreenName");
 
             Assert.AreEqual(1, list.Count);
-            StringAssert.Contains(list[0].OriginalString, "t=appview");
+            StringAssert.Contains(list[0].OriginalString, "t=screenview");
         }
 
 #if WINDOWS_STORE || WINDOWS_PHONE
         [TestMethod]
-        public void AppViewExtension_Throws_If_AnalyticsClient_Null()
+        public void ScreenViewExtension_Throws_If_AnalyticsClient_Null()
         {
-            Assert.ThrowsException<ArgumentNullException>(() => MeasurementActivityExtensions.TrackAppView(null, "test"));
+            Assert.ThrowsException<ArgumentNullException>(() => MeasurementActivityExtensions.TrackScreenView(null, "test"));
         }
 
         [TestMethod]
-        public void AppViewExtension_Throws_If_ScreenName_Null()
+        public void ScreenViewExtension_Throws_If_ScreenName_Null()
         {
-            Assert.ThrowsException<ArgumentException>(() => new MeasurementAnalyticsClient().TrackAppView(null));
+            Assert.ThrowsException<ArgumentException>(() => new MeasurementAnalyticsClient().TrackScreenView(null));
         }
 
         [TestMethod]
-        public void AppViewExtension_Throws_If_ScreenName_Blank()
+        public void ScreenViewExtension_Throws_If_ScreenName_Blank()
         {
-            Assert.ThrowsException<ArgumentException>(() => new MeasurementAnalyticsClient().TrackAppView(""));
+            Assert.ThrowsException<ArgumentException>(() => new MeasurementAnalyticsClient().TrackScreenView(""));
         }
 #endif
 
 #if NET45
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void AppViewExtension_Throws_If_AnalyticsClient_Null()
+        public void ScreenViewExtension_Throws_If_AnalyticsClient_Null()
         {
-            MeasurementActivityExtensions.TrackAppView(null, "test");
+            MeasurementActivityExtensions.TrackScreenView(null, "test");
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
-        public void AppViewExtension_Throws_If_ScreenName_Null()
+        public void ScreenViewExtension_Throws_If_ScreenName_Null()
         {
-            new MeasurementAnalyticsClient().TrackAppView(null);
+            new MeasurementAnalyticsClient().TrackScreenView(null);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
-        public void AppViewExtension_Throws_If_ScreenName_Blank()
+        public void ScreenViewExtension_Throws_If_ScreenName_Blank()
         {
-            new MeasurementAnalyticsClient().TrackAppView("");
+            new MeasurementAnalyticsClient().TrackScreenView("");
         }
 #endif
     }

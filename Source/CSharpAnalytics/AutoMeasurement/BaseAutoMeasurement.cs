@@ -163,12 +163,12 @@ namespace CSharpAnalytics
         /// Track an app view if it does not track itself.
         /// </summary>
         /// <param name="page">Page to track in analytics.</param>
-        protected void TrackAppView(Type page)
+        protected void TrackScreenView(Type page)
         {
             if (typeof(ITrackOwnView).GetTypeInfo().IsAssignableFrom(page.GetTypeInfo())) return;
 
             var screenName = GetScreenName(page);
-            Client.TrackAppView(screenName);
+            Client.TrackScreenView(screenName);
         }
 
         /// <summary>
