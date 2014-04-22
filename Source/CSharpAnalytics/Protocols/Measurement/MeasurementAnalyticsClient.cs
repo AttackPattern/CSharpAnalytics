@@ -3,6 +3,7 @@
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
 using CSharpAnalytics.Activities;
+using CSharpAnalytics.Collections;
 using CSharpAnalytics.Sessions;
 using System;
 using System.Collections.Generic;
@@ -17,8 +18,8 @@ namespace CSharpAnalytics.Protocols.Measurement
     /// </summary>
     public class MeasurementAnalyticsClient
     {
-        private readonly SafeDictionary<int, string> customDimensions = new SafeDictionary<int, string>();
-        private readonly SafeDictionary<int, object> customMetrics = new SafeDictionary<int, object>();
+        private readonly LockingDictionary<int, string> customDimensions = new LockingDictionary<int, string>();
+        private readonly LockingDictionary<int, object> customMetrics = new LockingDictionary<int, object>();
         private readonly Queue<MeasurementActivityEntry> queue = new Queue<MeasurementActivityEntry>();
 
         private MeasurementTracker tracker;
@@ -58,10 +59,13 @@ namespace CSharpAnalytics.Protocols.Measurement
 
             var entry = new MeasurementActivityEntry(activity)
             {
-                CustomDimensions = customDimensions.Pull(),
-                CustomMetrics = customMetrics.Pull(),
+                CustomDimensions = customDimensions.ToArray(),
+                CustomMetrics = customMetrics.ToArray(),
                 EndSession = endSession
             };
+
+            customDimensions.Clear();
+            customMetrics.Clear();
 
             if (tracker == null)
                 queue.Enqueue(entry);
@@ -204,35 +208,6 @@ namespace CSharpAnalytics.Protocols.Measurement
         private static string GetQueryString(IEnumerable<KeyValuePair<string, string>> queryParameters)
         {
             return String.Join("&", queryParameters.Select(p => p.Key + "=" + p.Value));
-        }
-
-        /// <summary>
-        /// Wrap a dictionary with locks to ensure thread-concurrency for the custom dimensions and metrics.
-        /// </summary>
-        /// <typeparam name="TKey">Type to be used as the key for the dictionary.</typeparam>
-        /// <typeparam name="TValue">Type to be used as the value for the dictionary.</typeparam>
-        private class SafeDictionary<TKey, TValue>
-        {
-            private readonly Dictionary<TKey, TValue> dictionary = new Dictionary<TKey, TValue>();
-
-            public KeyValuePair<TKey, TValue>[] Pull()
-            {
-                lock (dictionary)
-                {
-                    var results = dictionary.ToArray();
-                    dictionary.Clear();
-                    return results;
-                }
-            }
-
-            public TValue this[TKey index]
-            {
-                set
-                {
-                    lock (dictionary)
-                        dictionary[index] = value;
-                }
-            }
         }
     }
 }

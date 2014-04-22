@@ -105,5 +105,16 @@ namespace CSharpAnalytics
             return String.Join(".", version.Major, version.Minor, version.Build, version.Revision);
         }
 #endif
+
+#if WINDOWS_PHONE
+        /// <summary>
+        /// Create a new cofiguration for analytics.
+        /// </summary>
+        /// <param name="accountId">Google Analytics provided property id in the format UA-XXXX-Y.</param>
+        public MeasurementConfiguration(string accountId)
+            : this(accountId, WindowsPhone.WindowsPhoneSystemInformation.ApplicationName, WindowsPhone.WindowsPhoneSystemInformation.ApplicationVersion)
+        {
+        }
+#endif
     }
 }

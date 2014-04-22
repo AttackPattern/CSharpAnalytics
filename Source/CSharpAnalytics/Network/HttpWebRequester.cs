@@ -3,9 +3,11 @@
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
 using System;
+using System.IO;
 using System.Net;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace CSharpAnalytics.Network
 {
@@ -92,4 +94,66 @@ namespace CSharpAnalytics.Network
             return postRequest;
         }
     }
+
+#if WINDOWS_PHONE
+
+    internal static class HttpWebRequestExtensions
+    {
+        internal static void Add(this WebHeaderCollection collection, HttpRequestHeader header, string value)
+        {
+            collection[header] = value;
+        }
+
+        internal static HttpWebResponse GetResponse(this HttpWebRequest request)
+        {
+            return request.GetResponseAsync().GetAwaiter().GetResult();
+        }
+
+        internal static Stream GetRequestStream(this HttpWebRequest request)
+        {
+            return request.GetRequestStreamAsync().GetAwaiter().GetResult();
+        }
+
+        internal static Task<HttpWebResponse> GetResponseAsync(this HttpWebRequest request)
+        {
+            var tcs = new TaskCompletionSource<HttpWebResponse>();
+            request.BeginGetResponse(asyncResponse =>
+            {
+                try
+                {
+                    var asyncState = (HttpWebRequest)asyncResponse.AsyncState;
+                    var response = (HttpWebResponse)asyncState.EndGetResponse(asyncResponse);
+                    tcs.TrySetResult(response);
+                }
+                catch (WebException ex)
+                {
+                    var failedResponse = (HttpWebResponse)ex.Response;
+                    tcs.TrySetResult(failedResponse);
+                }
+            }, request);
+            return tcs.Task;
+        }
+
+        internal static Task<Stream> GetRequestStreamAsync(this HttpWebRequest request)
+        {
+            var tcs = new TaskCompletionSource<Stream>();
+            request.BeginGetRequestStream(asyncResponse =>
+            {
+                try
+                {
+                    var asyncState = (HttpWebRequest)asyncResponse.AsyncState;
+                    var stream = asyncState.EndGetRequestStream(asyncResponse);
+                    tcs.TrySetResult(stream);
+                }
+                catch (WebException ex)
+                {
+                    tcs.SetException(ex);
+                }
+            }, request);
+            return tcs.Task;
+        }
+        
+    }
+
+#endif
 }

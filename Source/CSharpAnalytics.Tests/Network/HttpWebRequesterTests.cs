@@ -1,6 +1,6 @@
 ﻿using System;
 using CSharpAnalytics.Network;
-#if WINDOWS_STORE
+#if WINDOWS_STORE || WINDOWS_PHONE
 using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
 #else
 using Microsoft.VisualStudio.TestTools.UnitTesting;
