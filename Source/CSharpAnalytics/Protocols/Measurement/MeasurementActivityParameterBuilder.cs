@@ -56,8 +56,8 @@ namespace CSharpAnalytics.Protocols.Measurement
         {
             yield return KeyValuePair.Create("t", "screenview");
 
-            foreach (var pair in GetSharedParameters(screenView))
-                yield return pair;
+            if (!String.IsNullOrEmpty(screenView.ScreenName))
+                yield return KeyValuePair.Create("cd", screenView.ScreenName);
         }
 
         /// <summary>
@@ -69,17 +69,6 @@ namespace CSharpAnalytics.Protocols.Measurement
         {
             yield return KeyValuePair.Create("t", "pageview");
 
-            foreach (var pair in GetSharedParameters(contentView))
-                yield return pair;
-        }
-
-        /// <summary>
-        /// Obtain the key/value pairs shared by all ContentViewActivity classes.
-        /// </summary>
-        /// <param name="contentView">ContentViewActivity to turn into key/value pairs.</param>
-        /// <returns>Key/value pairs representing this ContentViewActivity.</returns>
-        internal static IEnumerable<KeyValuePair<string, string>> GetSharedParameters(ContentViewActivity contentView)
-        {
             if (contentView.DocumentLocation != null)
                 yield return KeyValuePair.Create("dl", contentView.DocumentLocation.OriginalString);
 

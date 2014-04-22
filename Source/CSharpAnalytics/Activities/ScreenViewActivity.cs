@@ -2,26 +2,32 @@
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
+using System.Diagnostics;
+using CSharpAnalytics.Protocols.Measurement;
+
 namespace CSharpAnalytics.Activities
 {
     /// <summary>
     /// Captures the details of a screen displayed within an application.
     /// </summary>
-    public class ScreenViewActivity : ContentViewActivity
+    [DebuggerDisplay("ScreenView {ScreenName}]")]
+    public class ScreenViewActivity : IMeasurementActivity
     {
+        private readonly string screenName;
+
         /// <summary>
         /// Create a new ScreenViewActivity to capture details of this screen view.
         /// </summary>
         /// <param name="screenName">Name of the screen being viewed.</param>
         public ScreenViewActivity(string screenName)
-            : base(null, null, screenName)
         {
+            this.screenName = screenName;
         }
 
         /// <summary>
         /// Name of the screen being viewed.
         /// </summary>
-        public string ScreenName { get { return ContentDescription; } }
+        public string ScreenName { get { return screenName; } }
     }
 
     // For backward compatibility only
