@@ -1,6 +1,6 @@
-﻿using CSharpAnalytics.Sample.Windows81.Common;
+﻿using Windows.UI.ApplicationSettings;
+using CSharpAnalytics.Sample.Windows81.Common;
 using System;
-using System.Diagnostics;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.UI.Xaml;
@@ -34,7 +34,7 @@ namespace CSharpAnalytics.Sample.Windows81
         protected override async void OnLaunched(LaunchActivatedEventArgs e)
         {
             // CSharpAnalytics initialization
-            AutoMeasurement.DebugWriter = d => Debug.WriteLine(d);
+            AutoMeasurement.DebugWriter = d => System.Diagnostics.Debug.WriteLine(d);
             AutoMeasurement.Start(new MeasurementConfiguration("UA-319000-8"), e);
 
 #if DEBUG
@@ -116,6 +116,27 @@ namespace CSharpAnalytics.Sample.Windows81
             var deferral = e.SuspendingOperation.GetDeferral();
             await SuspensionManager.SaveAsync();
             deferral.Complete();
+        }
+
+        /// <summary>
+        /// Fires when the Window is created and you should sign up for charm notifications.
+        /// </summary>
+        /// <param name="args">Arguments relating to which window was created.</param>
+        protected override void OnWindowCreated(WindowCreatedEventArgs args)
+        {
+            base.OnWindowCreated(args);
+            SettingsPane.GetForCurrentView().CommandsRequested += SettingsCommandsRequested;
+        }
+
+        /// <summary>
+        /// Settings charm is requesting commands, register the Options flyout.
+        /// </summary>
+        /// <param name="sender">Sender of the event</param>
+        /// <param name="args">Application Commands object to register settings with.</param>
+        private static void SettingsCommandsRequested(SettingsPane sender, SettingsPaneCommandsRequestedEventArgs args)
+        {
+            args.Request.ApplicationCommands
+                .Add(new SettingsCommand("options", "Options", _ => new OptionsSettingsFlyout().Show()));
         }
     }
 }
