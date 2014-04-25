@@ -7,10 +7,10 @@ using System.Windows.Controls;
 using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
-using CSharpAnalytics.Sample.WindowsPhone8.Resources;
-using CSharpAnalytics.Sample.WindowsPhone8.ViewModels;
+using DataBoundApp1.Resources;
+using DataBoundApp1.ViewModels;
 
-namespace CSharpAnalytics.Sample.WindowsPhone8
+namespace DataBoundApp1
 {
     public partial class MainPage : PhoneApplicationPage
     {

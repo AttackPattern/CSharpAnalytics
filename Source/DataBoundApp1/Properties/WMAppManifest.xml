@@ -2,7 +2,7 @@
 
 <Deployment xmlns="http://schemas.microsoft.com/windowsphone/2012/deployment" AppPlatformVersion="8.0">
   <DefaultLanguage xmlns="" code="en-US"/>
-  <App xmlns="" ProductID="{1a9591af-e5cd-42de-80a4-b17b227dd45b}" Title="CSharpAnalytics.Sample.WindowsPhone8" RuntimeType="Silverlight" Version="1.0.0.0" Genre="apps.normal"  Author="CSharpAnalytics.Sample.WindowsPhone8 author" Description="Sample description" Publisher="CSharpAnalytics.Sample.WindowsPhone8" PublisherID="{f6dda624-616e-46da-8b2c-4bcfd5cb1784}">
+  <App xmlns="" ProductID="{2be55e70-5a4a-47b5-b098-af1690cb374a}" Title="DataBoundApp1" RuntimeType="Silverlight" Version="1.0.0.0" Genre="apps.normal"  Author="DataBoundApp1 author" Description="Sample description" Publisher="DataBoundApp1" PublisherID="{59a41e3d-fd2a-44a2-94a8-d3d53929abda}">
     <IconPath IsRelative="true" IsResource="false">Assets\ApplicationIcon.png</IconPath>
     <Capabilities>
       <Capability Name="ID_CAP_NETWORKING"/>
@@ -15,12 +15,12 @@
       <DefaultTask  Name ="_default" NavigationPage="MainPage.xaml"/>
     </Tasks>
     <Tokens>
-      <PrimaryToken TokenID="CSharpAnalytics.Sample.WindowsPhone8Token" TaskName="_default">
+      <PrimaryToken TokenID="DataBoundApp1Token" TaskName="_default">
         <TemplateFlip>
           <SmallImageURI IsRelative="true" IsResource="false">Assets\Tiles\FlipCycleTileSmall.png</SmallImageURI>
           <Count>0</Count>
           <BackgroundImageURI IsRelative="true" IsResource="false">Assets\Tiles\FlipCycleTileMedium.png</BackgroundImageURI>
-          <Title>CSharpAnalytics.Sample.WindowsPhone8</Title>
+          <Title>DataBoundApp1</Title>
           <BackContent></BackContent>
           <BackBackgroundImageURI></BackBackgroundImageURI>
           <BackTitle></BackTitle>
