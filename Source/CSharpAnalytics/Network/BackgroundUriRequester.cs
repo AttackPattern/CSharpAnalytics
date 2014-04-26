@@ -29,7 +29,7 @@ namespace CSharpAnalytics.Network
         private Uri currentlySending;
 
         private readonly Func<bool> checkInternetAvailable;
-        private readonly Func<Uri, CancellationToken, bool> requester; 
+        private readonly Func<Uri, CancellationToken, bool> requester;
 
         public BackgroundUriRequester(Func<Uri, CancellationToken, bool> requester, Func<bool> checkInternetAvailable = null)
         {
@@ -112,7 +112,10 @@ namespace CSharpAnalytics.Network
 
                         queueEmptyWait.Wait(currentUploadInterval, cancellationTokenSource.Token);
                     }
-                    catch(Exception ex)
+                    catch (OperationCanceledException)
+                    {
+                    }
+                    catch (Exception ex)
                     {
                         Debug.WriteLine("RequestLoop failing with {0}", ex.Message);
                     }
