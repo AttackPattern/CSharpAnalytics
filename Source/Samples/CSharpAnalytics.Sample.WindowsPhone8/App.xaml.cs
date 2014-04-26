@@ -1,19 +1,18 @@
-﻿using System;
+﻿using CSharpAnalytics.Sample.WindowsPhone8.Resources;
+using CSharpAnalytics.Sample.WindowsPhone8.ViewModels;
+using Microsoft.Phone.Controls;
+using Microsoft.Phone.Shell;
+using System;
 using System.Diagnostics;
-using System.Resources;
 using System.Windows;
 using System.Windows.Markup;
 using System.Windows.Navigation;
-using Microsoft.Phone.Controls;
-using Microsoft.Phone.Shell;
-using CSharpAnalytics.Sample.WindowsPhone8.Resources;
-using CSharpAnalytics.Sample.WindowsPhone8.ViewModels;
 
 namespace CSharpAnalytics.Sample.WindowsPhone8
 {
-    public partial class App : Application
+    public partial class App
     {
-        private static MainViewModel viewModel = null;
+        private static MainViewModel viewModel;
 
         /// <summary>
         /// A static ViewModel used by the views to bind against.
@@ -24,10 +23,7 @@ namespace CSharpAnalytics.Sample.WindowsPhone8
             get
             {
                 // Delay creation of the view model until necessary
-                if (viewModel == null)
-                    viewModel = new MainViewModel();
-
-                return viewModel;
+                return viewModel ?? (viewModel = new MainViewModel());
             }
         }
 
@@ -58,7 +54,7 @@ namespace CSharpAnalytics.Sample.WindowsPhone8
             if (Debugger.IsAttached)
             {
                 // Display the current frame rate counters.
-                Application.Current.Host.Settings.EnableFrameRateCounter = true;
+                Current.Host.Settings.EnableFrameRateCounter = true;
 
                 // Show the areas of the app that are being redrawn in each frame.
                 //Application.Current.Host.Settings.EnableRedrawRegions = true;
@@ -89,9 +85,9 @@ namespace CSharpAnalytics.Sample.WindowsPhone8
         private void Application_Activated(object sender, ActivatedEventArgs e)
         {
             // Ensure that application state is restored appropriately
-            if (!App.ViewModel.IsDataLoaded)
+            if (!ViewModel.IsDataLoaded)
             {
-                App.ViewModel.LoadData();
+                ViewModel.LoadData();
             }
         }
 
@@ -131,7 +127,7 @@ namespace CSharpAnalytics.Sample.WindowsPhone8
         #region Phone application initialization
 
         // Avoid double-initialization
-        private bool phoneApplicationInitialized = false;
+        private bool phoneApplicationInitialized;
 
         // Do not add any additional code to this method
         private void InitializePhoneApplication()
@@ -158,8 +154,7 @@ namespace CSharpAnalytics.Sample.WindowsPhone8
         private void CompleteInitializePhoneApplication(object sender, NavigationEventArgs e)
         {
             // Set the root visual to allow the application to render
-            if (RootVisual != RootFrame)
-                RootVisual = RootFrame;
+            RootVisual = RootFrame;
 
             // Remove this handler since it is no longer needed
             RootFrame.Navigated -= CompleteInitializePhoneApplication;
@@ -185,7 +180,7 @@ namespace CSharpAnalytics.Sample.WindowsPhone8
             // For UI consistency, clear the entire page stack
             while (RootFrame.RemoveBackEntry() != null)
             {
-                ; // do nothing
+                // do nothing
             }
         }
 
