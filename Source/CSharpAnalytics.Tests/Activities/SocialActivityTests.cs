@@ -20,18 +20,16 @@ namespace CSharpAnalytics.Test.Activities
             Assert.AreEqual("action", activity.Action);
 
             Assert.IsNull(activity.Target);
-            Assert.IsNull(activity.PagePath);
         }
 
         [TestMethod]
         public void SocialActivity_Constructor_With_All_Parameters_Sets_Correct_Properties()
         {
-            var activity = new SocialActivity("action", "network", target: "target", pagePath: "pagePath");
+            var activity = new SocialActivity("action", "network", "target");
 
             Assert.AreEqual("network", activity.Network);
             Assert.AreEqual("action", activity.Action);
             Assert.AreEqual("target", activity.Target);
-            Assert.AreEqual("pagePath", activity.PagePath);
         }
     }
 }
