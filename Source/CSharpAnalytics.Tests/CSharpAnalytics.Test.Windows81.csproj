@@ -116,7 +116,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Activities\AutoTimedEventActivityTests.cs" />
-    <Compile Include="Activities\CampaignActivityTests.cs" />
     <Compile Include="Activities\ContentViewActivityTests.cs" />
     <Compile Include="Activities\EventActivityTests.cs" />
     <Compile Include="Activities\ExceptionActivityTests.cs" />

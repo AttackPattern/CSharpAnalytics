@@ -44,21 +44,6 @@ namespace CSharpAnalytics
         }
 
         /// <summary>
-        /// Capture the details of a campaign that will be sent to analytics.
-        /// </summary>
-        /// <param name="analyticsClient">MeasurementAnalyticsClient object with queue and configuration set-up.</param>
-        /// <param name="source">Source of the campaign.</param>
-        /// <param name="name">Optional name of the campaign.</param>
-        /// <param name="medium">Optional type of campaign.</param>
-        /// <param name="term">Optional keyword terms for this campaign.</param>
-        /// <param name="content">Optional content such as the specific link or content item for this campaign.</param>
-        public static void TrackCampaign(this MeasurementAnalyticsClient analyticsClient, string source, string name = null, string medium = null, string term = null, string content = null)
-        {
-            if (analyticsClient == null) throw new ArgumentNullException("analyticsClient");
-            analyticsClient.Track(new CampaignActivity(source) { Name = name, Medium = medium, Term = term, Content = content });
-        }
-
-        /// <summary>
         /// Capture the details of an event that will be sent to analytics.
         /// </summary>
         /// <param name="analyticsClient">MeasurementAnalyticsClient object with queue and configuration set-up.</param>

@@ -28,8 +28,6 @@ namespace CSharpAnalytics.Protocols.Measurement
                 return GetParameters((ScreenViewActivity)activity);
             if (activity is ContentViewActivity)
                 return GetParameters((ContentViewActivity)activity);
-            if (activity is CampaignActivity)
-                return GetParameters((CampaignActivity)activity);
             if (activity is ExceptionActivity)
                 return GetParameters((ExceptionActivity)activity);
             if (activity is EventActivity)
@@ -97,29 +95,6 @@ namespace CSharpAnalytics.Protocols.Measurement
             yield return KeyValuePair.Create("exd", exception.Description);
             if (!exception.IsFatal)
                 yield return KeyValuePair.Create("exf", "0");
-        }
-
-        /// <summary>
-        /// Obtain the key/value pairs for a CampaignActivity.
-        /// </summary>
-        /// <param name="campaign">CampaignActivity to turn into key/value pairs.</param>
-        /// <returns>Key/value pairs representing this CampaignActivity.</returns>
-        internal static IEnumerable<KeyValuePair<string, string>> GetParameters(CampaignActivity campaign)
-        {
-            if (!String.IsNullOrEmpty(campaign.Name))
-                yield return KeyValuePair.Create("cn", campaign.Name);
-
-            if (!String.IsNullOrEmpty(campaign.Source))
-                yield return KeyValuePair.Create("cs", campaign.Source);
-
-            if (!String.IsNullOrEmpty(campaign.Medium))
-                yield return KeyValuePair.Create("cm", campaign.Medium);
-
-            if (!String.IsNullOrEmpty(campaign.Term))
-                yield return KeyValuePair.Create("ck", campaign.Term);
-
-            if (!String.IsNullOrEmpty(campaign.Content))
-                yield return KeyValuePair.Create("cc", campaign.Content);
         }
 
         /// <summary>

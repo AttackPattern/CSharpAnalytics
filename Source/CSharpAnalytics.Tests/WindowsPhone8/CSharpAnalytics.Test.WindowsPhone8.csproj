@@ -73,9 +73,6 @@
     <Compile Include="..\Activities\AutoTimedEventActivityTests.cs">
       <Link>Activities\AutoTimedEventActivityTests.cs</Link>
     </Compile>
-    <Compile Include="..\Activities\CampaignActivityTests.cs">
-      <Link>Activities\CampaignActivityTests.cs</Link>
-    </Compile>
     <Compile Include="..\Activities\ContentViewActivityTests.cs">
       <Link>Activities\ContentViewActivityTests.cs</Link>
     </Compile>

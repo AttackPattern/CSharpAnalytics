@@ -26,27 +26,6 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
         }
 
         [TestMethod]
-        public void MeasurementActivityParameterBuilder_GetParameter_For_CampaignActivity_Returns_Correct_Values()
-        {
-            var activity = new CampaignActivity("source")
-            {
-                Name = "name",
-                Medium = "medium",
-                Term = "term",
-                Content = "content"
-            };
-
-            var parameters = MeasurementActivityParameterBuilder.GetParameters(activity).ToDictionary(k => k.Key, v => v.Value);
-
-            Assert.AreEqual(5, parameters.Keys.Count);
-            Assert.AreEqual("source", parameters["cs"]);
-            Assert.AreEqual("name", parameters["cn"]);
-            Assert.AreEqual("medium", parameters["cm"]);
-            Assert.AreEqual("term", parameters["ck"]);
-            Assert.AreEqual("content", parameters["cc"]);
-        }
-
-        [TestMethod]
         public void MeasurementActivityParameterBuilder_GetParameter_For_ContentViewActivity_Returns_Correct_Values()
         {
             var location = new Uri("http://unittest.csharpanalytics.com/some/path");
