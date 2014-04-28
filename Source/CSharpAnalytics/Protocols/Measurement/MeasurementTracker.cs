@@ -37,18 +37,18 @@ namespace CSharpAnalytics.Protocols.Measurement
         /// <summary>
         /// Track an activity in analytics.
         /// </summary>
-        /// <param name="entry">MeasurementActivityEntry to track in analytics.</param>
-        public void Track(MeasurementActivityEntry entry)
+        /// <param name="activity">MeasurementActivity to track in analytics.</param>
+        public void Track(MeasurementActivity activity)
         {
             if (sessionManager.VisitorStatus != VisitorStatus.Active) return;
 
-            CarryForwardLastTransaction(entry.Activity);
+            CarryForwardLastTransaction(activity);
 
             sessionManager.Hit();
-            if (entry.EndSession)
+            if (activity.EndSession)
                 sessionManager.End();
 
-            var trackingUri = uriBuilder.BuildUri(entry);
+            var trackingUri = uriBuilder.BuildUri(activity);
             sender(trackingUri);
         }
 

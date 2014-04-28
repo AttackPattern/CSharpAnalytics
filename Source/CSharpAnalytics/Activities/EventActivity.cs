@@ -2,7 +2,6 @@
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
-using CSharpAnalytics.Protocols.Measurement;
 using System.Diagnostics;
 
 namespace CSharpAnalytics.Activities
@@ -12,7 +11,7 @@ namespace CSharpAnalytics.Activities
     /// See https://developers.google.com/analytics/devguides/collection/gajs/eventTrackerGuide Event Tracking Guide
     /// </summary>
     [DebuggerDisplay("Event {Category}, {Action}, {Label}")]
-    public class EventActivity : IMeasurementActivity
+    public class EventActivity : MeasurementActivity
     {
         private readonly string action;
         private readonly string category;

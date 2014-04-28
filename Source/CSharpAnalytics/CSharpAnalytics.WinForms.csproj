@@ -46,6 +46,7 @@
     <Compile Include="Activities\ContentViewActivity.cs" />
     <Compile Include="Activities\ExceptionActivity.cs" />
     <Compile Include="Activities\EventActivity.cs" />
+    <Compile Include="Activities\MeasurementActivity.cs" />
     <Compile Include="Activities\ScreenViewActivity.cs" />
     <Compile Include="Activities\TimedEventActivity.cs" />
     <Compile Include="Activities\TransactionItemActivity.cs" />
@@ -53,6 +54,8 @@
     <Compile Include="Activities\TransactionActivity.cs" />
     <Compile Include="AutoMeasurement\AnalyticsScreenNameAttribute.cs" />
     <Compile Include="AutoMeasurement\BaseAutoMeasurement.cs" />
+    <Compile Include="Protocols\Measurement\ICustomDimensions.cs" />
+    <Compile Include="Protocols\Measurement\ICustomMetrics.cs" />
     <Compile Include="Serializers\AppDataContractSerializer.cs" />
     <Compile Include="AutoMeasurement\ITrackOwnView.cs" />
     <Compile Include="AutoMeasurement\WinFormsAutoMeasurement.cs" />
@@ -69,7 +72,6 @@
     <Compile Include="Protocols\Measurement\IMeasurementActivity.cs" />
     <Compile Include="Protocols\Measurement\MeasurementActivityParameterBuilder.cs" />
     <Compile Include="Protocols\Measurement\MeasurementAnalyticsClient.cs" />
-    <Compile Include="Protocols\Measurement\MeasurementActivityEntry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Protocols\KeyValuePair.cs" />
     <Compile Include="Protocols\Measurement\MeasurementConfiguration.cs" />

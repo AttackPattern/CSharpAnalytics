@@ -3,7 +3,6 @@
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
 using System.Diagnostics;
-using CSharpAnalytics.Protocols.Measurement;
 
 namespace CSharpAnalytics.Activities
 {
@@ -11,7 +10,7 @@ namespace CSharpAnalytics.Activities
     /// Captures the details of a screen displayed within an application.
     /// </summary>
     [DebuggerDisplay("ScreenView {ScreenName}]")]
-    public class ScreenViewActivity : IMeasurementActivity
+    public class ScreenViewActivity : MeasurementActivity
     {
         private readonly string screenName;
 

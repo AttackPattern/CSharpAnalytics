@@ -4,7 +4,6 @@
 
 using System;
 using System.Diagnostics;
-using CSharpAnalytics.Protocols.Measurement;
 
 namespace CSharpAnalytics.Activities
 {
@@ -12,7 +11,7 @@ namespace CSharpAnalytics.Activities
     /// Captures the details of a page view to be recorded in analytics.
     /// </summary>
     [DebuggerDisplay("ContentView {DocumentTitle} [{DocumentLocation}]")]
-    public class ContentViewActivity : IMeasurementActivity
+    public class ContentViewActivity : MeasurementActivity
     {
         private readonly Uri documentLocation;
         private readonly string documentHostName;

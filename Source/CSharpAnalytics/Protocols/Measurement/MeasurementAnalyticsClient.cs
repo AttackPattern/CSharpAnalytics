@@ -10,18 +10,17 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
-using System.Threading;
 
 namespace CSharpAnalytics.Protocols.Measurement
 {
     /// <summary>
     /// MeasurementAnalyticsClient should exist for the scope of your application and is the primary entry point for tracking via Measurement Protocol.
     /// </summary>
-    public class MeasurementAnalyticsClient
+    public class MeasurementAnalyticsClient : ICustomDimensions, ICustomMetrics
     {
         private readonly string[] customDimensions = new string[200];
         private readonly object[] customMetrics = new object[200];
-        private readonly Queue<MeasurementActivityEntry> queue = new Queue<MeasurementActivityEntry>();
+        private readonly Queue<MeasurementActivity> queue = new Queue<MeasurementActivity>();
 
         private MeasurementTracker tracker;
 
@@ -50,29 +49,48 @@ namespace CSharpAnalytics.Protocols.Measurement
         /// Track a activity in analytics.
         /// </summary>
         /// <param name="activity">Activity to track in analytics.</param>
-        /// <param name="endSession">True if this tracking event should end the session.</param>
-        public void Track(IMeasurementActivity activity, bool endSession = false)
+        /// <param name="endSession">True if this event should end the session.</param>
+        public void Track(MeasurementActivity activity, bool endSession = false)
         {
             if (activity is AutoTimedEventActivity)
                 ((AutoTimedEventActivity)activity).End();
 
             OnTrack(this, activity);
 
-            var entry = new MeasurementActivityEntry(activity)
-            {
-                CustomDimensions = SafePullArray(customDimensions),
-                CustomMetrics = SafePullArray(customMetrics),
-                EndSession = endSession
-            };
+            activity.EndSession = activity.EndSession | endSession;
+
+            TransferCustomsToActivity(activity);
 
             if (tracker == null)
-                queue.Enqueue(entry);
+                queue.Enqueue(activity);
             else
-                tracker.Track(entry);
+                tracker.Track(activity);
         }
 
         /// <summary>
-        /// Set the value of a custom dimension to be set with the next activity.
+        /// Transfer any pending custom dimensions and metrics to the activity that the
+        /// activity doesn't already have a value for so they can be sent.
+        /// </summary>
+        /// <param name="activity"></param>
+        private void TransferCustomsToActivity(MeasurementActivity activity)
+        {
+            for (var i = 0; i < customDimensions.Length; i++)
+                if (activity.CustomDimensions[i] == null && customDimensions[i] != null)
+                {
+                    activity.CustomDimensions[i] = customDimensions[i];
+                    customDimensions[i] = null;
+                }
+
+            for (var i = 0; i < customMetrics.Length; i++)
+                if (activity.CustomMetrics[i] == null && customMetrics[i] != null)
+                {
+                    activity.CustomMetrics[i] = customMetrics[i];
+                    customMetrics[i] = null;
+                }
+        }
+
+        /// <summary>
+        /// Set the value of a custom dimension to be sent with the next activity.
         /// </summary>
         /// <remarks>
         /// These need to be configured first in Google Analytics.
@@ -85,7 +103,7 @@ namespace CSharpAnalytics.Protocols.Measurement
         }
 
         /// <summary>
-        /// Set the value of a custom dimension to be set with the next activity.
+        /// Set the value of a custom dimension to be sent with the next activity.
         /// </summary>
         /// <remarks>
         /// These need to be configured first in Google Analytics.
@@ -162,30 +180,6 @@ namespace CSharpAnalytics.Protocols.Measurement
             var parameters = GetQueryParameters(uri.GetComponents(UriComponents.Query, UriFormat.Unescaped));
             AddQueueTimeFromFragment(uri, parameters);
             return new UriBuilder(uri) { Query = GetQueryString(parameters), Fragment = "" }.Uri;
-        }
-
-        /// <summary>
-        /// Pull the values out of an array by copying the values and their original index into a new list and
-        /// clearing the existing values as it goes.
-        /// </summary>
-        /// <typeparam name="T">Type of the array.</typeparam>
-        /// <param name="array">Array to pull from.</param>
-        /// <returns>List of KeyValuePairs containing the original index number and item from that array </returns>
-        private static List<KeyValuePair<int, T>> SafePullArray<T>(T[] array)
-            where T : class
-        {
-            var list = new List<KeyValuePair<int, T>>();
-
-            for (var i = 0; i < array.Length; i++)
-            {
-                if (array[i] == null) continue;
-
-                var custom = Interlocked.Exchange(ref array[i], null);
-                if (custom != null)
-                    list.Add(KeyValuePair.Create(i, custom));
-            }
-
-            return list;
         }
 
         /// <summary>

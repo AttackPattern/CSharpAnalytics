@@ -46,12 +46,12 @@ namespace CSharpAnalytics.Protocols.Measurement
         /// <summary>
         /// Build an Measurement Protocol URI from an entry containing activity and custom variables.
         /// </summary>
-        /// <param name="entry">Entry to build the URI for.</param>
+        /// <param name="activity">Entry to build the URI for.</param>
         /// <returns>URI that when requested will track this activity.</returns>
-        public Uri BuildUri(MeasurementActivityEntry entry)
+        public Uri BuildUri(MeasurementActivity activity)
         {
-            var parameters = BuildParameterList(entry);
-            CarryForwardParameters(entry.Activity, parameters);
+            var parameters = BuildParameterList(activity);
+            CarryForwardParameters(activity, parameters);
             var endpoint = configuration.UseSsl ? secureTrackingEndpoint : trackingEndpoint;
             var uriBuilder = new UriBuilder(endpoint) {
                 Query = CreateQueryString(parameters),
@@ -77,17 +77,17 @@ namespace CSharpAnalytics.Protocols.Measurement
         /// <summary>
         /// Build a list of the parameters required based on configuration, environment, activity, session, custom variables and state.
         /// </summary>
-        /// <param name="entry">Entry to build the parameter list for.</param>
+        /// <param name="activity">MeasurementActivity to build the parameter list for.</param>
         /// <returns>Enumeration of key/value pairs containing the parameters necessary for this request.</returns>
-        private ICollection<KeyValuePair<string, string>> BuildParameterList(MeasurementActivityEntry entry)
+        private ICollection<KeyValuePair<string, string>> BuildParameterList(MeasurementActivity activity)
         {
             return GetParameters()
                 .Concat(GetParameters(environment))
                 .Concat(GetParameters(configuration))
                 .Concat(GetParameters(sessionManager))
-                .Concat(MeasurementActivityParameterBuilder.GetActivityParameters(entry.Activity))
-                .Concat(GetParameters(entry.CustomDimensions))
-                .Concat(GetParameters(entry.CustomMetrics))
+                .Concat(MeasurementActivityParameterBuilder.GetActivityParameters(activity))
+                .Concat(GetParameters(activity.CustomDimensions))
+                .Concat(GetParameters(activity.CustomMetrics))
                 .ToList();
         }
 
@@ -173,29 +173,29 @@ namespace CSharpAnalytics.Protocols.Measurement
         /// <summary>
         /// Get parameters for all custom dimensions.
         /// </summary>
-        /// <param name="customDimensions">Enumerable of key/value pairs containing custom dimension indexes and values.</param>
+        /// <param name="customDimensions">Array containing custom dimension values.</param>
         /// <returns>Enumerable of key/value pairs of custom dimensions.</returns>
-        internal static IEnumerable<KeyValuePair<string, string>> GetParameters(IEnumerable<KeyValuePair<int, string>> customDimensions)
+        internal static IEnumerable<KeyValuePair<string, string>> GetParameters(string[] customDimensions)
         {
-            if (customDimensions == null) return Enumerable.Empty<KeyValuePair<string, string>>();
+            if (customDimensions == null) yield break;;
 
-            return customDimensions
-                .Where(cd => cd.Value != null)
-                .Select(cd => KeyValuePair.Create("cd" + cd.Key, cd.Value));
+            for (var i = 0; i < customDimensions.Length; i++)
+                if (customDimensions[i] != null)
+                    yield return KeyValuePair.Create("cd" + i, customDimensions[i]);
         }
 
         /// <summary>
         /// Get parameters for all custom metrics.
         /// </summary>
-        /// <param name="customMetrics">Enumerable of key/value pairs containing custom metric indexes and values.</param>
+        /// <param name="customMetrics">Array containing custom metric values.</param>
         /// <returns>Enumerable of key/value pairs of custom metrics.</returns>
-        internal static IEnumerable<KeyValuePair<string, string>> GetParameters(IEnumerable<KeyValuePair<int, object>> customMetrics)
+        internal static IEnumerable<KeyValuePair<string, string>> GetParameters(object[] customMetrics)
         {
-            if (customMetrics == null) return Enumerable.Empty<KeyValuePair<string, string>>();
+            if (customMetrics == null) yield break;
 
-            return customMetrics
-                .Where(cm => cm.Value != null)
-                .Select(cd => KeyValuePair.Create("cm" + cd.Key, FormatCustomMetric(cd.Value)));
+            for (var i = 0; i < customMetrics.Length; i++)
+                if (customMetrics[i] != null)
+                    yield return KeyValuePair.Create("cm" + i, FormatCustomMetric(customMetrics[i]));
         }
 
         /// <summary>

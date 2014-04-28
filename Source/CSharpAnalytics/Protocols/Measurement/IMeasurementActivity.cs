@@ -8,7 +8,7 @@ namespace CSharpAnalytics.Protocols.Measurement
     /// Indicates that an Activity is compatible with Measurement Protocol and
     /// can be tracked using the MeasurementTracker.
     /// </summary>
-    public interface IMeasurementActivity
+    public interface IMeasurementActivity : ICustomDimensions, ICustomMetrics
     {
     }
 }

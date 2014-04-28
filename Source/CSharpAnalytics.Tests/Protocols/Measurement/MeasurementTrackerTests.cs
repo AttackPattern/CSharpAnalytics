@@ -22,7 +22,7 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
             var sessionManager = MeasurementTestHelpers.CreateSessionManager();
             var tracker = new MeasurementTracker(MeasurementTestHelpers.Configuration, sessionManager, MeasurementTestHelpers.CreateEnvironment(), actual.Add);
 
-            tracker.Track(new MeasurementActivityEntry(new ScreenViewActivity("Testing")) { EndSession = true });
+            tracker.Track(new ScreenViewActivity("Testing") { EndSession = true });
 
             Assert.AreEqual(SessionStatus.Ending, sessionManager.SessionStatus);
             StringAssert.Contains(actual.Last().OriginalString, "sc=end");
@@ -34,7 +34,7 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
             var actual = new List<Uri>();
             var tracker = new MeasurementTracker(MeasurementTestHelpers.Configuration, MeasurementTestHelpers.CreateSessionManager(), MeasurementTestHelpers.CreateEnvironment(), actual.Add);
 
-            tracker.Track(new MeasurementActivityEntry(new ScreenViewActivity("Testing")));
+            tracker.Track(new ScreenViewActivity("Testing"));
 
             Assert.AreEqual(1, actual.Count);
         }
@@ -47,7 +47,7 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
             var tracker = new MeasurementTracker(MeasurementTestHelpers.Configuration, sessionManager, MeasurementTestHelpers.CreateEnvironment(), actual.Add);
 
             sessionManager.VisitorStatus = VisitorStatus.OptedOut;
-            tracker.Track(new MeasurementActivityEntry(new ScreenViewActivity("Testing")));
+            tracker.Track(new ScreenViewActivity("Testing"));
 
             Assert.AreEqual(0, actual.Count);
         }
@@ -60,9 +60,9 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
             var tracker = new MeasurementTracker(MeasurementTestHelpers.Configuration, sessionManager, MeasurementTestHelpers.CreateEnvironment(), actual.Add);
 
             sessionManager.VisitorStatus = VisitorStatus.OptedOut;
-            tracker.Track(new MeasurementActivityEntry(new ScreenViewActivity("OptedOut")));
+            tracker.Track(new ScreenViewActivity("OptedOut"));
             sessionManager.VisitorStatus = VisitorStatus.Active;
-            tracker.Track(new MeasurementActivityEntry(new ScreenViewActivity("OptedIn")));
+            tracker.Track(new ScreenViewActivity("OptedIn"));
 
             Assert.AreEqual(1, actual.Count);
             StringAssert.Contains(actual[0].OriginalString, "cd=OptedIn");
@@ -75,10 +75,10 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
             var tracker = new MeasurementTracker(MeasurementTestHelpers.Configuration, MeasurementTestHelpers.CreateSessionManager(), MeasurementTestHelpers.CreateEnvironment(), actual.Add);
 
             var transaction = new TransactionActivity { OrderId = "123", Currency = "GBP" };
-            tracker.Track(new MeasurementActivityEntry(transaction));
+            tracker.Track(transaction);
 
             var transactionItem = new TransactionItemActivity("ABC", "Unit Test", 1.23m, 4);
-            tracker.Track(new MeasurementActivityEntry(transactionItem));
+            tracker.Track(transactionItem);
 
             Assert.AreEqual(transaction, transactionItem.Transaction);
             StringAssert.Contains(actual.Last().OriginalString, "ti=123");

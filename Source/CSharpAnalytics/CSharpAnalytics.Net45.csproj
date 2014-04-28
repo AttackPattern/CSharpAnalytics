@@ -43,6 +43,7 @@
     <Compile Include="Activities\ContentViewActivity.cs" />
     <Compile Include="Activities\ExceptionActivity.cs" />
     <Compile Include="Activities\EventActivity.cs" />
+    <Compile Include="Activities\MeasurementActivity.cs" />
     <Compile Include="Activities\ScreenViewActivity.cs" />
     <Compile Include="Activities\TimedEventActivity.cs">
       <SubType>Code</SubType>
@@ -60,12 +61,13 @@
     <Compile Include="Network\HttpWebRequester.cs" />
     <Compile Include="Protocols\Measurement\CustomDimension.cs" />
     <Compile Include="Protocols\Measurement\CustomMetric.cs" />
+    <Compile Include="Protocols\Measurement\ICustomDimensions.cs" />
+    <Compile Include="Protocols\Measurement\ICustomMetrics.cs" />
     <Compile Include="Protocols\Measurement\MeasurementActivityExtensions.cs" />
     <Compile Include="Protocols\Measurement\MeasurementTracker.cs" />
     <Compile Include="Protocols\Measurement\IMeasurementActivity.cs" />
     <Compile Include="Protocols\Measurement\MeasurementActivityParameterBuilder.cs" />
     <Compile Include="Protocols\Measurement\MeasurementAnalyticsClient.cs" />
-    <Compile Include="Protocols\Measurement\MeasurementActivityEntry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Protocols\KeyValuePair.cs" />
     <Compile Include="Protocols\Measurement\MeasurementConfiguration.cs" />

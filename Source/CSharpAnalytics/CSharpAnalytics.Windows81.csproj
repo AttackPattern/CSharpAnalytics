@@ -106,6 +106,7 @@
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Activities\MeasurementActivity.cs" />
     <Compile Include="Activities\ScreenViewActivity.cs" />
     <Compile Include="Activities\AutoTimedEventActivity.cs" />
     <Compile Include="Activities\ContentViewActivity.cs" />
@@ -129,8 +130,9 @@
     <Compile Include="Protocols\KeyValuePair.cs" />
     <Compile Include="Protocols\Measurement\CustomDimension.cs" />
     <Compile Include="Protocols\Measurement\CustomMetric.cs" />
+    <Compile Include="Protocols\Measurement\ICustomDimensions.cs" />
+    <Compile Include="Protocols\Measurement\ICustomMetrics.cs" />
     <Compile Include="Protocols\Measurement\IMeasurementActivity.cs" />
-    <Compile Include="Protocols\Measurement\MeasurementActivityEntry.cs" />
     <Compile Include="Protocols\Measurement\MeasurementActivityExtensions.cs" />
     <Compile Include="Protocols\Measurement\MeasurementActivityParameterBuilder.cs" />
     <Compile Include="Protocols\Measurement\MeasurementAnalyticsClient.cs" />
