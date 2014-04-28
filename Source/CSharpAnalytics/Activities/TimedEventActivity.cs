@@ -9,7 +9,6 @@ namespace CSharpAnalytics.Activities
 {
     /// <summary>
     /// Captures the details of a timed event to be recorded in analytics.
-    /// See https://developers.google.com/analytics/devguides/collection/gajs/methods/gaJSApiUserTiming User Timing
     /// </summary>
     [DebuggerDisplay("TimedEvent {Category}, {Variable}, {Time}, {Label}")]
     public class TimedEventActivity : MeasurementActivity
