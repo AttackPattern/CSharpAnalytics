@@ -26,13 +26,12 @@ namespace CSharpAnalytics.Test.Activities
         [TestMethod]
         public void EventActivity_Constructor_With_All_Parameters_Sets_Correct_Properties()
         {
-            var activity = new EventActivity("action", "category", label: "label", value: 5, nonInteraction: true);
+            var activity = new EventActivity("action", "category", label: "label", value: 5);
 
             Assert.AreEqual("category", activity.Category);
             Assert.AreEqual("action", activity.Action);
             Assert.AreEqual("label", activity.Label);
             Assert.AreEqual(5, activity.Value);
-            Assert.IsTrue(activity.NonInteraction);
         }
     }
 }

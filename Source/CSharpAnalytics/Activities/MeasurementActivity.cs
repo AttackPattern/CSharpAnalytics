@@ -2,7 +2,6 @@
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
-using CSharpAnalytics.Protocols.Measurement;
 using System;
 using System.Globalization;
 
@@ -17,6 +16,12 @@ namespace CSharpAnalytics.Activities
         /// Whether this hit should end the session.
         /// </summary>
         public bool EndSession { get; set; }
+
+        /// <summary>
+        /// Specifies where a hit be considered non-interactive.
+        /// </summary>
+        /// <remarks>Is used in calculation of bounce rates etc.</remarks>
+        public bool NonInteraction { get; set; }
 
         /// <summary>
         /// Set the value of a custom dimension to be sent with this activity.

@@ -16,7 +16,6 @@ namespace CSharpAnalytics.Activities
         private readonly string action;
         private readonly string category;
         private readonly string label;
-        private readonly bool nonInteraction;
         private readonly int? value;
 
         /// <summary>
@@ -47,15 +46,6 @@ namespace CSharpAnalytics.Activities
         }
 
         /// <summary>
-        /// Whether this event was caused by a user interaction or not. Used in the calculation
-        /// of bounce rates.
-        /// </summary>
-        public bool NonInteraction
-        {
-            get { return nonInteraction; }
-        }
-
-        /// <summary>
         /// Optional numerical value associated with this event often used for timing or ratings.
         /// </summary>
         public int? Value
@@ -77,7 +67,7 @@ namespace CSharpAnalytics.Activities
             this.action = action;
             this.label = label;
             this.value = value;
-            this.nonInteraction = nonInteraction;
+            NonInteraction = nonInteraction;
         }
     }
 }
