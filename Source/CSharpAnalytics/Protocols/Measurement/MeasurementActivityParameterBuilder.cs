@@ -22,7 +22,7 @@ namespace CSharpAnalytics.Protocols.Measurement
         /// </summary>
         /// <param name="activity">Activity to turn into key/value pairs.</param>
         /// <returns>Enumerable of key/value pairs representing the activity.</returns>
-        internal static IEnumerable<KeyValuePair<string, string>> GetActivityParameters(IMeasurementActivity activity)
+        internal static IEnumerable<KeyValuePair<string, string>> GetActivityParameters(MeasurementActivity activity)
         {
             if (activity is ScreenViewActivity)
                 return GetParameters((ScreenViewActivity)activity);

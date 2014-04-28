@@ -8,7 +8,7 @@ using System.Globalization;
 
 namespace CSharpAnalytics.Activities
 {
-    public abstract class MeasurementActivity : IMeasurementActivity
+    public abstract class MeasurementActivity
     {
         internal readonly string[] CustomDimensions = new string[200];
         internal readonly object[] CustomMetrics = new object[200];

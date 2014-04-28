@@ -57,7 +57,7 @@ namespace CSharpAnalytics.Protocols.Measurement
         /// transaction items.
         /// </summary>
         /// <param name="activity">Current activity being tracked.</param>
-        private void CarryForwardLastTransaction(IMeasurementActivity activity)
+        private void CarryForwardLastTransaction(MeasurementActivity activity)
         {
             if (activity is TransactionActivity)
                 lastTransaction = (TransactionActivity) activity;

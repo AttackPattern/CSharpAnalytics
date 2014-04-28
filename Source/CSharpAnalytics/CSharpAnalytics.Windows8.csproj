@@ -128,9 +128,6 @@
     <Compile Include="Debugging\ProtocolDebugger.cs" />
     <Compile Include="Network\ExtensionMethods.cs" />
     <Compile Include="Network\HttpClientRequester.cs" />
-    <Compile Include="Protocols\Measurement\ICustomDimensions.cs" />
-    <Compile Include="Protocols\Measurement\ICustomMetrics.cs" />
-    <Compile Include="Protocols\Measurement\IMeasurementActivity.cs" />
     <Compile Include="Protocols\Measurement\MeasurementActivityParameterBuilder.cs" />
     <Compile Include="Protocols\Measurement\MeasurementAnalyticsClient.cs" />
     <Compile Include="Protocols\Measurement\MeasurementConfiguration.cs" />

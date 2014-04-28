@@ -65,7 +65,7 @@ namespace CSharpAnalytics.Protocols.Measurement
         /// </summary>
         /// <param name="activity">Current activity being processed.</param>
         /// <param name="parameters">Current parameters for this request.</param>
-        private void CarryForwardParameters(IMeasurementActivity activity, ICollection<KeyValuePair<string, string>> parameters)
+        private void CarryForwardParameters(MeasurementActivity activity, ICollection<KeyValuePair<string, string>> parameters)
         {
             if ((activity is EventActivity || activity is TimedEventActivity) && lastCdParameterValue != null)
                 parameters.Add(KeyValuePair.Create("cd", lastCdParameterValue));

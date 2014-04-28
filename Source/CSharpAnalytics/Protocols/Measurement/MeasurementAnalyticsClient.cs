@@ -16,7 +16,7 @@ namespace CSharpAnalytics.Protocols.Measurement
     /// <summary>
     /// MeasurementAnalyticsClient should exist for the scope of your application and is the primary entry point for tracking via Measurement Protocol.
     /// </summary>
-    public class MeasurementAnalyticsClient : ICustomDimensions, ICustomMetrics
+    public class MeasurementAnalyticsClient
     {
         private readonly string[] customDimensions = new string[200];
         private readonly object[] customMetrics = new object[200];
@@ -27,7 +27,7 @@ namespace CSharpAnalytics.Protocols.Measurement
         /// <summary>
         /// Event to allow you to hook in to capture or modify activities.
         /// </summary>
-        public event EventHandler<IMeasurementActivity> OnTrack = delegate { };
+        public event EventHandler<MeasurementActivity> OnTrack = delegate { };
 
         /// <summary>
         /// Configure this MeasurementAnalyticsClient so it can start recording and sending analytics.

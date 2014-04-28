@@ -59,10 +59,7 @@
     <Compile Include="Network\ExtensionMethods.cs" />
     <Compile Include="Network\HttpClientRequester.cs" />
     <Compile Include="Network\HttpWebRequester.cs" />
-    <Compile Include="Protocols\Measurement\ICustomDimensions.cs" />
-    <Compile Include="Protocols\Measurement\ICustomMetrics.cs" />
     <Compile Include="Protocols\Measurement\MeasurementTracker.cs" />
-    <Compile Include="Protocols\Measurement\IMeasurementActivity.cs" />
     <Compile Include="Protocols\Measurement\MeasurementActivityParameterBuilder.cs" />
     <Compile Include="Protocols\Measurement\MeasurementAnalyticsClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
