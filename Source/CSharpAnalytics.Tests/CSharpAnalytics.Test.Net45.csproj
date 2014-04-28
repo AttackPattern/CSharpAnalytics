@@ -75,7 +75,7 @@
     <Compile Include="Protocols\Measurement\MeasurementTestHelpers.cs" />
     <Compile Include="Protocols\Measurement\MeasurementTrackerTests.cs" />
     <Compile Include="Protocols\Measurement\MeasurementUriBuilderTests.cs" />
-    <Compile Include="Protocols\ParameterDefinitionTests.cs" />
+    <Compile Include="Debugging\ParameterDefinitionTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sessions\SessionStateTests.cs" />
     <Compile Include="Sessions\SessionManagerTests.cs" />
@@ -89,6 +89,7 @@
       <Name>CSharpAnalytics.Net45</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

@@ -123,6 +123,7 @@
     <Compile Include="Activities\TransactionActivityTests.cs" />
     <Compile Include="Activities\TransactionItemActivityTests.cs" />
     <Compile Include="AutoMeasurement\AnalyticsScreenNameAttributeTests.cs" />
+    <Compile Include="Debugging\ParameterDefinitionTests.cs" />
     <Compile Include="Environment\EnvironmentTests.cs" />
     <Compile Include="Environment\TestableEnvironment.cs" />
     <Compile Include="Network\BackgroundUriRequesterTests.cs" />
@@ -134,7 +135,6 @@
     <Compile Include="Protocols\Measurement\MeasurementTestHelpers.cs" />
     <Compile Include="Protocols\Measurement\MeasurementTrackerTests.cs" />
     <Compile Include="Protocols\Measurement\MeasurementUriBuilderTests.cs" />
-    <Compile Include="Protocols\ParameterDefinitionTests.cs" />
     <Compile Include="Sessions\SessionManagerTests.cs" />
     <Compile Include="Sessions\SessionStateTests.cs" />
     <Compile Include="Sessions\TimeoutSessionManager.cs" />

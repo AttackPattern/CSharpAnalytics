@@ -100,6 +100,9 @@
     <Compile Include="..\AutoMeasurement\AnalyticsScreenNameAttributeTests.cs">
       <Link>AutoMeasurement\AnalyticsScreenNameAttributeTests.cs</Link>
     </Compile>
+    <Compile Include="..\Debugging\ParameterDefinitionTests.cs">
+      <Link>Debugging\ParameterDefinitionTests.cs</Link>
+    </Compile>
     <Compile Include="..\Environment\EnvironmentTests.cs">
       <Link>Environment\EnvironmentTests.cs</Link>
     </Compile>
@@ -135,9 +138,6 @@
     </Compile>
     <Compile Include="..\Protocols\Measurement\MeasurementUriBuilderTests.cs">
       <Link>Protocols\Measurement\MeasurementUriBuilderTests.cs</Link>
-    </Compile>
-    <Compile Include="..\Protocols\ParameterDefinitionTests.cs">
-      <Link>Protocols\ParameterDefinitionTests.cs</Link>
     </Compile>
     <Compile Include="..\Sessions\SessionManagerTests.cs">
       <Link>Sessions\SessionManagerTests.cs</Link>

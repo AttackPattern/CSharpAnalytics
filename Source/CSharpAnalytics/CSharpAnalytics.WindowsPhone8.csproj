@@ -96,6 +96,9 @@
     <Compile Include="AutoMeasurement\AnalyticsScreenNameAttribute.cs" />
     <Compile Include="AutoMeasurement\AnalyticsUserOptions.cs" />
     <Compile Include="AutoMeasurement\BaseAutoMeasurement.cs" />
+    <Compile Include="Debugging\MeasurementParameterDefinitions.cs" />
+    <Compile Include="Debugging\ParameterDefinition.cs" />
+    <Compile Include="Debugging\ProtocolDebugger.cs" />
     <Compile Include="Protocols\Measurement\CustomDimension.cs" />
     <Compile Include="Protocols\Measurement\CustomMetric.cs" />
     <Compile Include="Protocols\Measurement\ICustomDimensions.cs" />
@@ -120,11 +123,8 @@
     <Compile Include="Protocols\Measurement\MeasurementActivityParameterBuilder.cs" />
     <Compile Include="Protocols\Measurement\MeasurementAnalyticsClient.cs" />
     <Compile Include="Protocols\Measurement\MeasurementConfiguration.cs" />
-    <Compile Include="Protocols\Measurement\MeasurementParameterDefinitions.cs" />
     <Compile Include="Protocols\Measurement\MeasurementTracker.cs" />
     <Compile Include="Protocols\Measurement\MeasurementUriBuilder.cs" />
-    <Compile Include="Protocols\ParameterDefinition.cs" />
-    <Compile Include="Protocols\ProtocolDebugger.cs" />
     <Compile Include="Sessions\SessionManager.cs" />
     <Compile Include="Sessions\SessionState.cs" />
     <Compile Include="Sessions\TimeoutSessionManager.cs" />

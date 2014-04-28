@@ -4,7 +4,7 @@
 
 using System;
 
-namespace CSharpAnalytics.Protocols
+namespace CSharpAnalytics.Debugging
 {
     /// <summary>
     /// Defines the parameter name, human-readable label and decoder used to implement

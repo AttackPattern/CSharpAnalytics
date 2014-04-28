@@ -1,5 +1,5 @@
 ﻿using System;
-using CSharpAnalytics.Protocols;
+using CSharpAnalytics.Debugging;
 #if WINDOWS_STORE || WINDOWS_PHONE
 using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
 #else
