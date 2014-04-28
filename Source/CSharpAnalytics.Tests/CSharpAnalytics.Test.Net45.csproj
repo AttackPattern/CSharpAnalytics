@@ -68,7 +68,6 @@
     <Compile Include="Network\BackgroundUriRequesterTests.cs" />
     <Compile Include="Network\HttpClientRequesterTests.cs" />
     <Compile Include="Network\HttpWebRequesterTests.cs" />
-    <Compile Include="Protocols\Measurement\MeasurementActivityExtensionTests.cs" />
     <Compile Include="Protocols\Measurement\MeasurementAnalyticsClientTests.cs" />
     <Compile Include="Protocols\Measurement\MeasurementConfigurationTests.cs" />
     <Compile Include="Protocols\Measurement\MeasurementActivityParameterBuilderTrackerTests.cs" />

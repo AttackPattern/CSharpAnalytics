@@ -118,9 +118,6 @@
     <Compile Include="..\Properties\AssemblyInfo.cs">
       <Link>Properties\AssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="..\Protocols\Measurement\MeasurementActivityExtensionTests.cs">
-      <Link>Protocols\Measurement\MeasurementActivityExtensionTests.cs</Link>
-    </Compile>
     <Compile Include="..\Protocols\Measurement\MeasurementActivityParameterBuilderTrackerTests.cs">
       <Link>Protocols\Measurement\MeasurementActivityParameterBuilderTrackerTests.cs</Link>
     </Compile>
