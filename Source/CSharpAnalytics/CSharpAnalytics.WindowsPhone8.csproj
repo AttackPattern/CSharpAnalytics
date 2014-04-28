@@ -99,8 +99,6 @@
     <Compile Include="Debugging\MeasurementParameterDefinitions.cs" />
     <Compile Include="Debugging\ParameterDefinition.cs" />
     <Compile Include="Debugging\ProtocolDebugger.cs" />
-    <Compile Include="Protocols\Measurement\CustomDimension.cs" />
-    <Compile Include="Protocols\Measurement\CustomMetric.cs" />
     <Compile Include="Protocols\Measurement\ICustomDimensions.cs" />
     <Compile Include="Protocols\Measurement\ICustomMetrics.cs" />
     <Compile Include="Serializers\LocalFolderContractSerializer.cs" />

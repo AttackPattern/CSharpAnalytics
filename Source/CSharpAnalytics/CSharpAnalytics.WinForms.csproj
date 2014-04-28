@@ -68,8 +68,6 @@
     <Compile Include="Network\BackgroundUriRequester.cs" />
     <Compile Include="Network\ExtensionMethods.cs" />
     <Compile Include="Network\HttpClientRequester.cs" />
-    <Compile Include="Protocols\Measurement\CustomDimension.cs" />
-    <Compile Include="Protocols\Measurement\CustomMetric.cs" />
     <Compile Include="Protocols\Measurement\MeasurementActivityExtensions.cs" />
     <Compile Include="Protocols\Measurement\MeasurementTracker.cs" />
     <Compile Include="Protocols\Measurement\IMeasurementActivity.cs" />

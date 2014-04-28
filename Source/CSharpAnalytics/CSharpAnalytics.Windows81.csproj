@@ -131,8 +131,6 @@
     <Compile Include="Network\HttpClientRequester.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Protocols\KeyValuePair.cs" />
-    <Compile Include="Protocols\Measurement\CustomDimension.cs" />
-    <Compile Include="Protocols\Measurement\CustomMetric.cs" />
     <Compile Include="Protocols\Measurement\ICustomDimensions.cs" />
     <Compile Include="Protocols\Measurement\ICustomMetrics.cs" />
     <Compile Include="Protocols\Measurement\IMeasurementActivity.cs" />

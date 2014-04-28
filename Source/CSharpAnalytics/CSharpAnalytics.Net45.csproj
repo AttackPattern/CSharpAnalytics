@@ -59,8 +59,6 @@
     <Compile Include="Network\ExtensionMethods.cs" />
     <Compile Include="Network\HttpClientRequester.cs" />
     <Compile Include="Network\HttpWebRequester.cs" />
-    <Compile Include="Protocols\Measurement\CustomDimension.cs" />
-    <Compile Include="Protocols\Measurement\CustomMetric.cs" />
     <Compile Include="Protocols\Measurement\ICustomDimensions.cs" />
     <Compile Include="Protocols\Measurement\ICustomMetrics.cs" />
     <Compile Include="Protocols\Measurement\MeasurementActivityExtensions.cs" />
