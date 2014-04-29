@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest" xmlns:m2="http://schemas.microsoft.com/appx/2013/manifest">
-  <Identity Name="0f96eccf-d50c-4c5e-be50-e773f304d042" Publisher="CN=Attack Pattern" Version="1.0.1.0" />
+  <Identity Name="0f96eccf-d50c-4c5e-be50-e773f304d042" Publisher="CN=Attack Pattern" Version="1.2.0.0" />
   <Properties>
     <DisplayName>CSharpAnalytics.Test.Windows81</DisplayName>
     <PublisherDisplayName>Attack Pattern</PublisherDisplayName>
