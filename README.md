@@ -132,13 +132,13 @@ In summary: **Do not share personally identifyable information**
 
 ## Future enhancements
 
-1. Support for Windows 8 network metering modes
-1. Additional platforms 
+1. Support for Windows Phone 8.1 and Windows Store Universal projects
+1. User ID, override IP and other new April 2014 Measurement Protocol features
+1. In-app purchase tracking integration and campaign support
 1. Throttling & replenishing of hits as per official SDKs
 1. Configurable session management modes
-1. In-app purchase tracking integration
 
-If you want to contribute please consider the CSharpAnalytics.sln which will load all platforms and unit tests (if you get any project load failures you're probably missing an SDK). Please ignore any messages about upgrading or retargeting to Windows 8.1 - the solution contains both 8.0 and 8.1 projects and we want to support 8.0 for a while.
+If you want to contribute please consider the CSharpAnalytics.sln which will load all platforms and unit tests (if you get any project load failures you're probably missing an SDK). Please ignore any messages about upgrading or retargeting to Windows 8.1 - the solution contains both 8.0 and 8.1 projects as we want to support 8.0 for a while.
 
 ## Licence
 
