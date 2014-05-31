@@ -92,10 +92,12 @@ namespace CSharpAnalytics
         /// Setup the Uri requester complete with user agent etc.
         /// </summary>
         /// <returns>Task that completes when the requester is ready to use.</returns>
-        protected override async Task SetupRequesterAsync()
+        protected override Task SetupRequesterAsync()
         {
             var webRequester = new HttpWebRequester(ClientUserAgent + " " + WindowsPhoneSystemInfo.GetSystemUserAgent());
             Requester = webRequester.Request;
+
+            return Task.FromResult(true);
         }
 
         /// <summary>

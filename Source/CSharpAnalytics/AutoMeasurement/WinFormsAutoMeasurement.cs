@@ -78,7 +78,7 @@ namespace CSharpAnalytics
         /// Setup the Uri requester complete with user agent etc.
         /// </summary>
         /// <returns>Task that completes when the requester is ready to use.</returns>
-        protected override async Task SetupRequesterAsync()
+        protected override Task SetupRequesterAsync()
         {
             var httpClientRequester = new HttpClientRequester();
             httpClientRequester.HttpClient.DefaultRequestHeaders.UserAgent.ParseAdd(ClientUserAgent);
@@ -88,6 +88,8 @@ namespace CSharpAnalytics
                 httpClientRequester.HttpClient.DefaultRequestHeaders.UserAgent.ParseAdd(systemUserAgent);
 
             Requester = httpClientRequester.Request;
+
+            return Task.FromResult(true);
         }
 
         /// <summary>
