@@ -2,7 +2,6 @@
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
-using CSharpAnalytics.Protocols.Measurement;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -11,7 +10,7 @@ namespace CSharpAnalytics.Activities
     /// <summary>
     /// Captures the details of an order and the items within it.
     /// </summary>
-    public class TransactionActivity : IMeasurementActivity
+    public class TransactionActivity : MeasurementActivity
     {
         private readonly Dictionary<string, TransactionItemActivity> items = new Dictionary<string, TransactionItemActivity>();
         private decimal? orderTotal;

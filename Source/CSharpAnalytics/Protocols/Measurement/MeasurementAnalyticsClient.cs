@@ -2,8 +2,8 @@
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
-using System.Collections.Concurrent;
 using CSharpAnalytics.Activities;
+using CSharpAnalytics.Environment;
 using CSharpAnalytics.Sessions;
 using System;
 using System.Collections.Generic;
@@ -18,16 +18,16 @@ namespace CSharpAnalytics.Protocols.Measurement
     /// </summary>
     public class MeasurementAnalyticsClient
     {
-        private readonly ConcurrentDictionary<int, string> customDimensions = new ConcurrentDictionary<int, string>();
-        private readonly ConcurrentDictionary<int, object> customMetrics = new ConcurrentDictionary<int, object>();
-        private readonly Queue<MeasurementActivityEntry> queue = new Queue<MeasurementActivityEntry>();
+        private readonly string[] customDimensions = new string[200];
+        private readonly object[] customMetrics = new object[200];
+        private readonly Queue<MeasurementActivity> queue = new Queue<MeasurementActivity>();
 
         private MeasurementTracker tracker;
 
         /// <summary>
         /// Event to allow you to hook in to capture or modify activities.
         /// </summary>
-        public event EventHandler<IMeasurementActivity> OnTrack = delegate { };
+        public event EventHandler<MeasurementActivity> OnTrack = delegate { };
 
         /// <summary>
         /// Configure this MeasurementAnalyticsClient so it can start recording and sending analytics.
@@ -49,32 +49,48 @@ namespace CSharpAnalytics.Protocols.Measurement
         /// Track a activity in analytics.
         /// </summary>
         /// <param name="activity">Activity to track in analytics.</param>
-        /// <param name="endSession">True if this tracking event should end the session.</param>
-        public void Track(IMeasurementActivity activity, bool endSession = false)
+        /// <param name="endSession">True if this event should end the session.</param>
+        public void Track(MeasurementActivity activity, bool endSession = false)
         {
             if (activity is AutoTimedEventActivity)
                 ((AutoTimedEventActivity)activity).End();
 
             OnTrack(this, activity);
 
-            var entry = new MeasurementActivityEntry(activity)
-            {
-                CustomDimensions = customDimensions.ToArray(),
-                CustomMetrics = customMetrics.ToArray(),
-                EndSession = endSession
-            };
+            activity.EndSession = activity.EndSession | endSession;
 
-            customDimensions.Clear();
-            customMetrics.Clear();
+            TransferCustomsToActivity(activity);
 
             if (tracker == null)
-                queue.Enqueue(entry);
+                queue.Enqueue(activity);
             else
-                tracker.Track(entry);
+                tracker.Track(activity);
         }
 
         /// <summary>
-        /// Set the value of a custom dimension to be set with the next activity.
+        /// Transfer any pending custom dimensions and metrics to the activity that the
+        /// activity doesn't already have a value for so they can be sent.
+        /// </summary>
+        /// <param name="activity">Activity to merge custom dimensions and metrics into.</param>
+        private void TransferCustomsToActivity(MeasurementActivity activity)
+        {
+            for (var i = 0; i < customDimensions.Length; i++)
+                if (activity.CustomDimensions[i] == null && customDimensions[i] != null)
+                {
+                    activity.CustomDimensions[i] = customDimensions[i];
+                    customDimensions[i] = null;
+                }
+
+            for (var i = 0; i < customMetrics.Length; i++)
+                if (activity.CustomMetrics[i] == null && customMetrics[i] != null)
+                {
+                    activity.CustomMetrics[i] = customMetrics[i];
+                    customMetrics[i] = null;
+                }
+        }
+
+        /// <summary>
+        /// Set the value of a custom dimension to be sent with the next activity.
         /// </summary>
         /// <remarks>
         /// These need to be configured first in Google Analytics.
@@ -87,7 +103,7 @@ namespace CSharpAnalytics.Protocols.Measurement
         }
 
         /// <summary>
-        /// Set the value of a custom dimension to be set with the next activity.
+        /// Set the value of a custom dimension to be sent with the next activity.
         /// </summary>
         /// <remarks>
         /// These need to be configured first in Google Analytics.
@@ -164,6 +180,74 @@ namespace CSharpAnalytics.Protocols.Measurement
             var parameters = GetQueryParameters(uri.GetComponents(UriComponents.Query, UriFormat.Unescaped));
             AddQueueTimeFromFragment(uri, parameters);
             return new UriBuilder(uri) { Query = GetQueryString(parameters), Fragment = "" }.Uri;
+        }
+
+        /// <summary>
+        /// Capture the details of an application view event that will be sent to analytics.
+        /// </summary>
+        /// <param name="screenName"></param>
+        public void TrackScreenView(string screenName)
+        {
+            Track(new ScreenViewActivity(screenName));
+        }
+
+        /// <summary>
+        /// Track a ContentView activity for a given piece of content.
+        /// </summary>
+        /// <param name="documentLocation">URI location of the document.</param>
+        /// <param name="documentTitle">Title of the document.</param>
+        /// <param name="contentDescription">Description of the content.</param>
+        /// <param name="documentPath">Optional path override of the document location.</param>
+        /// <param name="documentHostName">Optional host name override of the document location.</param>
+        public void TrackContentView(Uri documentLocation, string documentTitle, string contentDescription = null, string documentPath = null, string documentHostName = null)
+        {
+            Track(new ContentViewActivity(documentLocation, documentTitle, contentDescription, documentPath, documentHostName));
+        }
+
+        /// <summary>
+        /// Capture the details of an event that will be sent to analytics.
+        /// </summary>
+        /// <param name="action">Action name of the event to send.</param>
+        /// <param name="category">Category of the event to send.</param>
+        /// <param name="label">Optional label name of the event to send.</param>
+        /// <param name="value">Optional numeric value of the event to send.</param>
+        /// <param name="nonInteraction">Optional boolean value to be assigned to the NonInteraction property.</param>
+        public void TrackEvent(string action, string category, string label = null, int? value = null, bool nonInteraction = false)
+        {
+            Track(new EventActivity(action, category, label, value, nonInteraction));
+        }
+
+        /// <summary>
+        /// Capture the details of an event that will be sent to analytics.
+        /// </summary>
+        /// <param name="description">Description of the exception.</param>
+        /// <param name="isFatal">Optional whether the exception was fatal (caused the app to crash), defaults to false.</param>
+        public void TrackException(string description, bool isFatal = false)
+        {
+            Track(new ExceptionActivity(description, isFatal));
+        }
+
+        /// <summary>
+        /// Track a social activity being performed.
+        /// </summary>
+        /// <param name="action">Social action being performed.</param>
+        /// <param name="network">Name of the social network being acted upon.</param>
+        /// <param name="target">Optional target resource being acted upon.</param>
+        public void TrackSocial(string action, string network, string target = null)
+        {
+            Track(new SocialActivity(action, network, target));
+        }
+
+        /// <summary>
+        /// Capture the details of a timed event that will be sent to analytics.
+        /// </summary>
+        /// <param name="category">Category of the event to send.</param>
+        /// <param name="variable">Variable name of the event to send.</param>
+        /// <param name="time">Time of the event to send.</param>
+        /// <param name="label">Optional label name of the event to send.</param>
+        public void TrackTimedEvent(string category, string variable, TimeSpan time, string label = null)
+        {
+            Track(new TimedEventActivity(category, variable, time, label));
         }
 
         /// <summary>

@@ -2,7 +2,7 @@
 using System.Linq;
 using CSharpAnalytics.Activities;
 using CSharpAnalytics.Protocols.Measurement;
-#if WINDOWS_STORE
+#if WINDOWS_STORE || WINDOWS_PHONE
 using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
 #else
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -14,36 +14,15 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
     public class MeasurementActivityParameterBuilderTrackerTests
     {
         [TestMethod]
-        public void MeasurementActivityParameterBuilder_GetParameter_For_AppViewActivity_Returns_Correct_Values()
+        public void MeasurementActivityParameterBuilder_GetParameter_For_ScreenViewActivity_Returns_Correct_Values()
         {
-            var activity = new AppViewActivity("page");
+            var activity = new ScreenViewActivity("page");
 
             var parameters = MeasurementActivityParameterBuilder.GetParameters(activity).ToDictionary(k => k.Key, v => v.Value);
 
             Assert.AreEqual(2, parameters.Count);
-            Assert.AreEqual("appview", parameters["t"]);
+            Assert.AreEqual("screenview", parameters["t"]);
             Assert.AreEqual("page", parameters["cd"]);
-        }
-
-        [TestMethod]
-        public void MeasurementActivityParameterBuilder_GetParameter_For_CampaignActivity_Returns_Correct_Values()
-        {
-            var activity = new CampaignActivity("source")
-            {
-                Name = "name",
-                Medium = "medium",
-                Term = "term",
-                Content = "content"
-            };
-
-            var parameters = MeasurementActivityParameterBuilder.GetParameters(activity).ToDictionary(k => k.Key, v => v.Value);
-
-            Assert.AreEqual(5, parameters.Keys.Count);
-            Assert.AreEqual("source", parameters["cs"]);
-            Assert.AreEqual("name", parameters["cn"]);
-            Assert.AreEqual("medium", parameters["cm"]);
-            Assert.AreEqual("term", parameters["ck"]);
-            Assert.AreEqual("content", parameters["cc"]);
         }
 
         [TestMethod]

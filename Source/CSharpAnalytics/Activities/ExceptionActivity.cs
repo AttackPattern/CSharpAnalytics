@@ -3,7 +3,6 @@
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
 using System.Diagnostics;
-using CSharpAnalytics.Protocols.Measurement;
 
 namespace CSharpAnalytics.Activities
 {
@@ -11,7 +10,7 @@ namespace CSharpAnalytics.Activities
     /// Captures the details of an application exception to be recorded in analytics.
     /// </summary>
     [DebuggerDisplay("Exception {Description}")]
-    public class ExceptionActivity : IMeasurementActivity
+    public class ExceptionActivity : MeasurementActivity
     {
         private readonly string description;
         private readonly bool isFatal;

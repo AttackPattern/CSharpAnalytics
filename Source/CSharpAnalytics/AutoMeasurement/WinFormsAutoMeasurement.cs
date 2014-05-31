@@ -1,251 +1,147 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Headers;
+﻿﻿// Copyright (c) Attack Pattern LLC.  All rights reserved.
+// Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. 
+// You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+
+using CSharpAnalytics.Environment;
+using CSharpAnalytics.Network;
+using CSharpAnalytics.Protocols.Measurement;
+using CSharpAnalytics.Serializers;
+using CSharpAnalytics.Sessions;
+using System;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using CSharpAnalytics.Network;
-using CSharpAnalytics.Protocols;
-using CSharpAnalytics.Protocols.Measurement;
-using CSharpAnalytics.Sessions;
+using System.Windows.Forms;
+using CSharpAnalytics.SystemInfo;
 
 namespace CSharpAnalytics
 {
     /// <summary>
     /// Helper class to get up and running with CSharpAnalytics in Windows Forms applications.
-    /// Execute <see cref="Start"/> method when you applications starts and <see cref="End"/> method while it is being closed.
     /// </summary>
-    public static class AutoMeasurement
+    public class WinFormAutoMeasurement : BaseAutoMeasurement
     {
-        private const string ApplicationLifecycleEvent = "ApplicationLifecycle";
-        private const string RequestQueueFileName = "CSharpAnalytics-MeasurementQueue";
-        private const string SessionStateFileName = "CSharpAnalytics-MeasurementSession";
-        private const int MaximumRequestsToPersist = 60;
-
-        private static readonly ProtocolDebugger protocolDebugger = new ProtocolDebugger(MeasurementParameterDefinitions.All);
-        private static readonly MeasurementAnalyticsClient client = new MeasurementAnalyticsClient();
-        private static readonly ProductInfoHeaderValue clientUserAgent = new ProductInfoHeaderValue("CSharpAnalytics", "0.2");
-
-        private static bool? delayedOptOut;
-        private static TimeSpan lastUploadInterval;
-        private static BackgroundHttpRequester requester;
-        private static SessionManager sessionManager;
-        private static string systemUserAgent;
-        private static bool isStarted;
-
         [DllImport("wininet.dll")]
         private extern static bool InternetGetConnectedState(out int connDescription, int reservedValue);
 
         /// <summary>
-        /// Access to the MeasurementAnalyticsClient necessary to send additional events.
+        /// Hook into various events to automatically track suspend, resume, page navigation,
+        /// social sharing etc.
         /// </summary>
-        public static MeasurementAnalyticsClient Client { get { return client; } }
-
-        /// <summary>
-        /// Action to receive protocol debug output. 
-        /// </summary>
-        public static Action<string> DebugWriter { get; set; }
-
-        /// <summary>
-        /// Initialize CSharpAnalytics by restoring the session state and starting the background sender.
-        /// </summary>
-        /// <param name="configuration">Configuration to use, must at a minimum specify your Google Analytics ID and app name.</param>
-        /// <param name="uploadInterval">How often to upload to the server. Lower times = more traffic but realtime. Defaults to 5 seconds.</param>
-        /// <example>var analyticsTask = AutoMeasurement.Start(new MeasurementConfiguration("UA-123123123-1", "MyApp", "1.0.1.0"));</example>
-        public static async Task Start(MeasurementConfiguration configuration, TimeSpan? uploadInterval = null)
+        protected override void HookEvents()
         {
-            if (!isStarted)
-            {
-                isStarted = true;
-                lastUploadInterval = uploadInterval ?? TimeSpan.FromSeconds(5);
-                systemUserAgent = WinFormsSystemInformation.GetSystemUserAgent();
-
-                var sessionState = await LoadSessionState();
-                sessionManager = new SessionManager(sessionState, configuration.SampleRate);
-                await StartRequesterAsync();
-
-                if (delayedOptOut != null) SetOptOut(delayedOptOut.Value);
-
-                Client.Configure(configuration, sessionManager, new WinFormsEnvironment(), Add);
-
-                // Sometimes apps crash so preserve at least session number and visitor id on launch
-                await SaveSessionState(sessionManager.GetState());
-            }
-
-            client.TrackEvent("Start", ApplicationLifecycleEvent, "Launch");
+            Application.ApplicationExit += ApplicationOnExit;
         }
 
         /// <summary>
-        /// Ends analytics tracking by persisting any pending requests and session state to persistent storage.
+        /// Unhook events that were wired up in HookEvents.
         /// </summary>
-        public static async Task End()
+        protected override void UnhookEvents()
         {
-            List<Uri> recentRequestsToPersist;
-            if (requester.IsStarted)
-            {
-                var pendingRequests = await requester.StopAsync();
-                recentRequestsToPersist = pendingRequests.Skip(pendingRequests.Count - MaximumRequestsToPersist).ToList();
-            }
-            else
-            {
-                recentRequestsToPersist = new List<Uri>();
-            }
-
-            await AppDataContractSerializer.Save(recentRequestsToPersist, RequestQueueFileName);
-            await SaveSessionState(sessionManager.GetState());
+            Application.ApplicationExit -= ApplicationOnExit;
         }
 
         /// <summary>
-        /// Opt the user in or out of analytics for this application install.
+        /// Get the environment details for this system.
         /// </summary>
-        /// <param name="optOut">True if the user is opting out, false if they are opting back in.</param>
-        /// <remarks>
-        /// This option persists automatically.
-        /// You should call this only when the user changes their decision.
-        /// </remarks>
-        public static async void SetOptOut(bool optOut)
+        /// <returns>
+        /// IEnvironment implementation for getting screen, language and other system details.
+        /// </returns>
+        protected override IEnvironment GetEnvironment()
         {
-            if (sessionManager == null)
-            {
-                delayedOptOut = optOut;
-                return;
-            }
-            delayedOptOut = null;
-
-            if (sessionManager.VisitorStatus == VisitorStatus.SampledOut) return;
-
-            var newVisitorStatus = optOut ? VisitorStatus.OptedOut : VisitorStatus.Active;
-            if (newVisitorStatus != sessionManager.VisitorStatus)
-            {
-                Debug.WriteLine("Switching VisitorStatus from {0} to {1}", sessionManager.VisitorStatus, newVisitorStatus);
-                sessionManager.VisitorStatus = newVisitorStatus;
-                await SaveSessionState(sessionManager.GetState());
-            }
+            return new WinFormsEnvironment();;
         }
 
         /// <summary>
-        /// Internal status of this visitor.
+        /// Load the data object from storage with the given name.
         /// </summary>
-        public static VisitorStatus VisitorStatus
+        /// <typeparam name="T">Type of data to load from storage.</typeparam>
+        /// <param name="name">Name of the data in storage.</param>
+        /// <returns>Instance of T containing the loaded data or null if did not exist.</returns>
+        protected override async Task<T> Load<T>(string name)
         {
-            get
-            {
-                // Allow AnalyticsUserOption to function at design time.
-                if (sessionManager == null)
-                    return delayedOptOut == true ? VisitorStatus.OptedOut : VisitorStatus.Active;
-
-                return sessionManager.VisitorStatus;
-            }
+            return await AppDataContractSerializer.Restore<T>(name);
         }
 
         /// <summary>
-        /// Start the requester with any unsent URIs from the last application run.
+        /// Save the data object to storage with the given name overwriting if required.
         /// </summary>
-        /// <returns>Task that completes when the requester is ready.</returns>
-        private static async Task StartRequesterAsync()
+        /// <typeparam name="T">Type of data object to persist.</typeparam>
+        /// <param name="data">Data object to persist.</param>
+        /// <param name="name">Name to give to the object in storage.</param>
+        /// <returns>Task that is complete when the data has been saved to storage.</returns>
+        protected override async Task Save<T>(T data, string name)
         {
-            requester = new BackgroundHttpClientRequester(PreprocessHttpRequest, IsInternetAvailable);
-            var previousRequests = await AppDataContractSerializer.Restore<List<Uri>>(RequestQueueFileName);
-            requester.Start(lastUploadInterval, previousRequests);
+            await AppDataContractSerializer.Save(data, name);
+        }
+
+        /// <summary>
+        /// Setup the Uri requester complete with user agent etc.
+        /// </summary>
+        /// <returns>Task that completes when the requester is ready to use.</returns>
+        protected override async Task SetupRequesterAsync()
+        {
+            var httpClientRequester = new HttpClientRequester();
+            httpClientRequester.HttpClient.DefaultRequestHeaders.UserAgent.ParseAdd(ClientUserAgent);
+
+            var systemUserAgent = WindowsSystemInfo.GetSystemUserAgent();
+            if (!String.IsNullOrEmpty(systemUserAgent))
+                httpClientRequester.HttpClient.DefaultRequestHeaders.UserAgent.ParseAdd(systemUserAgent);
+
+            Requester = httpClientRequester.Request;
         }
 
         /// <summary>
         /// Determine if the Internet is available at this point in time.
         /// </summary>
         /// <returns>True if the Internet is available, false otherwise.</returns>
-        private static bool IsInternetAvailable()
+        protected override bool IsInternetAvailable()
         {
             int connDesc;
             return InternetGetConnectedState(out connDesc, 0);
         }
 
         /// <summary>
-        /// Pre-process the HttpRequestMessage before it is sent. This includes adding the user agent for tracking
-        /// and for debug builds writing out the debug information to the console log.
+        /// Handle the application exiting.
         /// </summary>
-        /// <param name="requestMessage">HttpRequestMessage to modify or inspect before it is sent.</param>
-        /// <remarks>
-        /// Because user agent is not persisted unsent URIs that are saved and then sent after an upgrade
-        /// will have the new user agent string not the actual one that generated them.
-        /// </remarks>
-        private static void PreprocessHttpRequest(HttpRequestMessage requestMessage)
+        /// <param name="sender"></param>
+        /// <param name="eventArgs"></param>
+        private async void ApplicationOnExit(object sender, EventArgs eventArgs)
         {
-            if (sessionManager.VisitorStatus != VisitorStatus.Active)
-            {
-                requestMessage.RequestUri = null;
-                return;
-            }
+            UnhookEvents();
+            await StopRequesterAsync();
+        }
+    }
 
-            requestMessage.RequestUri = client.AdjustUriBeforeRequest(requestMessage.RequestUri);
-            AddUserAgent(requestMessage.Headers.UserAgent);
-            DebugRequest(requestMessage);
+    /// <summary>
+    /// AutoMeasurement static wrapper to make it easier to use across a WinForms application.
+    /// </summary>
+    public static class AutoMeasurement
+    {
+        private static readonly WinFormAutoMeasurement instance = new WinFormAutoMeasurement();
+
+        public static VisitorStatus VisitorStatus
+        {
+            get { return instance.VisitorStatus; }
         }
 
-        /// <summary>
-        /// Figure out the user agent and add it to the header collection.
-        /// </summary>
-        /// <param name="userAgents">User agent header collection.</param>
-        private static void AddUserAgent(ICollection<ProductInfoHeaderValue> userAgents)
+        public static MeasurementAnalyticsClient Client
         {
-            userAgents.Add(clientUserAgent);
-
-            if (!String.IsNullOrEmpty(systemUserAgent))
-                userAgents.Add(new ProductInfoHeaderValue(systemUserAgent));
+            get { return instance.Client; }
         }
 
-        /// <summary>
-        /// Send the HttpRequestMessage with the protocol debugger for examination.
-        /// </summary>
-        /// <param name="requestMessage">HttpRequestMessage to examine with the protocol debugger.</param>
-        private async static void DebugRequest(HttpRequestMessage requestMessage)
+        public static Action<string> DebugWriter
         {
-            var payloadUri = await RejoinPayload(requestMessage);
-            protocolDebugger.Dump(payloadUri, DebugWriter);
+            set { instance.DebugWriter = value; }
         }
 
-        /// <summary>
-        /// Rejoin the POST body payload with the Uri parameter if necessary so it can be sent to the
-        /// protocol debugger.
-        /// </summary>
-        /// <param name="requestMessage">HttpRequestMessage to obtain complete payload for.</param>
-        /// <returns>Uri with final payload to be sent.</returns>
-        private async static Task<Uri> RejoinPayload(HttpRequestMessage requestMessage)
+        public static void SetOptOut(bool optOut)
         {
-            if (requestMessage.Content == null)
-                return requestMessage.RequestUri;
-
-            var bodyPayload = await requestMessage.Content.ReadAsStringAsync();
-            return new UriBuilder(requestMessage.RequestUri) { Query = bodyPayload }.Uri;
+            instance.SetOptOut(optOut);
         }
 
-        /// <summary>
-        /// Load the session state from storage if it exists, null if it does not.
-        /// </summary>
-        /// <returns>Task that completes when the SessionState is available.</returns>
-        private static async Task<SessionState> LoadSessionState()
+        public static void Start(MeasurementConfiguration measurementConfiguration, TimeSpan? uploadInterval = null)
         {
-            return await AppDataContractSerializer.Restore<SessionState>(SessionStateFileName);
-        }
-
-        /// <summary>
-        /// Save the session state to preserve state between application launches.
-        /// </summary>
-        /// <returns>Task that completes when the session state has been saved.</returns>
-        private static async Task SaveSessionState(SessionState sessionState)
-        {
-            await AppDataContractSerializer.Save(sessionState, SessionStateFileName);
-        }
-
-        /// <summary>
-        /// Send the Uri request to the current background requester safely.
-        /// </summary>
-        private static void Add(Uri uri)
-        {
-            var safeRequester = requester;
-            if (safeRequester != null)
-                safeRequester.Add(uri);
+            instance.Start(measurementConfiguration, "", uploadInterval);
         }
     }
 }

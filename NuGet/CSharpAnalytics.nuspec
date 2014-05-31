@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>CSharpAnalytics</id>
-    <version>1.0.1</version>
+    <version>1.2.0</version>
     <authors>Damien Guard</authors>
     <owners>Attack Pattern</owners>
     <licenseUrl>https://raw.github.com/AttackPattern/CSharpAnalytics/master/Source/LICENCE.txt</licenseUrl>
@@ -10,8 +10,10 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Google Analytics client for C# applications with automatic wire-up for Windows 8/8.1 store applications.</description>
     <releaseNotes>Stop some phantom sessions by not sending queue time (qt) with session control (sc)
-Detect Windows os version in store apps even on machines with a custom HAL
-Save user id and session number at startup to avoid loss should the app crash</releaseNotes>
+Detect Windows OS version in store apps even on machines with a custom HAL
+Save session id and session number at startup to avoid loss should the app crash
+Custom metrics and dimensions can now be set on a specific activity (recommended)
+    </releaseNotes>
     <copyright>Copyright 2012-2014 Attack Pattern LLC</copyright>
     <tags>google analytics, metrics, analytics, ga, measurement protocol</tags>
   </metadata>
@@ -19,5 +21,6 @@ Save user id and session number at startup to avoid loss should the app crash</r
     <file src="..\Binaries\Release\Net45\CSharpAnalytics.Net45.dll" target="lib\net45" />
     <file src="..\Binaries\Release\Windows8\CSharpAnalytics.Windows8.dll" target="lib\windows8" />
     <file src="..\Binaries\Release\Windows81\CSharpAnalytics.Windows81.dll" target="lib\windows81" />
+    <file src="..\Binaries\Release\WindowsPhone8\CSharpAnalytics.WindowsPhone8.dll" target="lib\windowsphone8" />
   </files>
 </package>

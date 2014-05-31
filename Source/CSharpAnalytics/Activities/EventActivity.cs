@@ -2,7 +2,6 @@
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
-using CSharpAnalytics.Protocols.Measurement;
 using System.Diagnostics;
 
 namespace CSharpAnalytics.Activities
@@ -12,12 +11,11 @@ namespace CSharpAnalytics.Activities
     /// See https://developers.google.com/analytics/devguides/collection/gajs/eventTrackerGuide Event Tracking Guide
     /// </summary>
     [DebuggerDisplay("Event {Category}, {Action}, {Label}")]
-    public class EventActivity : IMeasurementActivity
+    public class EventActivity : MeasurementActivity
     {
         private readonly string action;
         private readonly string category;
         private readonly string label;
-        private readonly bool nonInteraction;
         private readonly int? value;
 
         /// <summary>
@@ -48,15 +46,6 @@ namespace CSharpAnalytics.Activities
         }
 
         /// <summary>
-        /// Whether this event was caused by a user interaction or not. Used in the calculation
-        /// of bounce rates.
-        /// </summary>
-        public bool NonInteraction
-        {
-            get { return nonInteraction; }
-        }
-
-        /// <summary>
         /// Optional numerical value associated with this event often used for timing or ratings.
         /// </summary>
         public int? Value
@@ -78,7 +67,7 @@ namespace CSharpAnalytics.Activities
             this.action = action;
             this.label = label;
             this.value = value;
-            this.nonInteraction = nonInteraction;
+            NonInteraction = nonInteraction;
         }
     }
 }

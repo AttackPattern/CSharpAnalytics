@@ -1,19 +1,10 @@
-﻿using CSharpAnalytics.Sample.Windows81.Common;
+﻿using Windows.UI.ApplicationSettings;
+using CSharpAnalytics.Sample.Windows81.Common;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
 // The Grid App template is documented at http://go.microsoft.com/fwlink/?LinkId=234226
@@ -43,6 +34,7 @@ namespace CSharpAnalytics.Sample.Windows81
         protected override async void OnLaunched(LaunchActivatedEventArgs e)
         {
             // CSharpAnalytics initialization
+            AutoMeasurement.DebugWriter = d => System.Diagnostics.Debug.WriteLine(d);
             AutoMeasurement.Start(new MeasurementConfiguration("UA-319000-8"), e);
 
 #if DEBUG
@@ -124,6 +116,27 @@ namespace CSharpAnalytics.Sample.Windows81
             var deferral = e.SuspendingOperation.GetDeferral();
             await SuspensionManager.SaveAsync();
             deferral.Complete();
+        }
+
+        /// <summary>
+        /// Fires when the Window is created and you should sign up for charm notifications.
+        /// </summary>
+        /// <param name="args">Arguments relating to which window was created.</param>
+        protected override void OnWindowCreated(WindowCreatedEventArgs args)
+        {
+            base.OnWindowCreated(args);
+            SettingsPane.GetForCurrentView().CommandsRequested += SettingsCommandsRequested;
+        }
+
+        /// <summary>
+        /// Settings charm is requesting commands, register the Options flyout.
+        /// </summary>
+        /// <param name="sender">Sender of the event</param>
+        /// <param name="args">Application Commands object to register settings with.</param>
+        private static void SettingsCommandsRequested(SettingsPane sender, SettingsPaneCommandsRequestedEventArgs args)
+        {
+            args.Request.ApplicationCommands
+                .Add(new SettingsCommand("options", "Options", _ => new OptionsSettingsFlyout().Show()));
         }
     }
 }

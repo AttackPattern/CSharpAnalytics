@@ -2,7 +2,6 @@
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
-using CSharpAnalytics.Protocols.Measurement;
 using System;
 using System.Diagnostics;
 
@@ -10,10 +9,9 @@ namespace CSharpAnalytics.Activities
 {
     /// <summary>
     /// Captures the details of a timed event to be recorded in analytics.
-    /// See https://developers.google.com/analytics/devguides/collection/gajs/methods/gaJSApiUserTiming User Timing
     /// </summary>
     [DebuggerDisplay("TimedEvent {Category}, {Variable}, {Time}, {Label}")]
-    public class TimedEventActivity : IMeasurementActivity
+    public class TimedEventActivity : MeasurementActivity
     {
         private readonly string category;
         private readonly string label;

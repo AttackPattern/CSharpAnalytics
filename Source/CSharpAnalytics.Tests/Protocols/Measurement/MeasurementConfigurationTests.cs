@@ -1,5 +1,5 @@
 ﻿using System;
-#if WINDOWS_STORE
+#if WINDOWS_STORE || WINDOWS_PHONE
 using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
 using Windows.ApplicationModel;
 #else
@@ -42,7 +42,7 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
             Assert.AreEqual(expected, configuration.SampleRate);
         }
 
-#if WINDOWS_STORE
+#if WINDOWS_STORE || WINDOWS_PHONE
         [TestMethod]
         public void MeasurementConfiguration_Constructor_Throws_ArgumentException_If_AccountID_Does_Not_Start_With_UA()
         {
@@ -68,7 +68,9 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
             var configuration = new MeasurementConfiguration("UA-1234-5", "ApplicationName", "1.2.3.4");
             Assert.ThrowsException<ArgumentOutOfRangeException>(() => configuration.SampleRate = 100.01);
         }
+#endif
 
+#if WINDOWS_STORE
         [TestMethod]
         public void MeasurementConfiguration_FormatVersion_Formats_Version_Correctly()
         {

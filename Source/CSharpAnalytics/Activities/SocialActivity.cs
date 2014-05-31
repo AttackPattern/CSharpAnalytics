@@ -2,7 +2,6 @@
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
-using CSharpAnalytics.Protocols.Measurement;
 using System.Diagnostics;
 
 namespace CSharpAnalytics.Activities
@@ -11,11 +10,10 @@ namespace CSharpAnalytics.Activities
     /// Captures the details of an social action that has been performed.
     /// </summary>
     [DebuggerDisplay("Social {Action} on {Network}")]
-    public class SocialActivity : IMeasurementActivity
+    public class SocialActivity : MeasurementActivity
     {
         private readonly string action;
         private readonly string network;
-        private readonly string pagePath;
         private readonly string target;
 
         /// <summary>
@@ -35,17 +33,6 @@ namespace CSharpAnalytics.Activities
         }
 
         /// <summary>
-        /// Optional path of the page from which the action occured.
-        /// </summary>
-        /// <remarks>
-        /// Urchin only, not supported by MeasurementProtocol.
-        /// </remarks>
-        public string PagePath
-        {
-            get { return pagePath; }
-        }
-
-        /// <summary>
         /// Optional resource being acted upon. e.g. Page being shared.
         /// </summary>
         public string Target
@@ -58,14 +45,12 @@ namespace CSharpAnalytics.Activities
         /// </summary>
         /// <param name="action">Social action being performed.</param>
         /// <param name="network">Name of the social network being acted upon.</param>
-        /// <param name="pagePath">Optional path of the page the action occured on.</param>
         /// <param name="target">Optional target resource being acted upon.</param>
-        public SocialActivity(string action, string network, string pagePath = null, string target = null)
+        public SocialActivity(string action, string network, string target = null)
         {
             this.network = network;
             this.action = action;
             this.target = target;
-            this.pagePath = pagePath;
         }
     }
 }

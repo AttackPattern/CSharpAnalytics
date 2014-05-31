@@ -14,7 +14,7 @@ namespace CSharpAnalytics.Activities
     /// This activities time is the time between StartedAt and EndedAt which defaults to
     /// when it was created and when it was tracked respectively.
     /// </remarks>
-    [DebuggerDisplay("TimedEvent {Category}, {Variable}, {Time}, {Label}")]
+    [DebuggerDisplay("AutoTimedEvent {Category}, {Variable}, {Time}, {Label}")]
     public class AutoTimedEventActivity : TimedEventActivity
     {
         /// <summary>

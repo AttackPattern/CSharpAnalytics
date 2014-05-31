@@ -115,29 +115,28 @@
     <SDKReference Include="TestPlatform, Version=11.0" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Activities\AppViewActivityTests.cs" />
     <Compile Include="Activities\AutoTimedEventActivityTests.cs" />
-    <Compile Include="Activities\CampaignActivityTests.cs" />
     <Compile Include="Activities\ContentViewActivityTests.cs" />
     <Compile Include="Activities\EventActivityTests.cs" />
     <Compile Include="Activities\ExceptionActivityTests.cs" />
+    <Compile Include="Activities\ScreenViewActivityTests.cs" />
     <Compile Include="Activities\SocialActivityTests.cs" />
     <Compile Include="Activities\TimedEventActivityTests.cs" />
     <Compile Include="Activities\TransactionActivityTests.cs" />
     <Compile Include="Activities\TransactionItemActivityTests.cs" />
     <Compile Include="AutoMeasurement\AnalyticsScreenNameAttributeTests.cs" />
+    <Compile Include="Debugging\ParameterDefinitionTests.cs" />
     <Compile Include="Environment\EnvironmentTests.cs" />
-    <Compile Include="Network\BackgroundHttpClientRequesterTests.cs" />
-    <Compile Include="Network\BackgroundHttpRequesterTests.cs" />
+    <Compile Include="Environment\TestableEnvironment.cs" />
+    <Compile Include="Network\BackgroundUriRequesterTests.cs" />
+    <Compile Include="Network\HttpClientRequesterTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Protocols\Measurement\MeasurementActivityExtensionTests.cs" />
     <Compile Include="Protocols\Measurement\MeasurementActivityParameterBuilderTrackerTests.cs" />
     <Compile Include="Protocols\Measurement\MeasurementAnalyticsClientTests.cs" />
     <Compile Include="Protocols\Measurement\MeasurementConfigurationTests.cs" />
     <Compile Include="Protocols\Measurement\MeasurementTestHelpers.cs" />
     <Compile Include="Protocols\Measurement\MeasurementTrackerTests.cs" />
     <Compile Include="Protocols\Measurement\MeasurementUriBuilderTests.cs" />
-    <Compile Include="Protocols\ParameterDefinitionTests.cs" />
     <Compile Include="Sessions\SessionManagerTests.cs" />
     <Compile Include="Sessions\SessionStateTests.cs" />
     <Compile Include="Sessions\TimeoutSessionManager.cs" />

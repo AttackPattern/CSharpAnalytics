@@ -1,7 +1,8 @@
 ﻿using System.Linq;
 using CSharpAnalytics.Activities;
 using CSharpAnalytics.Protocols.Measurement;
-#if WINDOWS_STORE
+using CSharpAnalytics.Test.Environment;
+#if WINDOWS_STORE || WINDOWS_PHONE
 using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
 #else
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -35,7 +36,7 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
         [TestMethod]
         public void MeasurementUriBuilderTests_GetParameters_For_Environment_Returns_Correct_Values()
         {
-            var environment = new Environment("en-gb")
+            var environment = new TestableEnvironment("en-gb")
                 {
                     CharacterSet = "ISO-8550-1",
                     FlashVersion = "11.0.1b",
@@ -61,7 +62,7 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
         [TestMethod]
         public void MeasurementUriBuilderTests_GetParameters_For_Environment_Returns_Correct_Je_Value()
         {
-            var environment = new Environment("en-gb") { JavaEnabled = false };
+            var environment = new TestableEnvironment("en-gb") { JavaEnabled = false };
 
             var jeValue = MeasurementUriBuilder.GetParameters(environment).First(f => f.Key == "je").Value;
 
@@ -75,7 +76,7 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
             config.UseSsl = false;
             var builder = new MeasurementUriBuilder(config, MeasurementTestHelpers.CreateSessionManager(), MeasurementTestHelpers.CreateEnvironment());
 
-            var actual = builder.BuildUri(new MeasurementActivityEntry(new AppViewActivity("Home")));
+            var actual = builder.BuildUri(new ScreenViewActivity("Home"));
 
             Assert.AreEqual("http", actual.Scheme);
             Assert.AreEqual("www.google-analytics.com", actual.Host);
@@ -88,7 +89,7 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
             config.UseSsl = true;
             var builder = new MeasurementUriBuilder(config, MeasurementTestHelpers.CreateSessionManager(), MeasurementTestHelpers.CreateEnvironment());
 
-            var actual = builder.BuildUri(new MeasurementActivityEntry(new AppViewActivity("Home")));
+            var actual = builder.BuildUri(new ScreenViewActivity("Home"));
 
             Assert.AreEqual("https", actual.Scheme);
             Assert.AreEqual("ssl.google-analytics.com", actual.Host);
@@ -100,8 +101,8 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
             var config = MeasurementTestHelpers.Configuration;
             var builder = new MeasurementUriBuilder(config, MeasurementTestHelpers.CreateSessionManager(), MeasurementTestHelpers.CreateEnvironment());
 
-            builder.BuildUri(new MeasurementActivityEntry(new AppViewActivity("CarriedForward")));
-            var actual = builder.BuildUri(new MeasurementActivityEntry(new EventActivity("Action", "Category")));
+            builder.BuildUri(new ScreenViewActivity("CarriedForward"));
+            var actual = builder.BuildUri(new EventActivity("Action", "Category"));
 
             StringAssert.Contains(actual.Query, "cd=CarriedForward");
         }
@@ -112,7 +113,7 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
             var config = MeasurementTestHelpers.Configuration;
             var builder = new MeasurementUriBuilder(config, MeasurementTestHelpers.CreateSessionManager(), MeasurementTestHelpers.CreateEnvironment());
 
-            var actual = builder.BuildUri(new MeasurementActivityEntry(new AppViewActivity("Home")));
+            var actual = builder.BuildUri(new ScreenViewActivity("Home"));
 
             StringAssert.Contains(actual.Query, "sc=start");
         }
@@ -125,7 +126,7 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
             var builder = new MeasurementUriBuilder(config, sessionManager, MeasurementTestHelpers.CreateEnvironment());
 
             sessionManager.Hit();
-            var actual = builder.BuildUri(new MeasurementActivityEntry(new AppViewActivity("Page2")));
+            var actual = builder.BuildUri(new ScreenViewActivity("Page2"));
 
             var parameters = actual.Query.Split('&').Select(p => p.Split('=')).ToDictionary(k => k[0], v => v.Length == 0 ? null : v[1]);
             CollectionAssert.DoesNotContain(parameters.Keys, "sc");
@@ -139,7 +140,7 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
             var builder = new MeasurementUriBuilder(config, sessionManager, MeasurementTestHelpers.CreateEnvironment());
 
             sessionManager.End();
-            var actual = builder.BuildUri(new MeasurementActivityEntry(new EventActivity("Action", "Category")));
+            var actual = builder.BuildUri(new EventActivity("Action", "Category"));
 
             StringAssert.Contains(actual.Query, "sc=end");
         }

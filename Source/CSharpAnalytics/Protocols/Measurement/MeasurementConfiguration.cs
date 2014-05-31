@@ -3,6 +3,7 @@
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
 using System;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace CSharpAnalytics
@@ -12,7 +13,7 @@ namespace CSharpAnalytics
     /// </summary>
     public class MeasurementConfiguration
     {
-        private static readonly Regex accountIdMatch = new Regex(@"^UA-\d+-\d+$"); 
+        private static readonly Regex accountIdMatch = new Regex(@"^UA-\d+-\d+$");
 
         private readonly string accountId;
         private readonly string applicationName;
@@ -67,7 +68,7 @@ namespace CSharpAnalytics
                 sampleRate = value;
             }
         }
-        
+
         /// <summary>
         /// Create a new cofiguration for analytics.
         /// </summary>
@@ -103,6 +104,42 @@ namespace CSharpAnalytics
         internal static string FormatVersion(Windows.ApplicationModel.PackageVersion version)
         {
             return String.Join(".", version.Major, version.Minor, version.Build, version.Revision);
+        }
+#endif
+
+#if WINFORMS
+        /// <summary>
+        /// Create a new cofiguration for analytics.
+        /// </summary>
+        /// <param name="accountId">Google Analytics provided property id in the format UA-XXXX-Y.</param>
+        public MeasurementConfiguration(string accountId)
+            : this(accountId,
+                    GetAttribute<System.Reflection.AssemblyTitleAttribute>(t => t.Title),
+                    GetAttribute<System.Reflection.AssemblyVersionAttribute>(v => v.Version))
+        {
+        }
+
+        private static string GetAttribute<T>(Func<T, string> selector) where T : Attribute
+        {
+            var attribute = System.Reflection.Assembly.GetEntryAssembly()
+                .GetCustomAttributes(true)
+                .OfType<T>()
+                .FirstOrDefault();
+
+            return attribute == null
+                ? ""
+                : selector(attribute);
+        }
+#endif
+
+#if WINDOWS_PHONE
+        /// <summary>
+        /// Create a new cofiguration for analytics.
+        /// </summary>
+        /// <param name="accountId">Google Analytics provided property id in the format UA-XXXX-Y.</param>
+        public MeasurementConfiguration(string accountId)
+            : this(accountId, SystemInfo.WindowsPhoneSystemInfo.ApplicationName, SystemInfo.WindowsPhoneSystemInfo.ApplicationVersion)
+        {
         }
 #endif
     }

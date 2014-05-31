@@ -1,6 +1,7 @@
 ﻿using System;
 using CSharpAnalytics.Protocols.Measurement;
 using CSharpAnalytics.Sessions;
+using CSharpAnalytics.Test.Environment;
 
 namespace CSharpAnalytics.Test.Protocols.Measurement
 {
@@ -13,9 +14,9 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
             return new SessionManager(new SessionState());
         }
 
-        public static Environment CreateEnvironment()
+        public static TestableEnvironment CreateEnvironment()
         {
-            return new Environment("en-us");
+            return new TestableEnvironment("en-us");
         }
 
         public static void ConfigureForTest(MeasurementAnalyticsClient client, Action<Uri> sender)

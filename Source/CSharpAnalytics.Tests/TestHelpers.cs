@@ -23,7 +23,7 @@ namespace CSharpAnalytics.Test
             return new string(chars);
         }
 
-        public static void WaitForQueueToEmpty(BackgroundHttpRequester requester)
+        public static void WaitForQueueToEmpty(BackgroundUriRequester requester)
         {
             var time = new Stopwatch();
             time.Start();

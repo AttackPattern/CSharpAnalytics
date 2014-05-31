@@ -27,7 +27,8 @@ Still not convinced? Check out [how we compare to the alternatives](https://gith
 Our goal is to support all major C# platforms. Right now we have project files for:
 
 * Windows 8 Store applications
-* Windows 8.1 Store applications (VS 2013 required)
+* Windows 8.1 Store applications
+* Windows Phone 8 "Silverlight" applications
 * WinForms .NET 4.5 applications
 
 All of these platforms include the AutoMeasurement class that let you get up and running with only a few lines of code.
@@ -72,12 +73,10 @@ The easiest way to start is to use the AutoMeasurement helper class. It hooks in
 * Visitor, session activity, time-spent
 * Social sharing events
 * Screen navigation activity
-* Operating system, window resolution, CPU type identification
+* Operating system, screen resolution, CPU type identification
 * Save/persist last 60 hits for offline/online support
 
-Simply add one or two lines to your App.xaml.cs.
-
-At the start of the OnLaunched method add (replacing UA-319000-8 with your own Google Analytics property ID and 'e' with 'args' if using a Windows 8.0 template):
+At the start of the OnLaunched method in App.xaml.cs add (replacing UA-319000-8 with your own Google Analytics property ID and 'e' with 'args' if using a Windows 8.0 template):
 
 ```csharp
 CSharpAnalytics.AutoMeasurement.Start(new CSharpAnalytics.MeasurementConfiguration("UA-319000-8"), e);
@@ -87,6 +86,23 @@ If your app is not a single page but uses Frames to navigate you can automatical
 
 ```csharp
 CSharpAnalytics.AutoMeasurement.Attach(rootFrame);
+```
+
+### Automatic analytics for Windows Phone 8 "Silverlight" apps
+
+The easiest way to start is to use the AutoMeasurement helper class. It hooks into a few events and will automatically give you:
+
+* Application launch and reason
+* Visitor, session activity, time-spent
+* Screen navigation activity
+* Operating system version, screen resolution, CPU type identification
+* Save/persist last 60 hits for offline/online support
+
+Add these two lines to your Application_Launching method in App.xaml.cs (replacing UA-319000-8 with your own Google Analytics property ID):
+
+```csharp
+CSharpAnalytics.AutoMeasurement.Start(new CSharpAnalytics.MeasurementConfiguration("UA-319000-8"), e);
+CSharpAnalytics.AutoMeasurement.Attach(RootFrame);
 ```
 
 ### Going further
@@ -116,13 +132,13 @@ In summary: **Do not share personally identifyable information**
 
 ## Future enhancements
 
-1. Support for Windows 8 network metering modes
-1. Additional platforms (Windows Phone 7/8, Silverlight, WPF)
+1. Support for Windows Store Universal and Xamarin projects
+1. User ID, override IP and other new April 2014 Measurement Protocol features
+1. In-app purchase tracking integration and campaign support
 1. Throttling & replenishing of hits as per official SDKs
 1. Configurable session management modes
-1. In-app purchase tracking integration
 
-If you want to contribute please consider the CSharpAnalytics.sln which will load all platforms and unit tests (if you get any project load failures you're probably missing an SDK). Please ignore any messages about upgrading or retargeting to Windows 8.1 - the solution contains both 8.0 and 8.1 projects and we want to support 8.0 for a while.
+If you want to contribute please consider the CSharpAnalytics.sln which will load all platforms and unit tests (if you get any project load failures you're probably missing an SDK). Please ignore any messages about upgrading or retargeting to Windows 8.1 - the solution contains both 8.0 and 8.1 projects as we want to support 8.0 for a while.
 
 ## Licence
 

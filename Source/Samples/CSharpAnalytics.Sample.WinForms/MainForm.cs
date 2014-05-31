@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows.Forms;
 using CSharpAnalytics.Sessions;
 
@@ -11,21 +12,17 @@ namespace CSharpAnalytics.Sample.WinForms
             InitializeComponent();
         }
 
-        private async void MainFormLoad(object sender, EventArgs e)
+        private void MainFormLoad(object sender, EventArgs e)
         {
-            await AutoMeasurement.Start(new MeasurementConfiguration("UA-319000-8", "My WinForms App", "1.0.1.0"));
+            AutoMeasurement.DebugWriter = d => Debug.WriteLine(d);
+            AutoMeasurement.Start(new MeasurementConfiguration("UA-319000-8"));
 
             AllowUsageDataCollectionCheckBox.Checked = AutoMeasurement.VisitorStatus == VisitorStatus.Active;
         }
 
-        private async void MainFormClosing(object sender, FormClosingEventArgs e)
-        {
-            await AutoMeasurement.End();
-        }
-
         private void TrackScreenButtonClick(object sender, EventArgs e)
         {
-            AutoMeasurement.Client.TrackAppView("My Shiny Screen");
+            AutoMeasurement.Client.TrackScreenView("My Shiny Screen");
         }
 
         private void TrackEventButtonClick(object sender, EventArgs e)

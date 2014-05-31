@@ -1,5 +1,6 @@
 ﻿using CSharpAnalytics.Sample.Windows8.Common;
 using System;
+using System.Diagnostics;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.UI.ApplicationSettings;
@@ -32,6 +33,7 @@ namespace CSharpAnalytics.Sample.Windows8
         protected override async void OnLaunched(LaunchActivatedEventArgs args)
         {
             // CSharpAnalytics initialization
+            AutoMeasurement.DebugWriter = d => Debug.WriteLine(d);
             AutoMeasurement.Start(new MeasurementConfiguration("UA-319000-8"), args);
 
             var rootFrame = Window.Current.Content as Frame;

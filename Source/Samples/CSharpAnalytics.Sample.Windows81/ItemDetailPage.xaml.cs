@@ -1,17 +1,7 @@
 ﻿using CSharpAnalytics.Sample.Windows81.Common;
 using CSharpAnalytics.Sample.Windows81.Data;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
 // The Item Detail Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234232
@@ -66,7 +56,7 @@ namespace CSharpAnalytics.Sample.Windows81
             // TODO: Create an appropriate data model for your problem domain to replace the sample data
             var item = await SampleDataSource.GetItemAsync((String)e.NavigationParameter);
             this.DefaultViewModel["Item"] = item;
-            AutoMeasurement.Client.TrackAppView(item.Title);
+            AutoMeasurement.Client.TrackScreenView(item.Title);
         }
 
         #region NavigationHelper registration

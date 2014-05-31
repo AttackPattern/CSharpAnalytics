@@ -7,7 +7,7 @@ using Windows.Foundation;
 using Windows.Globalization;
 using Windows.UI.Xaml;
 
-namespace CSharpAnalytics.WindowsStore
+namespace CSharpAnalytics.Environment
 {
     /// <summary>
     /// Implements the IEnvironment interface required by analytics to track details of the machine
@@ -22,7 +22,6 @@ namespace CSharpAnalytics.WindowsStore
 
         public string FlashVersion { get { return null; } }
         public bool? JavaEnabled { get { return null; } }
-        public string IpAddress { get { return null; } }
 
         public uint ScreenColorDepth { get { return 32; } }
 

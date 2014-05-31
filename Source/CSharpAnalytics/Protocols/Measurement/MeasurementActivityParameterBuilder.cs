@@ -22,14 +22,12 @@ namespace CSharpAnalytics.Protocols.Measurement
         /// </summary>
         /// <param name="activity">Activity to turn into key/value pairs.</param>
         /// <returns>Enumerable of key/value pairs representing the activity.</returns>
-        internal static IEnumerable<KeyValuePair<string, string>> GetActivityParameters(IMeasurementActivity activity)
+        internal static IEnumerable<KeyValuePair<string, string>> GetActivityParameters(MeasurementActivity activity)
         {
-            if (activity is AppViewActivity)
-                return GetParameters((AppViewActivity)activity);
+            if (activity is ScreenViewActivity)
+                return GetParameters((ScreenViewActivity)activity);
             if (activity is ContentViewActivity)
                 return GetParameters((ContentViewActivity)activity);
-            if (activity is CampaignActivity)
-                return GetParameters((CampaignActivity)activity);
             if (activity is ExceptionActivity)
                 return GetParameters((ExceptionActivity)activity);
             if (activity is EventActivity)
@@ -48,16 +46,30 @@ namespace CSharpAnalytics.Protocols.Measurement
         }
 
         /// <summary>
-        /// Obtain the key/value pairs for a ContentViewActivity.
+        /// Obtain the key/value pairs for a MeasurementActivity base class.
         /// </summary>
-        /// <param name="appView">AppViewActivity to turn into key/value pairs.</param>
-        /// <returns>Key/value pairs representing this ContentViewActivity.</returns>
-        internal static IEnumerable<KeyValuePair<string, string>> GetParameters(AppViewActivity appView)
+        /// <param name="activity">MeasurementActivity to turn into key/value pairs.</param>
+        /// <returns>Key/value pairs representing this MeasurementActivity.</returns>
+        internal static IEnumerable<KeyValuePair<string, string>> GetCommonParameters(MeasurementActivity activity)
         {
-            yield return KeyValuePair.Create("t", "appview");
+            if (activity.NonInteraction)
+                yield return KeyValuePair.Create("ni", "1");            
+        }
 
-            foreach (var pair in GetSharedParameters(appView))
-                yield return pair;
+        /// <summary>
+        /// Obtain the key/value pairs for a ScreenViewActivity.
+        /// </summary>
+        /// <param name="screenView">ScreenViewActivity to turn into key/value pairs.</param>
+        /// <returns>Key/value pairs representing this ContentViewActivity.</returns>
+        internal static IEnumerable<KeyValuePair<string, string>> GetParameters(ScreenViewActivity screenView)
+        {
+            yield return KeyValuePair.Create("t", "screenview");
+
+            foreach (var parameter in GetCommonParameters(screenView))
+                yield return parameter;
+
+            if (!String.IsNullOrEmpty(screenView.ScreenName))
+                yield return KeyValuePair.Create("cd", screenView.ScreenName);
         }
 
         /// <summary>
@@ -69,17 +81,9 @@ namespace CSharpAnalytics.Protocols.Measurement
         {
             yield return KeyValuePair.Create("t", "pageview");
 
-            foreach (var pair in GetSharedParameters(contentView))
-                yield return pair;
-        }
+            foreach (var parameter in GetCommonParameters(contentView))
+                yield return parameter;
 
-        /// <summary>
-        /// Obtain the key/value pairs shared by all ContentViewActivity classes.
-        /// </summary>
-        /// <param name="contentView">ContentViewActivity to turn into key/value pairs.</param>
-        /// <returns>Key/value pairs representing this ContentViewActivity.</returns>
-        internal static IEnumerable<KeyValuePair<string, string>> GetSharedParameters(ContentViewActivity contentView)
-        {
             if (contentView.DocumentLocation != null)
                 yield return KeyValuePair.Create("dl", contentView.DocumentLocation.OriginalString);
 
@@ -105,32 +109,12 @@ namespace CSharpAnalytics.Protocols.Measurement
         {
             yield return KeyValuePair.Create("t", "exception");
 
+            foreach (var parameter in GetCommonParameters(exception))
+                yield return parameter;
+
             yield return KeyValuePair.Create("exd", exception.Description);
             if (!exception.IsFatal)
                 yield return KeyValuePair.Create("exf", "0");
-        }
-
-        /// <summary>
-        /// Obtain the key/value pairs for a CampaignActivity.
-        /// </summary>
-        /// <param name="campaign">CampaignActivity to turn into key/value pairs.</param>
-        /// <returns>Key/value pairs representing this CampaignActivity.</returns>
-        internal static IEnumerable<KeyValuePair<string, string>> GetParameters(CampaignActivity campaign)
-        {
-            if (!String.IsNullOrEmpty(campaign.Name))
-                yield return KeyValuePair.Create("cn", campaign.Name);
-
-            if (!String.IsNullOrEmpty(campaign.Source))
-                yield return KeyValuePair.Create("cs", campaign.Source);
-
-            if (!String.IsNullOrEmpty(campaign.Medium))
-                yield return KeyValuePair.Create("cm", campaign.Medium);
-
-            if (!String.IsNullOrEmpty(campaign.Term))
-                yield return KeyValuePair.Create("ck", campaign.Term);
-
-            if (!String.IsNullOrEmpty(campaign.Content))
-                yield return KeyValuePair.Create("cc", campaign.Content);
         }
 
         /// <summary>
@@ -141,6 +125,9 @@ namespace CSharpAnalytics.Protocols.Measurement
         internal static IEnumerable<KeyValuePair<string, string>> GetParameters(EventActivity @event)
         {
             yield return KeyValuePair.Create("t", "event");
+
+            foreach (var parameter in GetCommonParameters(@event))
+                yield return parameter;
 
             if (!String.IsNullOrWhiteSpace(@event.Category))
                 yield return KeyValuePair.Create("ec", @event.Category);
@@ -153,9 +140,6 @@ namespace CSharpAnalytics.Protocols.Measurement
 
             if (@event.Value.HasValue)
                 yield return KeyValuePair.Create("ev", @event.Value.Value.ToString(CultureInfo.InvariantCulture));
-
-            if (@event.NonInteraction)
-                yield return KeyValuePair.Create("ni", "1");
         }
 
         /// <summary>
@@ -166,6 +150,9 @@ namespace CSharpAnalytics.Protocols.Measurement
         internal static IEnumerable<KeyValuePair<string, string>> GetParameters(SocialActivity social)
         {
             yield return KeyValuePair.Create("t", "social");
+
+            foreach (var parameter in GetCommonParameters(social))
+                yield return parameter;
 
             yield return KeyValuePair.Create("sn", social.Network);
             yield return KeyValuePair.Create("sa", social.Action);
@@ -180,6 +167,9 @@ namespace CSharpAnalytics.Protocols.Measurement
         internal static IEnumerable<KeyValuePair<string, string>> GetParameters(TimedEventActivity timedEvent)
         {
             yield return KeyValuePair.Create("t", "timing");
+
+            foreach (var parameter in GetCommonParameters(timedEvent))
+                yield return parameter;
 
             if (!String.IsNullOrWhiteSpace(timedEvent.Category))
                 yield return KeyValuePair.Create("utc", timedEvent.Category);
@@ -202,6 +192,9 @@ namespace CSharpAnalytics.Protocols.Measurement
         {
             yield return KeyValuePair.Create("t", "transaction");
             yield return KeyValuePair.Create("ti", transaction.OrderId);
+
+            foreach (var parameter in GetCommonParameters(transaction))
+                yield return parameter;
 
             if (!String.IsNullOrWhiteSpace(transaction.StoreName))
                 yield return KeyValuePair.Create("ta", transaction.StoreName);
@@ -230,8 +223,10 @@ namespace CSharpAnalytics.Protocols.Measurement
                 yield break;
 
             yield return KeyValuePair.Create("t", "item");
-
             yield return KeyValuePair.Create("ti", item.Transaction.OrderId);
+
+            foreach (var parameter in GetCommonParameters(item))
+                yield return parameter;
 
             if (item.Price != Decimal.Zero)
                 yield return KeyValuePair.Create("ip", item.Price.ToString("0.00", CultureInfo.InvariantCulture));

@@ -4,15 +4,14 @@
 
 using System;
 using System.Diagnostics;
-using CSharpAnalytics.Protocols.Measurement;
 
 namespace CSharpAnalytics.Activities
 {
     /// <summary>
     /// Captures the details of a page view to be recorded in analytics.
     /// </summary>
-    [DebuggerDisplay("ContentView {Title} [{Page}]")]
-    public class ContentViewActivity : IMeasurementActivity
+    [DebuggerDisplay("ContentView {DocumentTitle} [{DocumentLocation}]")]
+    public class ContentViewActivity : MeasurementActivity
     {
         private readonly Uri documentLocation;
         private readonly string documentHostName;
@@ -67,7 +66,7 @@ namespace CSharpAnalytics.Activities
         /// <param name="documentTitle">Title of the document.</param>
         /// <param name="contentDescription">Optional description of the content.</param>
         /// <param name="documentPath">Optional path of the content - will be determined by documentLocation if not provided.</param>
-        /// <param name="documentHostName">Optional host name of the content - will be determined by documentLocation if not provided..</param>
+        /// <param name="documentHostName">Optional host name of the content - will be determined by documentLocation if not provided.</param>
         public ContentViewActivity(Uri documentLocation, string documentTitle, string contentDescription = null, string documentPath = null, string documentHostName = null)
         {
             this.documentLocation = documentLocation;
