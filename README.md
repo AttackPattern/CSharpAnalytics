@@ -27,7 +27,7 @@ Still not convinced? Check out [how we compare to the alternatives](https://gith
 Our goal is to support all major C# platforms. Right now we have project files for:
 
 * Windows 8 Store applications
-* Windows 8.1 Store applications (VS 2013 required)
+* Windows 8.1 Store applications
 * Windows Phone 8 "Silverlight" applications
 * WinForms .NET 4.5 applications
 
@@ -132,7 +132,7 @@ In summary: **Do not share personally identifyable information**
 
 ## Future enhancements
 
-1. Support for Windows Phone 8.1 and Windows Store Universal projects
+1. Support for Windows Store Universal and Xamarin projects
 1. User ID, override IP and other new April 2014 Measurement Protocol features
 1. In-app purchase tracking integration and campaign support
 1. Throttling & replenishing of hits as per official SDKs
