@@ -18,9 +18,13 @@ This is the best solution for C# apps wanting to talk to Google Analytics. Why?
 
 1. Pure C# - easy to debug, extend or port (no JavaScript, web views or DLLs)
 1. Feature rich - offline, configurable, OS stats
-1. Ease of use - add *two lines* to your WindowsStore app
+1. Ease of use - add *two lines* to your app for basic screen tracking
 
 Still not convinced? Check out [how we compare to the alternatives](https://github.com/AttackPattern/CSharpAnalytics/wiki/Comparison)
+
+### Isn't there an official Google client?
+
+Google produce a library for *reading* analytics data in .NET apps but not recording them. The is a project that tries to look official on CodePlex but it is not, does not buffer up analytics while offline and is incapable of reporting accurate OS version information.
 
 ## Platforms
 
