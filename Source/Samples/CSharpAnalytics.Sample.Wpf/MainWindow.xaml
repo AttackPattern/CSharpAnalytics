@@ -1,0 +1,12 @@
+﻿<Window x:Class="CSharpAnalytics.Sample.Wpf.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MainWindow" Height="350" Width="525">
+    <Grid>
+        <StackPanel Width="150" HorizontalAlignment="Left">
+            <Button Content="Track Screen" Click="TrackScreenOnClick" Padding="5" Margin="5" />
+            <Button Content="Track Event" Click="TrackEventOnClick" Padding="5" Margin="5" />
+        </StackPanel>
+            <CheckBox x:Name="AllowUsageDataCollectionCheckBox" Content="Allow Usage Data Collection" VerticalAlignment="Bottom" Margin="5"></CheckBox>
+    </Grid>
+</Window>
