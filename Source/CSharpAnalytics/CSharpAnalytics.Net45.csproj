@@ -18,7 +18,7 @@
     <Optimize>false</Optimize>
     <OutputPath>..\..\Binaries\Debug\Net45\</OutputPath>
     <IntermediateOutputPath>obj\Debug\Net45\</IntermediateOutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NET45</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>ExtendedCorrectnessRules.ruleset</CodeAnalysisRuleSet>
@@ -28,7 +28,7 @@
     <Optimize>true</Optimize>
     <OutputPath>..\..\Binaries\Release\Net45\</OutputPath>
     <IntermediateOutputPath>obj\Release\Net45\</IntermediateOutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;NET45</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
