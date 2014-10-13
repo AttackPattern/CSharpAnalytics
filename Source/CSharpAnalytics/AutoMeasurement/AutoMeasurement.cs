@@ -15,6 +15,12 @@ namespace CSharpAnalytics
     {
         private static BaseAutoMeasurement _instance;
 
+        /// <summary>
+        ///     The implementation of <see cref="BaseAutoMeasurement" /> to use when calling methods and properties
+        ///     on <see cref="AutoMeasurement" />. Built-in types are <see cref="WinFormAutoMeasurement" /> and
+        ///     <see cref="WpfAutoMeasurement" />.
+        ///     Optionally you can use the implementations directly.
+        /// </summary>
         public static BaseAutoMeasurement Instance
         {
             get
