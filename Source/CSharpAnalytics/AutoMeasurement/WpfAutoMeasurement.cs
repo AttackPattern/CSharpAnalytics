@@ -18,6 +18,15 @@ namespace CSharpAnalytics
     /// </summary>
     public class WpfAutoMeasurement : BaseAutoMeasurement
     {
+        public WpfAutoMeasurement()
+        {
+            if (Application.Current == null)
+            {
+                throw new NullReferenceException(
+                    "System.Windows.Application.Current is null. Make sure you are running a WPF application.");
+            }
+        }
+
         [DllImport("wininet.dll")]
         private extern static bool InternetGetConnectedState(out int connDescription, int reservedValue);
 
