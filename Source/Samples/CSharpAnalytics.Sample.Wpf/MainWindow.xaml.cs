@@ -13,6 +13,7 @@ namespace CSharpAnalytics.Sample.Wpf
         {
             InitializeComponent();
 
+            AutoMeasurement.Instance = new WpfAutoMeasurement();
             AutoMeasurement.DebugWriter = d => Debug.WriteLine(d);
             AutoMeasurement.Start(new MeasurementConfiguration("UA-319000-8"));
 
