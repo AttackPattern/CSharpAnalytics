@@ -14,6 +14,7 @@ namespace CSharpAnalytics.Sample.WinForms
 
         private void MainFormLoad(object sender, EventArgs e)
         {
+            AutoMeasurement.Instance = new WinFormAutoMeasurement();
             AutoMeasurement.DebugWriter = d => Debug.WriteLine(d);
             AutoMeasurement.Start(new MeasurementConfiguration("UA-319000-8"));
 

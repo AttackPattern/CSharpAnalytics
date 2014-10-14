@@ -1,14 +1,14 @@
-﻿﻿// Copyright (c) Attack Pattern LLC.  All rights reserved.
+﻿// Copyright (c) Attack Pattern LLC.  All rights reserved.
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
-using System.Windows.Forms;
+using System.Windows;
 using CSharpAnalytics.Environment;
 using CSharpAnalytics.Network;
+using CSharpAnalytics.Serializers;
 using System;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using CSharpAnalytics.Serializers;
 using CSharpAnalytics.SystemInfo;
 
 namespace CSharpAnalytics
@@ -16,8 +16,17 @@ namespace CSharpAnalytics
     /// <summary>
     /// Helper class to get up and running with CSharpAnalytics in Windows Forms applications.
     /// </summary>
-    public class WinFormAutoMeasurement : BaseAutoMeasurement
+    public class WpfAutoMeasurement : BaseAutoMeasurement
     {
+        public WpfAutoMeasurement()
+        {
+            if (Application.Current == null)
+            {
+                throw new NullReferenceException(
+                    "System.Windows.Application.Current is null. Make sure you are running a WPF application.");
+            }
+        }
+
         [DllImport("wininet.dll")]
         private extern static bool InternetGetConnectedState(out int connDescription, int reservedValue);
 
@@ -27,7 +36,7 @@ namespace CSharpAnalytics
         /// </summary>
         protected override void HookEvents()
         {
-            Application.ApplicationExit += ApplicationOnExit;
+            Application.Current.Exit += ApplicationOnExit;
         }
 
         /// <summary>
@@ -35,7 +44,7 @@ namespace CSharpAnalytics
         /// </summary>
         protected override void UnhookEvents()
         {
-            Application.ApplicationExit -= ApplicationOnExit;
+            Application.Current.Exit -= ApplicationOnExit;
         }
 
         /// <summary>
@@ -46,7 +55,7 @@ namespace CSharpAnalytics
         /// </returns>
         protected override IEnvironment GetEnvironment()
         {
-            return new WinFormsEnvironment();
+            return new WpfEnvironment();
         }
 
         /// <summary>

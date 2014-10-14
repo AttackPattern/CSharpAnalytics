@@ -107,7 +107,7 @@ namespace CSharpAnalytics
         }
 #endif
 
-#if WINFORMS
+#if NET45
         /// <summary>
         /// Create a new cofiguration for analytics.
         /// </summary>

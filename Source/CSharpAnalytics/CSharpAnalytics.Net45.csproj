@@ -18,7 +18,7 @@
     <Optimize>false</Optimize>
     <OutputPath>..\..\Binaries\Debug\Net45\</OutputPath>
     <IntermediateOutputPath>obj\Debug\Net45\</IntermediateOutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NET45</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>ExtendedCorrectnessRules.ruleset</CodeAnalysisRuleSet>
@@ -28,15 +28,23 @@
     <Optimize>true</Optimize>
     <OutputPath>..\..\Binaries\Release\Net45\</OutputPath>
     <IntermediateOutputPath>obj\Release\Net45\</IntermediateOutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;NET45</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Windows" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.XML" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Activities\AutoTimedEventActivity.cs" />
@@ -52,9 +60,14 @@
     <Compile Include="Activities\SocialActivity.cs" />
     <Compile Include="Activities\TransactionActivity.cs" />
     <Compile Include="AutoMeasurement\AnalyticsScreenNameAttribute.cs" />
+    <Compile Include="AutoMeasurement\AutoMeasurement.cs" />
     <Compile Include="AutoMeasurement\BaseAutoMeasurement.cs" />
     <Compile Include="AutoMeasurement\ITrackOwnView.cs" />
+    <Compile Include="AutoMeasurement\WinFormsAutoMeasurement.cs" />
+    <Compile Include="AutoMeasurement\WpfAutoMeasurement.cs" />
     <Compile Include="Environment\IEnvironment.cs" />
+    <Compile Include="Environment\WinFormsEnvironment.cs" />
+    <Compile Include="Environment\WpfEnvironment.cs" />
     <Compile Include="Network\BackgroundUriRequester.cs" />
     <Compile Include="Network\ExtensionMethods.cs" />
     <Compile Include="Network\HttpClientRequester.cs" />
@@ -69,6 +82,7 @@
     <Compile Include="Protocols\Measurement\MeasurementUriBuilder.cs" />
     <Compile Include="Debugging\ParameterDefinition.cs" />
     <Compile Include="Debugging\ProtocolDebugger.cs" />
+    <Compile Include="Serializers\AppDataContractSerializer.cs" />
     <Compile Include="Sessions\SessionManager.cs" />
     <Compile Include="Sessions\SessionState.cs" />
     <Compile Include="Sessions\TimeoutSessionManager.cs" />
