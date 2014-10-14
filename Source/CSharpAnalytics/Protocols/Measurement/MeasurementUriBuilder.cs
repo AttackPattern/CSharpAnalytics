@@ -53,6 +53,9 @@ namespace CSharpAnalytics.Protocols.Measurement
             var parameters = BuildParameterList(activity);
             CarryForwardParameters(activity, parameters);
             var endpoint = configuration.UseSsl ? secureTrackingEndpoint : trackingEndpoint;
+
+            // Fragment is only added temporarily and used to calculate queue time.
+            // It will be removed in MeasurementAnalyticsClient.AdjustUriBeforeRequest.
             var uriBuilder = new UriBuilder(endpoint) {
                 Query = CreateQueryString(parameters),
                 Fragment = DateTime.UtcNow.ToString("O")
