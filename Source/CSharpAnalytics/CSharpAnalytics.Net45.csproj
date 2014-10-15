@@ -66,6 +66,7 @@
     <Compile Include="AutoMeasurement\WinFormsAutoMeasurement.cs" />
     <Compile Include="AutoMeasurement\WpfAutoMeasurement.cs" />
     <Compile Include="Environment\IEnvironment.cs" />
+    <Compile Include="Environment\ManualEnvironment.cs" />
     <Compile Include="Environment\WinFormsEnvironment.cs" />
     <Compile Include="Environment\WpfEnvironment.cs" />
     <Compile Include="Network\BackgroundUriRequester.cs" />

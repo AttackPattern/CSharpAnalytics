@@ -35,7 +35,6 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .NET Framework is automatically included -->
-    <Folder Include="Serializers\" />
     <Folder Include="SystemInfo\" />
   </ItemGroup>
   <ItemGroup>
@@ -53,7 +52,9 @@
     <Compile Include="AutoMeasurement\AutoMeasurement.cs" />
     <Compile Include="AutoMeasurement\BaseAutoMeasurement.cs" />
     <Compile Include="AutoMeasurement\ITrackOwnView.cs" />
+    <Compile Include="AutoMeasurement\ManualMeasurement.cs" />
     <Compile Include="Environment\IEnvironment.cs" />
+    <Compile Include="Environment\ManualEnvironment.cs" />
     <Compile Include="Network\BackgroundUriRequester.cs" />
     <Compile Include="Network\ExtensionMethods.cs" />
     <Compile Include="Network\HttpClientRequester.cs" />
@@ -67,6 +68,7 @@
     <Compile Include="Protocols\Measurement\MeasurementUriBuilder.cs" />
     <Compile Include="Debugging\ParameterDefinition.cs" />
     <Compile Include="Debugging\ProtocolDebugger.cs" />
+    <Compile Include="Serializers\IEventSerializer.cs" />
     <Compile Include="Sessions\SessionManager.cs" />
     <Compile Include="Sessions\SessionState.cs" />
     <Compile Include="Sessions\TimeoutSessionManager.cs" />
