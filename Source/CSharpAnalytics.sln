@@ -50,6 +50,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Portable", "Portable", "{47
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharpAnalytics.Portable45", "CSharpAnalytics\CSharpAnalytics.Portable45.csproj", "{345A8A61-8B6B-4EF0-A041-A573A6FF2AD6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharpAnalytics.Sample.Portable", "Samples\CSharpAnalytics.Sample.Portable\CSharpAnalytics.Sample.Portable.csproj", "{82189493-4607-4DB3-90EF-FA886A0DB65D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -362,6 +364,20 @@ Global
 		{345A8A61-8B6B-4EF0-A041-A573A6FF2AD6}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{345A8A61-8B6B-4EF0-A041-A573A6FF2AD6}.Release|x64.ActiveCfg = Release|Any CPU
 		{345A8A61-8B6B-4EF0-A041-A573A6FF2AD6}.Release|x86.ActiveCfg = Release|Any CPU
+		{82189493-4607-4DB3-90EF-FA886A0DB65D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{82189493-4607-4DB3-90EF-FA886A0DB65D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{82189493-4607-4DB3-90EF-FA886A0DB65D}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{82189493-4607-4DB3-90EF-FA886A0DB65D}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{82189493-4607-4DB3-90EF-FA886A0DB65D}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{82189493-4607-4DB3-90EF-FA886A0DB65D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{82189493-4607-4DB3-90EF-FA886A0DB65D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{82189493-4607-4DB3-90EF-FA886A0DB65D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{82189493-4607-4DB3-90EF-FA886A0DB65D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{82189493-4607-4DB3-90EF-FA886A0DB65D}.Release|ARM.ActiveCfg = Release|Any CPU
+		{82189493-4607-4DB3-90EF-FA886A0DB65D}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{82189493-4607-4DB3-90EF-FA886A0DB65D}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{82189493-4607-4DB3-90EF-FA886A0DB65D}.Release|x64.ActiveCfg = Release|Any CPU
+		{82189493-4607-4DB3-90EF-FA886A0DB65D}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -382,5 +398,6 @@ Global
 		{1A9591AF-E5CD-42DE-80A4-B17B227DD45B} = {6145367D-3F9E-440B-AAE5-2FDF6864C111}
 		{A599EEEA-FC89-47FB-B8A9-DFD16FC3201D} = {3F625E98-D620-4CF3-BD83-5C97B7360496}
 		{345A8A61-8B6B-4EF0-A041-A573A6FF2AD6} = {47A079C6-34F7-4D97-9A27-DB288EC01954}
+		{82189493-4607-4DB3-90EF-FA886A0DB65D} = {3F625E98-D620-4CF3-BD83-5C97B7360496}
 	EndGlobalSection
 EndGlobal
