@@ -33,17 +33,12 @@ namespace CSharpAnalytics.Network
         }
 
         /// <summary>
-        /// Creates the HttpRequestMessage for a URI taking into consideration the length.
-        /// For URIs over 2000 bytes it will be a GET otherwise it will become a POST
-        /// with the query payload moved to the POST body.
+        /// Creates a POST HttpRequestMessage for an URI, moving query parameters to body.
         /// </summary>
         /// <param name="uri">URI to request.</param>
         /// <returns>HttpRequestMessage for this URI.</returns>
         internal static HttpRequestMessage CreateRequest(Uri uri)
         {
-            if (!uri.ShouldUsePostForRequest())
-                return new HttpRequestMessage(HttpMethod.Get, uri);
-
             var uriWithoutQuery = new Uri(uri.GetComponents(UriComponents.SchemeAndServer | UriComponents.Path, UriFormat.Unescaped));
             return new HttpRequestMessage(HttpMethod.Post, uriWithoutQuery) { Content = new StringContent(uri.GetComponents(UriComponents.Query, UriFormat.UriEscaped)) };
         }

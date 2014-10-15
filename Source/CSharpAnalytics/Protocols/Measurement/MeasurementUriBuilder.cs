@@ -53,6 +53,9 @@ namespace CSharpAnalytics.Protocols.Measurement
             var parameters = BuildParameterList(activity);
             CarryForwardParameters(activity, parameters);
             var endpoint = configuration.UseSsl ? secureTrackingEndpoint : trackingEndpoint;
+
+            // Fragment is only added temporarily and used to calculate queue time.
+            // It will be removed in MeasurementAnalyticsClient.AdjustUriBeforeRequest.
             var uriBuilder = new UriBuilder(endpoint) {
                 Query = CreateQueryString(parameters),
                 Fragment = DateTime.UtcNow.ToString("O")
@@ -88,7 +91,18 @@ namespace CSharpAnalytics.Protocols.Measurement
                 .Concat(MeasurementActivityParameterBuilder.GetActivityParameters(activity))
                 .Concat(GetParameters(activity.CustomDimensions))
                 .Concat(GetParameters(activity.CustomMetrics))
+                .Concat(GetCacheBustingParameter())
                 .ToList();
+        }
+
+        /// <summary>
+        /// Cache busting to avoid caching. Should be added as last parameter in payload.
+        /// </summary>
+        /// <remarks>https://developers.google.com/analytics/devguides/collection/protocol/v1/reference</remarks>
+        /// <returns></returns>
+        private IEnumerable<KeyValuePair<string, string>> GetCacheBustingParameter()
+        {
+            yield return KeyValuePair.Create("z", random.Next().ToString(CultureInfo.InvariantCulture));
         }
 
         /// <summary>
@@ -113,7 +127,6 @@ namespace CSharpAnalytics.Protocols.Measurement
         private static IEnumerable<KeyValuePair<string, string>> GetParameters()
         {
             yield return KeyValuePair.Create("v", ProtocolVersion);
-            yield return KeyValuePair.Create("z", random.Next().ToString(CultureInfo.InvariantCulture));
         }
 
         /// <summary>
