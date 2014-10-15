@@ -18,9 +18,6 @@ Custom metrics and dimensions can now be set on a specific activity (recommended
     <tags>google analytics, metrics, analytics, ga, measurement protocol</tags>
   </metadata>
   <files>
-    <file src="..\Binaries\Release\Net45\CSharpAnalytics.Net45.dll" target="lib\net45" />
-    <file src="..\Binaries\Release\Windows8\CSharpAnalytics.Windows8.dll" target="lib\windows8" />
-    <file src="..\Binaries\Release\Windows81\CSharpAnalytics.Windows81.dll" target="lib\windows81" />
-    <file src="..\Binaries\Release\WindowsPhone8\CSharpAnalytics.WindowsPhone8.dll" target="lib\windowsphone8" />
+    <file src="..\Binaries\Release\**\CSharpAnalytics.*.dll" target="lib" />
   </files>
 </package>
