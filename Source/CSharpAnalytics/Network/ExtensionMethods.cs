@@ -8,8 +8,6 @@ namespace CSharpAnalytics.Network
 {
     public static class ExtensionMethods
     {
-        private const int MaxUriLength = 2000;
-
         /// <summary>
         /// Obtain the innermost Exception from within an Exception.
         /// </summary>
@@ -21,17 +19,6 @@ namespace CSharpAnalytics.Network
             while (nextException.InnerException != null)
                 nextException = nextException.InnerException;
             return nextException;
-        }
-
-        /// <summary>
-        /// Whether a URI request is too long to be sent as a GET and instead the query
-        /// parameters should be sent as the body of a POST instead.
-        /// </summary>
-        /// <param name="requestUri">URI request being considered.</param>
-        /// <returns>True if a POST should be used, false if GET should be used.</returns>
-        public static bool ShouldUsePostForRequest(this Uri requestUri)
-        {
-            return requestUri.AbsoluteUri.Length > MaxUriLength;
         }
     }
 }
