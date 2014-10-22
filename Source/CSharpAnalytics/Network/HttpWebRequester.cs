@@ -3,11 +3,9 @@
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
 using System;
-using System.IO;
 using System.Net;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace CSharpAnalytics.Network
 {
@@ -50,21 +48,7 @@ namespace CSharpAnalytics.Network
         /// <returns>HttpWebRequest for this URI.</returns>
         internal static HttpWebRequest CreateRequest(Uri requestUri, bool writePostBody = true)
         {
-            return requestUri.ShouldUsePostForRequest()
-                       ? CreatePostRequest(requestUri, writePostBody)
-                       : CreateGetRequest(requestUri);
-        }
-
-        /// <summary>
-        /// Create a HttpWebRequest using the HTTP GET method.
-        /// </summary>
-        /// <param name="requestUri">URI to request.</param>
-        /// <returns>HttpWebRequest for this URI.</returns>
-        private static HttpWebRequest CreateGetRequest(Uri requestUri)
-        {
-            var getRequest = WebRequest.CreateHttp(requestUri);
-            getRequest.Method = "GET";
-            return getRequest;
+            return CreatePostRequest(requestUri, writePostBody);
         }
 
         /// <summary>
