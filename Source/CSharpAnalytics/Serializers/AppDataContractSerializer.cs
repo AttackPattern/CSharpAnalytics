@@ -12,18 +12,31 @@ namespace CSharpAnalytics.Serializers
     /// </summary>
     internal static class AppDataContractSerializer
     {
-        private static readonly string folderPath;
+        private static string folderPath;
 
-        static AppDataContractSerializer()
+        /// <summary>
+        /// Gets or sets the file system path where the data should be serialized to and from.
+        /// </summary>
+        public static string FolderPath
+        {
+            get { return folderPath ?? (folderPath = GetDefaultFolderPath()); }
+            set { folderPath = value; }
+        }
+
+        /// <summary>
+        /// Determine a default file system path for the serialization of the data.
+        /// </summary>
+        /// <returns></returns>
+        private static string GetDefaultFolderPath()
         {
             var appDataPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData);
 
             var customAttributes = Assembly.GetEntryAssembly().GetCustomAttributes(typeof(AssemblyCompanyAttribute), false);
-            var folderName = customAttributes.Length > 0 
-                ? ((AssemblyCompanyAttribute)customAttributes[0]).Company 
+            var folderName = customAttributes.Length > 0
+                ? ((AssemblyCompanyAttribute)customAttributes[0]).Company
                 : "CSharpAnalytics";
 
-            folderPath = Path.Combine(appDataPath, folderName);
+            return Path.Combine(appDataPath, folderName);
         }
 
         /// <summary>
@@ -107,9 +120,9 @@ namespace CSharpAnalytics.Serializers
         private static string GetFilePath<T>(string filename)
         {
             // Ensure directory exists
-            Directory.CreateDirectory(folderPath);
+            Directory.CreateDirectory(FolderPath);
 
-            return Path.Combine(folderPath, filename ?? typeof(T).Name);
+            return Path.Combine(FolderPath, filename ?? typeof(T).Name);
         }
     }
 }
