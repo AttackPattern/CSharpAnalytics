@@ -136,7 +136,10 @@ namespace CSharpAnalytics.Protocols.Measurement
         /// <returns>Enumerable of key/value pairs containing parameters for this environment.</returns>
         internal static IEnumerable<KeyValuePair<string, string>> GetParameters(IEnvironment environment)
         {
-            yield return KeyValuePair.Create("ul", environment.LanguageCode.ToLowerInvariant());
+            yield return
+                KeyValuePair.Create("ul",
+                    environment.LanguageCode != null ? environment.LanguageCode.ToLowerInvariant() : null);
+
             yield return KeyValuePair.Create("de", environment.CharacterSet == null ? "-" : environment.CharacterSet.ToUpperInvariant());
 
             if (!String.IsNullOrWhiteSpace(environment.FlashVersion))
