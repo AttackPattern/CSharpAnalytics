@@ -38,7 +38,11 @@ namespace CSharpAnalytics
         private bool isStarted;
 
         protected const string ClientUserAgent = "CSharpAnalytics/0.3";
+#if WINDOWS_PHONE_APP
+        protected Func<Uri, CancellationToken, Task<bool>> Requester;
+#else
         protected Func<Uri, CancellationToken, bool> Requester;
+#endif
 
         /// <summary>
         /// Access to the MeasurementAnalyticsClient necessary to send additional events.
@@ -248,7 +252,11 @@ namespace CSharpAnalytics
         /// Because user agent is not persisted unsent URIs that are saved and then sent after an upgrade
         /// will have the new user agent string not the actual one that generated them.
         /// </remarks>
+#if WINDOWS_PHONE_APP
+        private async Task<bool> Request(Uri uri, CancellationToken token)
+#else
         private bool Request(Uri uri, CancellationToken token)
+#endif
         {
             if (sessionManager.VisitorStatus != VisitorStatus.Active)
                 return true;
@@ -256,7 +264,11 @@ namespace CSharpAnalytics
             uri = client.AdjustUriBeforeRequest(uri);
             protocolDebugger.Dump(uri, DebugWriter);
 
+#if WINDOWS_PHONE_APP
+            return await Requester(uri, token);
+#else
             return Requester(uri, token);
+#endif
         }
 
         /// <summary>

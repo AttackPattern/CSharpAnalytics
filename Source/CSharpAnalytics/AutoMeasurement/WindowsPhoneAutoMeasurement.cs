@@ -8,13 +8,21 @@ using CSharpAnalytics.Protocols.Measurement;
 using CSharpAnalytics.Serializers;
 using CSharpAnalytics.Sessions;
 using CSharpAnalytics.SystemInfo;
-using Microsoft.Phone.Controls;
-using Microsoft.Phone.Shell;
 using System;
 using System.Threading.Tasks;
+using Windows.Networking.Connectivity;
+
+#if WINDOWS_PHONE_APP
+using Windows.ApplicationModel.Activation;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Navigation;
+#else
 using System.Windows;
 using System.Windows.Navigation;
-using Windows.Networking.Connectivity;
+using Microsoft.Phone.Controls;
+using Microsoft.Phone.Shell;
+#endif
 
 namespace CSharpAnalytics
 {
@@ -23,15 +31,24 @@ namespace CSharpAnalytics
     /// Either use as-is by calling StartAsync, Attach and StopAsync from your App.xaml.cs or use as a
     /// starting point to wire up your own way.
     /// </summary>
-    public class WindowsPhoneAutoMeasurement : BaseAutoMeasurement
+    public class WindowsPhoneAutoMeasurement : BaseAutoMeasurement 
     {
+#if WINDOWS_PHONE_APP
+        private static Frame attachedFrame;
+#else
         private static PhoneApplicationFrame attachedFrame;
+#endif
+
 
         /// <summary>
         /// Attach to the root frame, hook into the navigation event and track initial screen view.
         /// Call this just before Window.Current.Activate() in your App.OnLaunched method.
         /// </summary>
+#if WINDOWS_PHONE_APP
+        public void Attach(Frame frame)
+#else
         public void Attach(PhoneApplicationFrame frame)
+#endif
         {
             if (frame == null)
                 throw new ArgumentNullException("frame");
@@ -67,8 +84,13 @@ namespace CSharpAnalytics
         protected override void HookEvents()
         {
             var application = Application.Current;
+#if WINDOWS_PHONE_APP
+            application.Resuming += ApplicationOnResuming;
+            application.Suspending += ApplicationOnSuspending;
+#else
             application.Startup += ApplicationOnStartup;
             application.Exit += ApplicationOnExit;
+#endif
         }
 
         /// <summary>
@@ -80,9 +102,13 @@ namespace CSharpAnalytics
         protected override void UnhookEvents()
         {
             var application = Application.Current;
+#if WINDOWS_PHONE_APP
+            application.Resuming -= ApplicationOnResuming;
+            application.Suspending -= ApplicationOnSuspending;
+#else
             application.Startup -= ApplicationOnStartup;
             application.Exit -= ApplicationOnExit;
-
+#endif
             if (attachedFrame != null)
                 attachedFrame.Navigated -= FrameNavigated;
             attachedFrame = null;
@@ -152,7 +178,11 @@ namespace CSharpAnalytics
         /// </summary>
         /// <param name="sender">Sender of the event.</param>
         /// <param name="e">Startup event parameter.</param>
+#if WINDOWS_PHONE_APP
+        private async void ApplicationOnResuming(object sender, object o)
+#else
         private async void ApplicationOnStartup(object sender, StartupEventArgs e)
+#endif
         {
             await StartRequesterAsync();
         }
@@ -162,7 +192,11 @@ namespace CSharpAnalytics
         /// </summary>
         /// <param name="sender">Sender of the event.</param>
         /// <param name="e">Empty event information.</param>
+#if WINDOWS_PHONE_APP
+        private async void ApplicationOnSuspending(object sender, Windows.ApplicationModel.SuspendingEventArgs suspendingEventArgs)
+#else
         private async void ApplicationOnExit(object sender, EventArgs e)
+#endif
         {
             UnhookEvents();
             await StopRequesterAsync();
@@ -191,7 +225,11 @@ namespace CSharpAnalytics
             set { instance.DebugWriter = value; }
         }
 
+#if WINDOWS_PHONE_APP
+        public static void Attach(Frame rootFrame)
+#else
         public static void Attach(PhoneApplicationFrame rootFrame)
+#endif
         {
             instance.Attach(rootFrame);
         }
@@ -201,11 +239,18 @@ namespace CSharpAnalytics
             instance.SetOptOut(optOut);
         }
 
-        public static void Start(MeasurementConfiguration measurementConfiguration, LaunchingEventArgs args, TimeSpan? uploadInterval = null)
+#if WINDOWS_PHONE_APP
+        public static void Start(MeasurementConfiguration measurementConfiguration, LaunchActivatedEventArgs args, TimeSpan? uploadInterval = null)
         {
+            String argTypeName = "LaunchActivatedEventArgs";
+#else
+        public static void Start(MeasurementConfiguration measurementConfiguration, Microsoft.Phone.Shell.LaunchingEventArgs args, TimeSpan? uploadInterval = null)
+        {
+            String argTypeName = "LaunchingEventArgs";
+#endif
             var launchKind = args == null
                 ? ""
-                : args.GetType().Name.Replace("LaunchingEventArgs", "");
+                : args.GetType().Name.Replace(argTypeName, "");
 
             instance.Start(measurementConfiguration, launchKind, uploadInterval);
         }

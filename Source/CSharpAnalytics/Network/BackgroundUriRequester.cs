@@ -29,9 +29,17 @@ namespace CSharpAnalytics.Network
         private Uri currentlySending;
 
         private readonly Func<bool> checkInternetAvailable;
+#if WINDOWS_PHONE_APP
+        private readonly Func<Uri, CancellationToken, Task<bool>> requester;
+#else
         private readonly Func<Uri, CancellationToken, bool> requester;
+#endif
 
+#if WINDOWS_PHONE_APP
+        public BackgroundUriRequester(Func<Uri, CancellationToken, Task<bool>> requester, Func<bool> checkInternetAvailable = null)
+#else
         public BackgroundUriRequester(Func<Uri, CancellationToken, bool> requester, Func<bool> checkInternetAvailable = null)
+#endif
         {
             this.requester = requester;
             this.checkInternetAvailable = checkInternetAvailable ?? (() => true);
@@ -68,7 +76,12 @@ namespace CSharpAnalytics.Network
             cancellationTokenSource = new CancellationTokenSource();
             currentUploadInterval = uploadInterval;
 
+#if WINDOWS_PHONE_APP
+            Func<Task> callback = RequestLoop;
+            backgroundTask = Task.Factory.StartNew(callback, cancellationTokenSource.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+#else
             backgroundTask = Task.Factory.StartNew(RequestLoop, cancellationTokenSource.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+#endif
         }
 
         /// <summary>
@@ -93,7 +106,11 @@ namespace CSharpAnalytics.Network
         /// <summary>
         /// Loop that keeps requesting URIs in the queue until there are none left, then sleeps.
         /// </summary>
+#if WINDOWS_PHONE_APP
+        private async Task RequestLoop()
+#else
         private void RequestLoop()
+#endif
         {
             using (var queueEmptyWait = new ManualResetEventSlim())
             {
@@ -103,9 +120,12 @@ namespace CSharpAnalytics.Network
                     {
                         if (checkInternetAvailable())
                         {
-                            while (GetNextQueueEntry(out currentlySending))
-                            {
+                            while (GetNextQueueEntry(out currentlySending)) {
+#if WINDOWS_PHONE_APP
+                                await RequestWithFailureRetry(currentlySending, cancellationTokenSource.Token);
+#else
                                 RequestWithFailureRetry(currentlySending, cancellationTokenSource.Token);
+#endif
                                 currentlySending = null;
                             }
                         }
@@ -128,16 +148,23 @@ namespace CSharpAnalytics.Network
         /// </summary>
         /// <param name="requestUri">URI to request.</param>
         /// <param name="cancellationToken">Cancellation token that indicates if a request should be cancelled.</param>
+#if WINDOWS_PHONE_APP
+        private async Task RequestWithFailureRetry(Uri requestUri, CancellationToken cancellationToken)
+#else
         private void RequestWithFailureRetry(Uri requestUri, CancellationToken cancellationToken)
+#endif
         {
             var retryDelay = TimeSpan.Zero;
             var successfullySent = false;
 
             do
             {
-                try
-                {
+                try {
+#if WINDOWS_PHONE_APP
+                    successfullySent = await requester(requestUri, cancellationToken);
+#else
                     successfullySent = requester(requestUri, cancellationToken);
+#endif
                 }
                 catch (Exception ex)
                 {

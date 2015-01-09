@@ -5,6 +5,10 @@
 using System.Globalization;
 using System.Windows;
 
+#if !SILVERLIGHT
+using Windows.Graphics.Display;
+#endif
+
 namespace CSharpAnalytics.Environment
 {
     /// <summary>
@@ -24,22 +28,40 @@ namespace CSharpAnalytics.Environment
 
         public uint ScreenHeight
         {
+#if WINDOWS_PHONE_APP
+            get { return (uint)Windows.UI.Xaml.Window.Current.Bounds.Height; }
+#else
             get { return (uint)(ViewportHeight * (Application.Current.Host.Content.ScaleFactor / 100)); }
+#endif
         }
 
         public uint ScreenWidth
         {
+#if WINDOWS_PHONE_APP
+            get { return (uint)Windows.UI.Xaml.Window.Current.Bounds.Width; }
+#else
             get { return (uint)(ViewportWidth * (Application.Current.Host.Content.ScaleFactor / 100)); }
+#endif
         }
 
         public uint ViewportHeight
         {
+#if WINDOWS_PHONE_APP
+            /// @todo   not sure what the WP8.1 equivalent is
+            get { return ScreenHeight; }
+#else
             get { return (uint)Application.Current.Host.Content.ActualHeight; }
+#endif
         }
 
         public uint ViewportWidth
         {
+#if WINDOWS_PHONE_APP
+            /// @todo   not sure what the WP8.1 equivalent is
+            get { return ScreenWidth; }
+#else
             get { return (uint)Application.Current.Host.Content.ActualWidth; }
+#endif
         }
     }
 }
