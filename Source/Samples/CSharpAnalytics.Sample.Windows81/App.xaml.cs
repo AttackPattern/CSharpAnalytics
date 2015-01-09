@@ -35,7 +35,7 @@ namespace CSharpAnalytics.Sample.Windows81
         {
             // CSharpAnalytics initialization
             AutoMeasurement.DebugWriter = d => System.Diagnostics.Debug.WriteLine(d);
-            AutoMeasurement.Start(new MeasurementConfiguration("UA-319000-8"), e);
+            AutoMeasurement.Start(new MeasurementConfiguration("UA-319000-8", "SampleApp", "1.0"), e);
 
 #if DEBUG
             // Show graphics profiling information while debugging.
