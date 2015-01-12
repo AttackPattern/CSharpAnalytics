@@ -35,9 +35,16 @@ namespace CSharpAnalytics.Network
         public bool Request(Uri requestUri, CancellationToken cancellationToken)
         {
             var request = CreateRequest(requestUri);
+
+#if WINDOWS_PHONE_APP
+            request.Headers[HttpRequestHeader.UserAgent] = userAgent;
+            var httpResponse = (HttpWebResponse)request.GetResponseAsync().Result;
+#else
             request.Headers.Add(HttpRequestHeader.UserAgent, userAgent);
             var response = (HttpWebResponse)request.GetResponse();
-            return response.StatusCode == HttpStatusCode.OK;
+            var httpResponse = (HttpWebResponse)response;
+#endif
+            return httpResponse.StatusCode == HttpStatusCode.OK;
         }
 
         /// <summary>
@@ -67,14 +74,25 @@ namespace CSharpAnalytics.Network
             
             var bodyWithQuery = requestUri.GetComponents(UriComponents.Query, UriFormat.UriEscaped);
             var bodyBytes = Encoding.UTF8.GetBytes(bodyWithQuery);
-
+#if !WINDOWS_PHONE_APP
             postRequest.ContentLength = bodyBytes.Length;
+#endif
 
             if (writeBody)
             {
+#if WINDOWS_PHONE_APP
+                var stream = postRequest.GetRequestStreamAsync().Result;
+#else
                 var stream = postRequest.GetRequestStream();
+#endif
                 stream.Write(bodyBytes, 0, bodyBytes.Length);
-                stream.Close();
+
+#if WINDOWS_PHONE_APP
+                stream.Flush();
+                stream.Dispose();
+#else
+                stream.Close();      
+#endif
             }
 
             return postRequest;

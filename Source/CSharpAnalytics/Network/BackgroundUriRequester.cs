@@ -103,8 +103,7 @@ namespace CSharpAnalytics.Network
                     {
                         if (checkInternetAvailable())
                         {
-                            while (GetNextQueueEntry(out currentlySending))
-                            {
+                            while (GetNextQueueEntry(out currentlySending)) {
                                 RequestWithFailureRetry(currentlySending, cancellationTokenSource.Token);
                                 currentlySending = null;
                             }
@@ -135,8 +134,7 @@ namespace CSharpAnalytics.Network
 
             do
             {
-                try
-                {
+                try {
                     successfullySent = requester(requestUri, cancellationToken);
                 }
                 catch (Exception ex)
