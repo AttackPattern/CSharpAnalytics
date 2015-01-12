@@ -98,13 +98,13 @@
     <Compile Include="AutoMeasurement\AnalyticsScreenNameAttribute.cs" />
     <Compile Include="AutoMeasurement\AnalyticsUserOptions.cs" />
     <Compile Include="AutoMeasurement\BaseAutoMeasurement.cs" />
-    <Compile Include="AutoMeasurement\WindowsPhoneAutoMeasurement.WP81.cs" />
+    <Compile Include="AutoMeasurement\WindowsPhone81AutoMeasurement.cs" />
     <Compile Include="Debugging\MeasurementParameterDefinitions.cs" />
     <Compile Include="Debugging\ParameterDefinition.cs" />
     <Compile Include="Debugging\ProtocolDebugger.cs" />
-    <Compile Include="Environment\WindowsPhoneEnvironment.WP81.cs" />
+    <Compile Include="Environment\WindowsPhone81Environment.cs" />
     <Compile Include="Serializers\LocalFolderContractSerializer.cs" />
-    <Compile Include="SystemInfo\WindowsPhoneSystemInfo.WP81.cs" />
+    <Compile Include="SystemInfo\WindowsPhone81SystemInfo.cs" />
     <Compile Include="AutoMeasurement\ITrackOwnView.cs" />
     <Compile Include="Environment\IEnvironment.cs" />
     <Compile Include="Network\BackgroundUriRequester.cs" />
