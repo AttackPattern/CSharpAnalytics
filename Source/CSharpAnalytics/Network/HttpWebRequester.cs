@@ -32,23 +32,12 @@ namespace CSharpAnalytics.Network
         /// </summary>
         /// <param name="requestUri">URI to request.</param>
         /// <param name="cancellationToken">CancellationToken to indicate if the request should be cancelled.</param>
-#if WINDOWS_PHONE_APP
-        public async Task<bool> Request(Uri requestUri, CancellationToken cancellationToken)
-#else
         public bool Request(Uri requestUri, CancellationToken cancellationToken)
-#endif
         {
-#if WINDOWS_PHONE_APP
-            var request = await CreateRequest(requestUri);
-            request.Headers[HttpRequestHeader.UserAgent] = userAgent;
-            var response = await request.GetResponseAsync();
-#else
             var request = CreateRequest(requestUri);
             request.Headers.Add(HttpRequestHeader.UserAgent, userAgent);
             var response = (HttpWebResponse)request.GetResponse();
-#endif
-            var httpResponse = (HttpWebResponse)response;
-            return httpResponse.StatusCode == HttpStatusCode.OK;
+            return response.StatusCode == HttpStatusCode.OK;
         }
 
         /// <summary>
@@ -59,17 +48,10 @@ namespace CSharpAnalytics.Network
         /// <param name="requestUri">URI to request.</param>
         /// <param name="writePostBody">Whether to open the http request and write the POST body.</param>
         /// <returns>HttpWebRequest for this URI.</returns>
-#if WINDOWS_PHONE_APP
-        internal static async Task<HttpWebRequest> CreateRequest(Uri requestUri, bool writePostBody = true)
-        {
-            return await CreatePostRequest(requestUri, writePostBody);
-        }
-#else
         internal static HttpWebRequest CreateRequest(Uri requestUri, bool writePostBody = true)
         {
             return CreatePostRequest(requestUri, writePostBody);
         }
-#endif
 
         /// <summary>
         /// Create a HttpWebRequest using the HTTP POST method.
@@ -77,11 +59,7 @@ namespace CSharpAnalytics.Network
         /// <param name="requestUri">URI to request.</param>
         /// <param name="writeBody">Whether it should write the contents of the body.</param>
         /// <returns>HttpWebRequest for this URI.</returns>
-#if WINDOWS_PHONE_APP
-        private static async Task<HttpWebRequest> CreatePostRequest(Uri requestUri, bool writeBody)
-#else
         private static HttpWebRequest CreatePostRequest(Uri requestUri, bool writeBody)
-#endif
         {
             var uriWithoutQuery = new Uri(requestUri.GetComponents(UriComponents.SchemeAndServer | UriComponents.Path, UriFormat.Unescaped));
             var postRequest = WebRequest.CreateHttp(uriWithoutQuery);
@@ -89,25 +67,14 @@ namespace CSharpAnalytics.Network
             
             var bodyWithQuery = requestUri.GetComponents(UriComponents.Query, UriFormat.UriEscaped);
             var bodyBytes = Encoding.UTF8.GetBytes(bodyWithQuery);
-#if !WINDOWS_PHONE_APP
+
             postRequest.ContentLength = bodyBytes.Length;
-#endif
 
             if (writeBody)
             {
-#if WINDOWS_PHONE_APP
-                var stream = await postRequest.GetRequestStreamAsync();
-#else
                 var stream = postRequest.GetRequestStream();
-#endif
                 stream.Write(bodyBytes, 0, bodyBytes.Length);
-
-#if WINDOWS_PHONE_APP
-                stream.Flush();
-                stream.Dispose();
-#else
-                stream.Close();      
-#endif
+                stream.Close();
             }
 
             return postRequest;

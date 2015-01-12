@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+VisualStudioVersion = 12.0.30324.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharpAnalytics.Windows8", "CSharpAnalytics\CSharpAnalytics.Windows8.csproj", "{31872BEA-1F8A-4FF0-B796-7768A0CDF256}"
 EndProject
@@ -45,10 +45,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharpAnalytics.Sample.WindowsPhone8", "Samples\CSharpAnalytics.Sample.WindowsPhone8\CSharpAnalytics.Sample.WindowsPhone8.csproj", "{1A9591AF-E5CD-42DE-80A4-B17B227DD45B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharpAnalytics.Sample.Wpf", "Samples\CSharpAnalytics.Sample.Wpf\CSharpAnalytics.Sample.Wpf.csproj", "{A599EEEA-FC89-47FB-B8A9-DFD16FC3201D}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Windows Phone 8.1", "Windows Phone 8.1", "{3C54D11F-1BBF-4F3C-894C-0566BB357008}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharpAnalytics.WindowsPhone81", "CSharpAnalytics\CSharpAnalytics.WindowsPhone81.csproj", "{64EB7726-8FD2-4764-94E7-347977E1FEEE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -348,24 +344,6 @@ Global
 		{A599EEEA-FC89-47FB-B8A9-DFD16FC3201D}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{A599EEEA-FC89-47FB-B8A9-DFD16FC3201D}.Release|x64.ActiveCfg = Release|Any CPU
 		{A599EEEA-FC89-47FB-B8A9-DFD16FC3201D}.Release|x86.ActiveCfg = Release|Any CPU
-		{64EB7726-8FD2-4764-94E7-347977E1FEEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{64EB7726-8FD2-4764-94E7-347977E1FEEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{64EB7726-8FD2-4764-94E7-347977E1FEEE}.Debug|ARM.ActiveCfg = Debug|ARM
-		{64EB7726-8FD2-4764-94E7-347977E1FEEE}.Debug|ARM.Build.0 = Debug|ARM
-		{64EB7726-8FD2-4764-94E7-347977E1FEEE}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{64EB7726-8FD2-4764-94E7-347977E1FEEE}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{64EB7726-8FD2-4764-94E7-347977E1FEEE}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{64EB7726-8FD2-4764-94E7-347977E1FEEE}.Debug|x86.ActiveCfg = Debug|x86
-		{64EB7726-8FD2-4764-94E7-347977E1FEEE}.Debug|x86.Build.0 = Debug|x86
-		{64EB7726-8FD2-4764-94E7-347977E1FEEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{64EB7726-8FD2-4764-94E7-347977E1FEEE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{64EB7726-8FD2-4764-94E7-347977E1FEEE}.Release|ARM.ActiveCfg = Release|ARM
-		{64EB7726-8FD2-4764-94E7-347977E1FEEE}.Release|ARM.Build.0 = Release|ARM
-		{64EB7726-8FD2-4764-94E7-347977E1FEEE}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{64EB7726-8FD2-4764-94E7-347977E1FEEE}.Release|Mixed Platforms.Build.0 = Release|x86
-		{64EB7726-8FD2-4764-94E7-347977E1FEEE}.Release|x64.ActiveCfg = Release|Any CPU
-		{64EB7726-8FD2-4764-94E7-347977E1FEEE}.Release|x86.ActiveCfg = Release|x86
-		{64EB7726-8FD2-4764-94E7-347977E1FEEE}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -385,6 +363,5 @@ Global
 		{2716A467-838A-4553-8FBC-AE29BD83F845} = {6145367D-3F9E-440B-AAE5-2FDF6864C111}
 		{1A9591AF-E5CD-42DE-80A4-B17B227DD45B} = {6145367D-3F9E-440B-AAE5-2FDF6864C111}
 		{A599EEEA-FC89-47FB-B8A9-DFD16FC3201D} = {3F625E98-D620-4CF3-BD83-5C97B7360496}
-		{64EB7726-8FD2-4764-94E7-347977E1FEEE} = {3C54D11F-1BBF-4F3C-894C-0566BB357008}
 	EndGlobalSection
 EndGlobal
