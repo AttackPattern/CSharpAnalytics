@@ -18,7 +18,7 @@
     <ProjectTypeGuids>{BC8A1FFA-BEE3-4634-8014-F334798102B3};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <PackageCertificateKeyFile>Windows81\CSharpAnalytics.Test.Windows81_TemporaryKey.pfx</PackageCertificateKeyFile>
     <AppxBundle>Never</AppxBundle>
-    <PackageCertificateThumbprint>C91C3CF842B7829162622512B9E3209FFA4FE360</PackageCertificateThumbprint>
+    <PackageCertificateThumbprint>1FC8F3E1B0D2B42BAAC0C5FA124E0A3AA0CABE9A</PackageCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>

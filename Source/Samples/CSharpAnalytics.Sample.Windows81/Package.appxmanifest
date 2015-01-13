@@ -11,18 +11,11 @@
     <OSMaxVersionTested>6.3.0</OSMaxVersionTested>
   </Prerequisites>
   <Resources>
-    <Resource Language="x-generate"/>
+    <Resource Language="x-generate" />
   </Resources>
   <Applications>
-    <Application Id="App"
-        Executable="$targetnametoken$.exe"
-        EntryPoint="CSharpAnalytics.Sample.Windows81.App">
-      <m2:VisualElements
-          DisplayName="CSharpAnalytics.Sample.Windows81"
-          Square150x150Logo="Assets\Logo.png"
-          Square30x30Logo="Assets\SmallLogo.png"
-        Description="CSharpAnalytics sample Windows 8.1 application."
-          ForegroundText="light" BackgroundColor="#464646">
+    <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="CSharpAnalytics.Sample.Windows81.App">
+      <m2:VisualElements DisplayName="CSharpAnalytics.Sample.Windows81" Square150x150Logo="Assets\Logo.png" Square30x30Logo="Assets\SmallLogo.png" Description="CSharpAnalytics sample Windows 8.1 application." ForegroundText="light" BackgroundColor="#464646">
         <m2:SplashScreen Image="Assets\SplashScreen.png" />
       </m2:VisualElements>
     </Application>
