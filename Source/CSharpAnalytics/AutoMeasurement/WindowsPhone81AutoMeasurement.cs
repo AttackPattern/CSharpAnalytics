@@ -1,4 +1,4 @@
-﻿﻿// Copyright (c) Attack Pattern LLC.  All rights reserved.
+﻿// Copyright (c) Attack Pattern LLC.  All rights reserved.
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
@@ -15,6 +15,7 @@ using Windows.ApplicationModel.Activation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
+using Windows.ApplicationModel;
 
 namespace CSharpAnalytics
 {
@@ -23,7 +24,7 @@ namespace CSharpAnalytics
     /// Either use as-is by calling StartAsync, Attach and StopAsync from your App.xaml.cs or use as a
     /// starting point to wire up your own way.
     /// </summary>
-    public class WindowsPhoneAutoMeasurement : BaseAutoMeasurement 
+    public class WindowsPhone81AutoMeasurement : BaseAutoMeasurement 
     {
         private static Frame attachedFrame;
 
@@ -152,11 +153,7 @@ namespace CSharpAnalytics
         /// </summary>
         /// <param name="sender">Sender of the event.</param>
         /// <param name="e">Startup event parameter.</param>
-#if WINDOWS_PHONE_APP
         private async void ApplicationOnResuming(object sender, object o)
-#else
-        private async void ApplicationOnStartup(object sender, StartupEventArgs e)
-#endif
         {
             await StartRequesterAsync();
         }
@@ -166,7 +163,7 @@ namespace CSharpAnalytics
         /// </summary>
         /// <param name="sender">Sender of the event.</param>
         /// <param name="e">Empty event information.</param>
-        private async void ApplicationOnSuspending(object sender, Windows.ApplicationModel.SuspendingEventArgs suspendingEventArgs)
+        private async void ApplicationOnSuspending(object sender, SuspendingEventArgs suspendingEventArgs)
         {
             UnhookEvents();
             await StopRequesterAsync();
@@ -178,7 +175,7 @@ namespace CSharpAnalytics
     /// </summary>
     public static class AutoMeasurement
     {
-        private static readonly WindowsPhoneAutoMeasurement instance = new WindowsPhoneAutoMeasurement();
+        private static readonly WindowsPhone81AutoMeasurement instance = new WindowsPhone81AutoMeasurement();
 
         public static VisitorStatus VisitorStatus
         {
