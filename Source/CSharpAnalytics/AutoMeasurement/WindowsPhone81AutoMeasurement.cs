@@ -95,7 +95,7 @@ namespace CSharpAnalytics
         /// <returns>Task that completes when the requester is ready to use.</returns>
         protected override Task SetupRequesterAsync()
         {
-            var webRequester = new HttpWebRequester(ClientUserAgent + " " + WindowsPhoneSystemInfo.GetSystemUserAgent());
+            var webRequester = new HttpWebRequester(ClientUserAgent + " " + WindowsPhone81SystemInfo.GetSystemUserAgent());
             Requester = webRequester.Request;
 
             return Task.FromResult(true);
@@ -171,7 +171,7 @@ namespace CSharpAnalytics
     }
 
     /// <summary>
-    /// AutoMeasurement static wrapper to make it easier to use across a Windows Phone "Silverlight" application.
+    /// AutoMeasurement static wrapper to make it easier to use across a Windows Phone 8.1 application.
     /// </summary>
     public static class AutoMeasurement
     {

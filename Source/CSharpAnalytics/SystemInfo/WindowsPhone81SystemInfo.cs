@@ -1,26 +1,21 @@
-﻿﻿// Copyright (c) Attack Pattern LLC.  All rights reserved.
+﻿// Copyright (c) Attack Pattern LLC.  All rights reserved.
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. 
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
 using System;
 using System.Linq;
-using System.Xml.Linq;
-using Windows.Networking;
-using Windows.Devices;
-using Windows.Security.ExchangeActiveSyncProvisioning;
-using Windows.UI.Xaml;
 using Windows.ApplicationModel;
+using Windows.Security.ExchangeActiveSyncProvisioning;
 
- namespace CSharpAnalytics.SystemInfo
+namespace CSharpAnalytics.SystemInfo
 {
-    public static class WindowsPhoneSystemInfo
+    public static class WindowsPhone81SystemInfo
     {
         private static readonly string applicationName;
         private static readonly string applicationVersion;
 
-        static WindowsPhoneSystemInfo()
+        static WindowsPhone81SystemInfo()
         {
-            /// @todo    not wild about the name here; not sure what the better option is
             applicationName = Package.Current.Id.Name;
             applicationVersion = String.Format("{0}.{1}", Package.Current.Id.Version.Major, Package.Current.Id.Version.Minor);            
         }

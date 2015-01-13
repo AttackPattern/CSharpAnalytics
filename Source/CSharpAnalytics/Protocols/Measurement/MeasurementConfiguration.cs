@@ -142,5 +142,16 @@ namespace CSharpAnalytics
         {
         }
 #endif
+
+#if WINDOWS_PHONE_APP
+        /// <summary>
+        /// Create a new cofiguration for analytics.
+        /// </summary>
+        /// <param name="accountId">Google Analytics provided property id in the format UA-XXXX-Y.</param>
+        public MeasurementConfiguration(string accountId)
+            : this(accountId, SystemInfo.WindowsPhone81SystemInfo.ApplicationName, SystemInfo.WindowsPhone81SystemInfo.ApplicationVersion)
+        {
+        }
+#endif
     }
 }
