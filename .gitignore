@@ -180,3 +180,6 @@ Desktop.ini
 
 # Recycle Bin used on file shares
 $RECYCLE.BIN/
+
+# Roslyn VS2015 junk
+*.sln.ide/
