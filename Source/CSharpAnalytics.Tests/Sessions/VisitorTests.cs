@@ -1,7 +1,7 @@
 ﻿using CSharpAnalytics.Sessions;
 using System;
 using System.Linq;
-#if WINDOWS_STORE || WINDOWS_PHONE
+#if WINDOWS_STORE || WINDOWS_PHONE || NETFX_CORE
 using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
 #else
 using Microsoft.VisualStudio.TestTools.UnitTesting;

@@ -2,7 +2,7 @@
 using System.Linq;
 using CSharpAnalytics.Activities;
 using CSharpAnalytics.Protocols.Measurement;
-#if WINDOWS_STORE || WINDOWS_PHONE
+#if WINDOWS_STORE || WINDOWS_PHONE || NETFX_CORE
 using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
 #else
 using Microsoft.VisualStudio.TestTools.UnitTesting;
