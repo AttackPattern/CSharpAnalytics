@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>CSharpAnalytics</id>
-    <version>1.2.0</version>
+    <version>1.2.1</version>
     <authors>Damien Guard</authors>
     <owners>Attack Pattern</owners>
     <licenseUrl>https://raw.github.com/AttackPattern/CSharpAnalytics/master/Source/LICENCE.txt</licenseUrl>
@@ -14,7 +14,7 @@ Detect Windows OS version in store apps even on machines with a custom HAL
 Save session id and session number at startup to avoid loss should the app crash
 Custom metrics and dimensions can now be set on a specific activity (recommended)
     </releaseNotes>
-    <copyright>Copyright 2012-2014 Attack Pattern LLC</copyright>
+    <copyright>Copyright 2012-2015 Attack Pattern LLC</copyright>
     <tags>google analytics, metrics, analytics, ga, measurement protocol</tags>
   </metadata>
   <files>

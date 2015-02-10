@@ -64,11 +64,12 @@ namespace CSharpAnalytics
             {
                 isStarted = true;
                 lastUploadInterval = uploadInterval ?? TimeSpan.FromSeconds(5);
-                await StartRequesterAsync();
 
                 var sessionState = await Load<SessionState>(SessionStorageName);
                 sessionManager = new SessionManager(sessionState, configuration.SampleRate);
-                if (delayedOptOut != null) SetOptOut(delayedOptOut.Value);
+				await StartRequesterAsync();
+
+				if (delayedOptOut != null) SetOptOut(delayedOptOut.Value);
 
                 Client.Configure(configuration, sessionManager, GetEnvironment(), Add);
 
