@@ -145,6 +145,17 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
         }
 
         [TestMethod]
+        public void MeasurementAnalyticsClient_AdjustUriBeforeRequest_Adds_Uid_Parameter()
+        {
+            var originalUri = new Uri("http://anything.really.com/something#" + DateTime.UtcNow.ToString("o"));
+            var client = new MeasurementAnalyticsClient() { UserId = "Testing" };
+
+            var actual = client.AdjustUriBeforeRequest(originalUri);
+
+            StringAssert.Contains(actual.Query, "uid=Testing");
+        }
+
+        [TestMethod]
         public void MeasurementAnalyticsClient_OnTrack_Fires_When_Tracked()
         {
             var fired = false;

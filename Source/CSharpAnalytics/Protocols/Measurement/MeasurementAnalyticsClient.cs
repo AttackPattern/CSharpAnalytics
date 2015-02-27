@@ -29,6 +29,8 @@ namespace CSharpAnalytics.Protocols.Measurement
         /// </summary>
         public event EventHandler<MeasurementActivity> OnTrack = delegate { };
 
+        public string UserId { get; set; }
+
         /// <summary>
         /// Configure this MeasurementAnalyticsClient so it can start recording and sending analytics.
         /// </summary>
@@ -178,6 +180,9 @@ namespace CSharpAnalytics.Protocols.Measurement
         public Uri AdjustUriBeforeRequest(Uri uri)
         {
             var parameters = GetQueryParameters(uri.GetComponents(UriComponents.Query, UriFormat.Unescaped));
+            if (!String.IsNullOrWhiteSpace(UserId))
+                parameters["uid"] = UserId;
+
             AddQueueTimeFromFragment(uri, parameters);
             return new UriBuilder(uri) { Query = GetQueryString(parameters), Fragment = "" }.Uri;
         }
