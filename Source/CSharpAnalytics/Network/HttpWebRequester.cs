@@ -69,9 +69,9 @@ namespace CSharpAnalytics.Network
         private static HttpWebRequest CreatePostRequest(Uri requestUri, bool writeBody)
         {
             var uriWithoutQuery = new Uri(requestUri.GetComponents(UriComponents.SchemeAndServer | UriComponents.Path, UriFormat.Unescaped));
-            var postRequest = WebRequest.CreateHttp(uriWithoutQuery);
+            var postRequest = CreateRequest(uriWithoutQuery);
             postRequest.Method = "POST";
-            
+
             var bodyWithQuery = requestUri.GetComponents(UriComponents.Query, UriFormat.UriEscaped);
             var bodyBytes = Encoding.UTF8.GetBytes(bodyWithQuery);
 #if !WINDOWS_PHONE_APP
@@ -91,7 +91,7 @@ namespace CSharpAnalytics.Network
                 stream.Flush();
                 stream.Dispose();
 #else
-                stream.Close();      
+                stream.Close();
 #endif
             }
 

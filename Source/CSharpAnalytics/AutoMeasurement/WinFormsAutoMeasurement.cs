@@ -87,7 +87,7 @@ namespace CSharpAnalytics
 
             Requester = httpClientRequester.Request;
 
-            return Task.FromResult(true);
+            return TaskEx.FromResult(true);
         }
 
         /// <summary>

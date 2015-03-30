@@ -7,7 +7,7 @@ using System.Globalization;
 
 namespace CSharpAnalytics.Activities
 {
-    public abstract class MeasurementActivity
+    public abstract class MeasurementActivity : EventArgs
     {
         internal readonly string[] CustomDimensions = new string[200];
         internal readonly object[] CustomMetrics = new object[200];

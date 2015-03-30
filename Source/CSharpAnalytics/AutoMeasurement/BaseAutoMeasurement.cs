@@ -179,7 +179,7 @@ namespace CSharpAnalytics
         /// <param name="page">Page to track in analytics.</param>
         protected void TrackScreenView(Type page)
         {
-            if (typeof(ITrackOwnView).GetTypeInfo().IsAssignableFrom(page.GetTypeInfo())) return;
+            if (typeof(ITrackOwnView).IsAssignableFrom(page)) return;
 
             var screenName = GetScreenName(page);
             Client.TrackScreenView(screenName);
@@ -228,7 +228,9 @@ namespace CSharpAnalytics
         /// <returns>String for the screen name in analytics.</returns>
         private static string GetScreenName(Type page)
         {
-            var screenNameAttribute = page.GetTypeInfo().GetCustomAttribute(typeof(AnalyticsScreenNameAttribute)) as AnalyticsScreenNameAttribute;
+            var screenNameAttribute =
+                page.GetCustomAttributes(typeof (AnalyticsScreenNameAttribute), true).FirstOrDefault() as
+                    AnalyticsScreenNameAttribute;
             if (screenNameAttribute != null)
                 return screenNameAttribute.ScreenName;
 
