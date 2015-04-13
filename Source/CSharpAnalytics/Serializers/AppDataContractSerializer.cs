@@ -10,7 +10,7 @@ namespace CSharpAnalytics.Serializers
     /// Provides an easy way to serialize and deserialize simple classes to a user AppData folder in
     /// Windows Forms applications.
     /// </summary>
-    internal static class AppDataContractSerializer
+    public static class AppDataContractSerializer
     {
         private static string folderPath;
 
