@@ -52,6 +52,10 @@ namespace CSharpAnalytics.Serializers
             try
             {
                 var file = GetFilePath<T>(filename);
+                if (!File.Exists(file))
+                {
+                    return default(T);
+                }
 
                 try
                 {
