@@ -25,7 +25,7 @@ namespace CSharpAnalytics
     {
         private const string SessionStorageName = "CSharpAnalytics-MeasurementSession";
         private const string QueueStorageName = "CSharpAnalytics-MeasurementQueue";
-        private const string ApplicationLifecycleEvent = "ApplicationLifecycle";
+        //private const string ApplicationLifecycleEvent = "ApplicationLifecycle";
         private const int MaximumRequestsToPersist = 60;
 
         private readonly ProtocolDebugger protocolDebugger = new ProtocolDebugger(MeasurementParameterDefinitions.All);
@@ -79,7 +79,7 @@ namespace CSharpAnalytics
                 HookEvents();
             }
 
-            Client.TrackEvent("Start", ApplicationLifecycleEvent, launchKind);
+            //Client.TrackEvent("Start", ApplicationLifecycleEvent, launchKind);
         }
 
         /// <summary>
@@ -128,7 +128,7 @@ namespace CSharpAnalytics
         /// Indicates if internet connectivity is available.
         /// </summary>
         /// <returns>True if the internet is available to use, false otherwise.</returns>
-        protected abstract bool IsInternetAvailable();
+        public Func<bool> IsInternetAvailable;
 
         /// <summary>
         /// Opt the user in or out of analytics for this application install.

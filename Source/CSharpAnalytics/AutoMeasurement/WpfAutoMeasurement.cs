@@ -103,11 +103,11 @@ namespace CSharpAnalytics
         /// Determine if the Internet is available at this point in time.
         /// </summary>
         /// <returns>True if the Internet is available, false otherwise.</returns>
-        protected override bool IsInternetAvailable()
-        {
-            int connDesc;
-            return InternetGetConnectedState(out connDesc, 0);
-        }
+        //protected override bool IsInternetAvailable()
+        //{
+        //    int connDesc;
+        //    return InternetGetConnectedState(out connDesc, 0);
+        //}
 
         /// <summary>
         /// Handle the application exiting.
