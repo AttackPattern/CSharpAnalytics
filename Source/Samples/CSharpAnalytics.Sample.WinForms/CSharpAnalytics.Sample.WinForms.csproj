@@ -52,9 +52,9 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\CSharpAnalytics\CSharpAnalytics.Net45.csproj">
+    <ProjectReference Include="..\..\CSharpAnalytics\CSharpAnalytics.Net4.csproj">
       <Project>{0334B071-1FB1-4372-B500-4BC58A11EE59}</Project>
-      <Name>CSharpAnalytics.Net45</Name>
+      <Name>CSharpAnalytics.Net4</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

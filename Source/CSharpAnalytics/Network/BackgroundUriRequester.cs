@@ -101,11 +101,29 @@ namespace CSharpAnalytics.Network
                 {
                     try
                     {
+                        //Debug.WriteLine("prior request count" + priorRequests.Count);
+                        //Debug.WriteLine("current request count" + currentRequests.Count);
+
                         if (checkInternetAvailable())
                         {
-                            while (GetNextQueueEntry(out currentlySending)) {
-                                RequestWithFailureRetry(currentlySending, cancellationTokenSource.Token);
-                                currentlySending = null;
+                            while (GetNextQueueEntry(out currentlySending))
+                            {
+                                if (checkInternetAvailable())
+                                {
+                                    if (RequestWithFailureRetry(currentlySending, cancellationTokenSource.Token))
+                                    {
+                                        currentlySending = null;
+                                    }
+                                    else
+                                    {
+                                        currentRequests.Enqueue(currentlySending);
+                                    }
+                                }
+                                else
+                                {
+                                    currentRequests.Enqueue(currentlySending);
+                                    break;
+                                }
                             }
                         }
 
@@ -127,29 +145,34 @@ namespace CSharpAnalytics.Network
         /// </summary>
         /// <param name="requestUri">URI to request.</param>
         /// <param name="cancellationToken">Cancellation token that indicates if a request should be cancelled.</param>
-        private void RequestWithFailureRetry(Uri requestUri, CancellationToken cancellationToken)
+        private bool RequestWithFailureRetry(Uri requestUri, CancellationToken cancellationToken)
         {
             var retryDelay = TimeSpan.Zero;
             var successfullySent = false;
 
-            do
+            try
             {
-                try {
-                    successfullySent = requester(requestUri, cancellationToken);
-                }
-                catch (Exception ex)
-                {
-                    if (ex is AggregateException)
-                        ex = ex.GetInnermostException();
+                successfullySent = requester(requestUri, cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                if (ex is AggregateException)
+                    ex = ex.GetInnermostException();
 
-                    Debug.WriteLine("RequestWithFailureRetry failing with {0}", ex.Message);
-                }
-                finally
-                {
-                    if (!successfullySent)
-                        WaitBetweenFailedRequests(ref retryDelay);
-                }
-            } while (!successfullySent);
+                Debug.WriteLine("RequestWithFailureRetry failing with {0}", ex.Message);
+            }
+            finally
+            {
+                if (!successfullySent)
+                    WaitBetweenFailedRequests(ref retryDelay);
+            }
+
+            if (successfullySent)
+            {
+                return true;
+            }
+
+            return false;
         }
 
         /// <summary>
