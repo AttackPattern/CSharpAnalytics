@@ -3,6 +3,7 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace CSharpAnalytics.Serializers
 {
@@ -48,36 +49,32 @@ namespace CSharpAnalytics.Serializers
         public static async Task<T> Restore<T>(string filename = null, bool deleteBadData = false)
         {
             var serializer = new DataContractSerializer(typeof(T), new[] { typeof(DateTimeOffset) });
+            var settings = new XmlReaderSettings { Async = true };
 
             try
             {
                 var file = GetFilePath<T>(filename);
-
                 try
                 {
-                    using (var inputStream = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, true))
+                    using (var fileStream = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, true))
+                    using (var xmlReader = XmlReader.Create(fileStream, settings))
                     {
-                        if (inputStream.Length == 0)
-                        {
-                            return default(T);
-                        }
-
-                        using (var memoryStream = new MemoryStream())
-                        {
-                            await inputStream.CopyToAsync(memoryStream);
-                            await inputStream.FlushAsync();
-                            memoryStream.Seek(0, SeekOrigin.Begin);
-
-                            return (T)serializer.ReadObject(memoryStream);
-                        }
+                        await xmlReader.ReadAsync();
+                        return (T)serializer.ReadObject(xmlReader);
                     }
                 }
                 catch (SerializationException)
                 {
                     if (deleteBadData)
                         File.Delete(file);
-                    throw;
                 }
+                catch (XmlException)
+                {
+                    if (deleteBadData)
+                        File.Delete(file);
+                }
+
+                return default(T);
             }
             catch (FileNotFoundException)
             {
@@ -95,19 +92,22 @@ namespace CSharpAnalytics.Serializers
         public static async Task Save<T>(T value, string filename = null)
         {
             var serializer = new DataContractSerializer(typeof(T), new[] { typeof(DateTimeOffset) });
-
+            var settings = new XmlWriterSettings { Indent = true, Async = true };
             var file = GetFilePath<T>(filename);
 
-            using (var memoryStream = new MemoryStream())
+            try
             {
-                serializer.WriteObject(memoryStream, value);
-
                 using (var fileStream = new FileStream(file, FileMode.Create, FileAccess.Write, FileShare.None, 4096, true))
+                using (var xmlWriter = XmlWriter.Create(fileStream, settings))
                 {
-                    memoryStream.Seek(0, SeekOrigin.Begin);
-                    await memoryStream.CopyToAsync(fileStream);
-                    await fileStream.FlushAsync();
+                    serializer.WriteObject(xmlWriter, value);
+                    await xmlWriter.FlushAsync();
                 }
+            }
+            catch (UnauthorizedAccessException)
+            {
+                System.Diagnostics.Debug.WriteLine(
+                    "Failed to save to {0}. You may have insufficient rights or a synchronization may be occuring.", file);
             }
         }
 
