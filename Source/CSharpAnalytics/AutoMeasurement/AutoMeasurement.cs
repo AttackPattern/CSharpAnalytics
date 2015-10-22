@@ -16,6 +16,17 @@ namespace CSharpAnalytics
         private static BaseAutoMeasurement _instance;
 
         /// <summary>
+        /// Gets a value indicating whether this <see cref="AutoMeasurement"/> is initialized.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if initialized; otherwise, <c>false</c>.
+        /// </value>
+        public static bool Initialized
+        {
+            get { return _instance != null; }
+        }
+
+        /// <summary>
         ///     The implementation of <see cref="BaseAutoMeasurement" /> to use when calling methods and properties
         ///     on <see cref="AutoMeasurement" />. Built-in types are <see cref="WinFormAutoMeasurement" /> and
         ///     <see cref="WpfAutoMeasurement" />.
