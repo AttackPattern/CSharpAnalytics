@@ -69,12 +69,16 @@ namespace CSharpAnalytics
                 sessionManager = new SessionManager(sessionState, configuration.SampleRate);
 				await StartRequesterAsync();
 
-				if (delayedOptOut != null) SetOptOut(delayedOptOut.Value);
+                // Preserve 'delayedOptOut' value to use in condition checking
+                var hasDelayedOptOut = delayedOptOut;
+                if (hasDelayedOptOut.HasValue) SetOptOut(delayedOptOut.GetValueOrDefault());
 
                 Client.Configure(configuration, sessionManager, GetEnvironment(), Add);
 
                 // Sometimes apps crash so preserve at least session number and visitor id on launch
-                await Save(sessionManager.GetState(), SessionStorageName);
+                // Avoid re-saving if a delayed optout was set (save already occurred in 'SetOptOut')
+                if (!hasDelayedOptOut.HasValue)
+                    await Save(sessionManager.GetState(), SessionStorageName);
 
                 HookEvents();
             }
