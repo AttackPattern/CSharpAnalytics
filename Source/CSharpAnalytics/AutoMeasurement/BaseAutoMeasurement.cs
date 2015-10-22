@@ -201,7 +201,6 @@ namespace CSharpAnalytics
         /// <summary>
         /// Suspend the requester and preserve any unsent URIs.
         /// </summary>
-        /// <returns>Task that completes when the requester has been suspended.</returns>
         protected void StopRequesterAsync()
         {
             var safeBackgroundRequester = backgroundRequester;
