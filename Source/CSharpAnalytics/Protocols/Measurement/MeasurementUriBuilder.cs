@@ -23,6 +23,7 @@ namespace CSharpAnalytics.Protocols.Measurement
         private static readonly Random random = new Random();
         private static readonly Uri trackingEndpoint = new Uri("http://www.google-analytics.com/collect");
         private static readonly Uri secureTrackingEndpoint = new Uri("https://ssl.google-analytics.com/collect");
+        private static readonly Uri debugTrackingEndpoint = new Uri("https://www.google-analytics.com/debug/collect");
 
         private readonly SessionManager sessionManager;
         private readonly MeasurementConfiguration configuration;
@@ -52,7 +53,11 @@ namespace CSharpAnalytics.Protocols.Measurement
         {
             var parameters = BuildParameterList(activity);
             CarryForwardParameters(activity, parameters);
-            var endpoint = configuration.UseSsl ? secureTrackingEndpoint : trackingEndpoint;
+            var endpoint = configuration.UseDebugUrl
+                ? debugTrackingEndpoint
+                : configuration.UseSsl
+                    ? secureTrackingEndpoint
+                    : trackingEndpoint;
 
             // Fragment is only added temporarily and used to calculate queue time.
             // It will be removed in MeasurementAnalyticsClient.AdjustUriBeforeRequest.

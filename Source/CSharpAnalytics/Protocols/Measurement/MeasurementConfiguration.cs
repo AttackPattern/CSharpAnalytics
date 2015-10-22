@@ -47,6 +47,14 @@ namespace CSharpAnalytics
         public bool UseSsl { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether to use the debug URL.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if to use the debug URL; otherwise, <c>false</c>.
+        /// </value>
+        public bool UseDebugUrl { get; set; }
+
+        /// <summary>
         /// Sample rate percentage to determine how likely new visitors will be tracked.
         /// </summary>
         /// <remarks>
