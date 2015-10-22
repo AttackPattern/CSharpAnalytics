@@ -201,8 +201,7 @@ namespace CSharpAnalytics
         /// <summary>
         /// Suspend the requester and preserve any unsent URIs.
         /// </summary>
-        /// <returns>Task that completes when the requester has been suspended.</returns>
-        protected async Task StopRequesterAsync()
+        protected void StopRequesterAsync()
         {
             var safeBackgroundRequester = backgroundRequester;
             if (safeBackgroundRequester == null) return;
@@ -210,12 +209,12 @@ namespace CSharpAnalytics
             var recentRequestsToPersist = new List<Uri>();
             if (safeBackgroundRequester.IsStarted)
             {
-                var pendingRequests = await safeBackgroundRequester.StopAsync();
+                var pendingRequests = safeBackgroundRequester.StopAsync().GetAwaiter().GetResult();
                 recentRequestsToPersist = pendingRequests.Skip(pendingRequests.Count - MaximumRequestsToPersist).ToList();
             }
 
-            await Save(recentRequestsToPersist, QueueStorageName);
-            await Save(sessionManager.GetState(), SessionStorageName);
+            Save(recentRequestsToPersist, QueueStorageName);
+            Save(sessionManager.GetState(), SessionStorageName);
 
             safeBackgroundRequester.Dispose();
             backgroundRequester = null;

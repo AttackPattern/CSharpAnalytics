@@ -114,10 +114,10 @@ namespace CSharpAnalytics
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="eventArgs"></param>
-        private async void ApplicationOnExit(object sender, EventArgs eventArgs)
+        private void ApplicationOnExit(object sender, EventArgs eventArgs)
         {
             UnhookEvents();
-            await StopRequesterAsync();
+            StopRequesterAsync();
         }
     }
 }
