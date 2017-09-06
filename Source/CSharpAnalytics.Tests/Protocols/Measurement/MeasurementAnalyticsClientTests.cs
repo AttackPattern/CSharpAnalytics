@@ -125,16 +125,6 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
         }
 
         [TestMethod]
-        public void MeasurementAnalyticsClient_AdjustUriBeforeRequest_Does_Not_Add_Qt_Parameter_If_Sc_Parameter_Present()
-        {
-            var originalUri = new Uri("http://anything.really.com/something?sc=start#" + DateTime.UtcNow.ToString("o"));
-
-            var actual = new MeasurementAnalyticsClient().AdjustUriBeforeRequest(originalUri);
-
-            Assert.IsFalse(actual.Query.Contains("qt="));
-        }
-
-        [TestMethod]
         public void MeasurementAnalyticsClient_AdjustUriBeforeRequest_Clears_Fragment()
         {
             var originalUri = new Uri("http://anything.really.com/something#" + DateTime.UtcNow.ToString("o"));

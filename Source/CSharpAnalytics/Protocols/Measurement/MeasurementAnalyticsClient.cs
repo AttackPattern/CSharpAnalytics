@@ -263,7 +263,7 @@ namespace CSharpAnalytics.Protocols.Measurement
         /// <param name="parameters">URI parameters to add the relative QT parameter to.</param>
         private static void AddQueueTimeFromFragment(Uri uri, IDictionary<string, string> parameters)
         {
-            if (String.IsNullOrWhiteSpace(uri.Fragment) || parameters.ContainsKey("sc")) return;
+            if (String.IsNullOrWhiteSpace(uri.Fragment)) return;
             var decodedFragment = uri.GetComponents(UriComponents.Fragment, UriFormat.Unescaped);
 
             DateTime utcHitTime;
