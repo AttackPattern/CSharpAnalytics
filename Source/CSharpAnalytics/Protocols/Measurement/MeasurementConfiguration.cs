@@ -47,6 +47,12 @@ namespace CSharpAnalytics
         public bool UseSsl { get; set; }
 
         /// <summary>
+        /// If set (not null) then tracking will go to this url instead of going to the original google url.
+        /// In this case UseSsl has no effect.
+        /// </summary>
+        public Uri TrackingEndpointOverride { get; set; }
+
+        /// <summary>
         /// Sample rate percentage to determine how likely new visitors will be tracked.
         /// </summary>
         /// <remarks>

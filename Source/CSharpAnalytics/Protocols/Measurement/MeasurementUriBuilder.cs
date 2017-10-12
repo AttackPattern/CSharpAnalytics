@@ -52,7 +52,10 @@ namespace CSharpAnalytics.Protocols.Measurement
         {
             var parameters = BuildParameterList(activity);
             CarryForwardParameters(activity, parameters);
-            var endpoint = configuration.UseSsl ? secureTrackingEndpoint : trackingEndpoint;
+
+            var endpoint = configuration.TrackingEndpointOverride != null
+                ? configuration.TrackingEndpointOverride
+                : (configuration.UseSsl ? secureTrackingEndpoint : trackingEndpoint);
 
             // Fragment is only added temporarily and used to calculate queue time.
             // It will be removed in MeasurementAnalyticsClient.AdjustUriBeforeRequest.

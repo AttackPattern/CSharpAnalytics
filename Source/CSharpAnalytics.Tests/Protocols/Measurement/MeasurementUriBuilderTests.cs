@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using CSharpAnalytics.Activities;
 using CSharpAnalytics.Protocols.Measurement;
 using CSharpAnalytics.Test.Environment;
@@ -93,6 +94,22 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
 
             Assert.AreEqual("https", actual.Scheme);
             Assert.AreEqual("ssl.google-analytics.com", actual.Host);
+        }
+
+
+        [TestMethod]
+        public void MeasurementUriBuilderTests_TrackingEndpointOverride_IsUsed_DontCare_UseSsl()
+        {
+            var config = MeasurementTestHelpers.Configuration;
+            config.UseSsl = false;
+            var trackingEnpointOverride = new Uri("https://www.sonova-ga-analytics.com/collect");
+            config.TrackingEndpointOverride = trackingEnpointOverride;
+            var builder = new MeasurementUriBuilder(config, MeasurementTestHelpers.CreateSessionManager(), MeasurementTestHelpers.CreateEnvironment());
+
+            var actual = builder.BuildUri(new ScreenViewActivity("Home"));
+
+            Assert.AreEqual(trackingEnpointOverride.Host, actual.Host);
+            Assert.AreEqual(trackingEnpointOverride.Scheme, actual.Scheme);
         }
 
         [TestMethod]
