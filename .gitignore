@@ -184,3 +184,6 @@ $RECYCLE.BIN/
 # Roslyn VS2015 junk
 *.sln.ide/
 *.nupkg
+
+# Visual Studio temp and user data 
+*/.vs/
