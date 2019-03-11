@@ -269,6 +269,9 @@ namespace CSharpAnalytics.Protocols.Measurement
             DateTime utcHitTime;
             if (!DateTime.TryParse(decodedFragment, out utcHitTime)) return;
 
+            //Event Time "et": add non measurement protocol parameter, can be used by a server side dispatcher to re-adjust "qt" 
+            parameters["et"] = utcHitTime.ToString("O");
+
             var queueTime = DateTimeOffset.Now.Subtract(utcHitTime);
             if (queueTime.TotalMilliseconds < 0) return;
 

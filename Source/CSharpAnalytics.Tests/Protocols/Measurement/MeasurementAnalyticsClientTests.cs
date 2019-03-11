@@ -115,13 +115,14 @@ namespace CSharpAnalytics.Test.Protocols.Measurement
         }
 
         [TestMethod]
-        public void MeasurementAnalyticsClient_AdjustUriBeforeRequest_Adds_Qt_Parameter()
+        public void MeasurementAnalyticsClient_AdjustUriBeforeRequest_Adds_TimeStamp_Parameters()
         {
             var originalUri = new Uri("http://anything.really.com/something#" + DateTime.UtcNow.ToString("o"));
 
             var actual = new MeasurementAnalyticsClient().AdjustUriBeforeRequest(originalUri);
 
             StringAssert.Contains(actual.Query, "qt=");
+            StringAssert.Contains(actual.Query, "et=");
         }
 
         [TestMethod]
