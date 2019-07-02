@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Sonova.CSharpAnalytics</id>
-    <version>1.4.0</version>
+    <version>1.6.1</version>
     <authors>Damien Guard</authors>
     <owners>Attack Pattern</owners>
     <licenseUrl>https://raw.githubusercontent.com/sonova/CSharpAnalytics/master/Source/LICENCE.txt</licenseUrl>
@@ -12,11 +12,13 @@
     <releaseNotes>
 	1st Sonova release based on CSharpAnalytics 1.2.1
 	Fix for issue #47 - session start and session end time stamps registered at GA are very often too late relative to other events	
+  Added support to WPF Net Core 3.
     </releaseNotes>
     <copyright>Copyright 2012-2015 Attack Pattern LLC</copyright>
     <tags>google analytics, metrics, analytics, ga, measurement protocol</tags>
   </metadata>
   <files>
     <file src="..\Binaries\Release\Net45\CSharpAnalytics.Net45.dll" target="lib\net45" />
+    <file src="..\Binaries\Release\netcoreapp3.0\CSharpAnalytics.WPFNetCore3.dll" target="lib\netcoreapp3.0" />
   </files>
 </package>
