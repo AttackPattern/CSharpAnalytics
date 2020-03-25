@@ -1,11 +1,13 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
     <PropertyGroup>
         <OutputType>Library</OutputType>
-        <TargetFrameworks>net45;net461</TargetFrameworks>
+        <TargetFrameworks>net45;net461;netcoreapp3.1</TargetFrameworks>
         <RootNamespace>CSharpAnalytics</RootNamespace>
-        <AssemblyName>CSharpAnalytics</AssemblyName>        
+        <AssemblyName>CSharpAnalytics</AssemblyName>
+        <UseWPF>true</UseWPF>
+        <UseWindowsForms>true</UseWindowsForms>
     </PropertyGroup>
-    <ItemGroup>
+    <ItemGroup Condition=" '$(TargetFramework)' == 'net45' OR '$(TargetFramework)' == 'net461' ">
         <Reference Include="PresentationCore" />
         <Reference Include="PresentationFramework" />
         <Reference Include="System" />

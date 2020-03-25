@@ -11,7 +11,7 @@ namespace CSharpAnalytics.Sample.Wpf
     {
         public MainWindow()
         {
-            InitializeComponent();
+           InitializeComponent();
 
             AutoMeasurement.Instance = new WpfAutoMeasurement();
             AutoMeasurement.DebugWriter = d => Debug.WriteLine(d);

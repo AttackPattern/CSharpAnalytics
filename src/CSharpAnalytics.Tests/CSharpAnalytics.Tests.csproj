@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <OutputType>Library</OutputType>
-        <TargetFrameworks>net45;net461</TargetFrameworks>
+        <TargetFrameworks>net45;net461;netcoreapp3.1</TargetFrameworks>
         <RootNamespace>CSharpAnalytics.Tests</RootNamespace>
         <AssemblyName>CSharpAnalytics.Tests</AssemblyName>
     </PropertyGroup>
