@@ -187,3 +187,5 @@ $RECYCLE.BIN/
 
 # Visual Studio temp and user data 
 */.vs/
+/Source/.idea
+.idea/

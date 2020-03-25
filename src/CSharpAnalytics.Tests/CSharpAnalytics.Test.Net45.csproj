@@ -21,8 +21,6 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\Net45\</OutputPath>
-    <IntermediateOutputPath>obj\Debug\Net45\</IntermediateOutputPath>
     <DefineConstants>TRACE;DEBUG;NET45</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -31,8 +29,6 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\Net45\</OutputPath>
-    <IntermediateOutputPath>obj\Release\Net45\</IntermediateOutputPath>
     <DefineConstants>TRACE;NET45</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -83,9 +79,9 @@
     <Compile Include="TestHelpers.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CSharpAnalytics\CSharpAnalytics.Net45.csproj">
+    <ProjectReference Include="..\CSharpAnalytics\CSharpAnalytics.csproj">
       <Project>{0334b071-1fb1-4372-b500-4bc58a11ee59}</Project>
-      <Name>CSharpAnalytics.Net45</Name>
+      <Name>CSharpAnalytics</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />
