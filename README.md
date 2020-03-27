@@ -30,10 +30,9 @@ Google produce a library for *reading* analytics data in .NET apps but not recor
 
 Our goal is to support all major C# platforms. Right now we have project files for:
 
-* Windows 8 Store applications
-* Windows 8.1 Store applications
-* Windows Phone 8 "Silverlight" applications
 * WinForms .NET 4.5 applications
+* WinForms .NET 4.6.1 applications
+* WPF .NET Core 3 applications
 
 All of these platforms include the AutoMeasurement class that let you get up and running with only a few lines of code.
 
@@ -68,46 +67,6 @@ You can either:
 
 1. Get a more stable release via NuGet
 2. Clone the source code and add a reference to CSharpAnalytics.Windows81.csproj (or Windows8, .NET45 depending on your environment)
-
-### Automatic analytics for Windows 8/8.1 Store apps
-
-The easiest way to start is to use the AutoMeasurement helper class. It hooks into a few events and will automatically give you:
-
-* Application launch and reason
-* Visitor, session activity, time-spent
-* Social sharing events
-* Screen navigation activity
-* Operating system, screen resolution, CPU type identification
-* Save/persist last 60 hits for offline/online support
-
-At the start of the OnLaunched method in App.xaml.cs add (replacing UA-319000-8 with your own Google Analytics property ID and 'e' with 'args' if using a Windows 8.0 template):
-
-```csharp
-CSharpAnalytics.AutoMeasurement.Start(new CSharpAnalytics.MeasurementConfiguration("UA-319000-8"), e);
-```
-
-If your app is not a single page but uses Frames to navigate you can automatically track page navigation events by adding this line to the end of OnLaunched:
-
-```csharp
-CSharpAnalytics.AutoMeasurement.Attach(rootFrame);
-```
-
-### Automatic analytics for Windows Phone 8 "Silverlight" apps
-
-The easiest way to start is to use the AutoMeasurement helper class. It hooks into a few events and will automatically give you:
-
-* Application launch and reason
-* Visitor, session activity, time-spent
-* Screen navigation activity
-* Operating system version, screen resolution, CPU type identification
-* Save/persist last 60 hits for offline/online support
-
-Add these two lines to your Application_Launching method in App.xaml.cs (replacing UA-319000-8 with your own Google Analytics property ID):
-
-```csharp
-CSharpAnalytics.AutoMeasurement.Start(new CSharpAnalytics.MeasurementConfiguration("UA-319000-8"), e);
-CSharpAnalytics.AutoMeasurement.Attach(RootFrame);
-```
 
 ### Going further
 
@@ -153,3 +112,17 @@ Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+
+## Packing 
+
+### dotnet pack
+
+More info at:
+
+https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-pack
+
+Example:
+```
+dotnet pack -c release --include-symbols --version-suffix ""
+```
+

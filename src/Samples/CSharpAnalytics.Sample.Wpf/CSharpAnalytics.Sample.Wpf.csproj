@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net45</TargetFramework>
+        <UseWPF>true</UseWPF>
+        <RootNamespace>CSharpAnalytics.Sample.Wpf</RootNamespace>
+        <AssemblyName>CSharpAnalytics.Sample.Wpf</AssemblyName>
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Reference Include="System" />
+        <Reference Include="System.Xml" />
+        <Reference Include="System.Core" />
+        <Reference Include="System.Xaml"/>
+        <Reference Include="WindowsBase" />
+        <Reference Include="PresentationCore" />
+        <Reference Include="PresentationFramework" />
+    </ItemGroup>
+        <ItemGroup>
+        <ProjectReference Include="..\..\CSharpAnalytics\CSharpAnalytics.csproj"/>
+       </ItemGroup>
+</Project>

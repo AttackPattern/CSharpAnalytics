@@ -1,0 +1,19 @@
+<Project>
+<PropertyGroup>
+    <Product>Sonova.CSharpAnalytics</Product>
+    <authors>Damien Guard</authors>
+    <Company>Attack Pattern</Company>
+    <Copyright>Copyright 2012-2015 Attack Pattern LLC</Copyright>
+    <Description>"Google Analytics client for C# applications.</Description>
+    <Configuration Condition="$(Configuration) == ''">Debug</Configuration>
+    <BaseIntermediateOutputPath>$(MSBuildThisFileDirectory)obj/$(MSBuildProjectName)/</BaseIntermediateOutputPath>
+    <OutputPath>$(MSBuildThisFileDirectory)bin/$(MSBuildProjectName)/$(Configuration)/</OutputPath>
+    <LangVersion>latest</LangVersion>
+    <VersionPrefix>1.6.1</VersionPrefix>
+    <VersionSuffix>dev</VersionSuffix>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <ErrorReport>prompt</ErrorReport>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+</PropertyGroup>
+</Project>

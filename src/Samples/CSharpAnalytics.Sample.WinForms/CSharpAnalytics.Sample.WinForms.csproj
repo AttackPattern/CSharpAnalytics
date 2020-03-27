@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net45</TargetFramework>
+        <UseWindowsForms>true</UseWindowsForms>
+        <RootNamespace>CSharpAnalytics.Sample.WinForms</RootNamespace>
+        <AssemblyName>CSharpAnalytics.Sample.WinForms</AssemblyName>
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
+    <ItemGroup>
+        <Reference Include="System" />
+        <Reference Include="System.Core" />
+        <Reference Include="Microsoft.CSharp" />
+        <Reference Include="System.Drawing" />
+        <Reference Include="System.Windows.Forms" />
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\CSharpAnalytics\CSharpAnalytics.csproj"/>
+    </ItemGroup>
+</Project>
