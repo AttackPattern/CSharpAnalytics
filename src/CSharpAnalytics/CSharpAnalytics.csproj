@@ -6,6 +6,7 @@
         <AssemblyName>CSharpAnalytics</AssemblyName>
         <UseWPF>true</UseWPF>
         <UseWindowsForms>true</UseWindowsForms>
+        <PackageId>Sonova.CSharpAnalytics</PackageId>
     </PropertyGroup>
     <ItemGroup Condition=" '$(TargetFramework)' == 'net45' OR '$(TargetFramework)' == 'net461' ">
         <Reference Include="PresentationCore" />
